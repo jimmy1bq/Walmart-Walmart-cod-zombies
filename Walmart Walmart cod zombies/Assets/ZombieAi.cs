@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.AI;
-
+//navmesh info:
+//the agent 
 public class ZombieAi : MonoBehaviour
 {
+    [SerializeField] entityStatSO stats;
     NavMeshAgent agent;
     Animator animator;
     GameObject player;
+    bool wasOnLink = false;
     
     void Start()
     {
@@ -13,21 +16,24 @@ public class ZombieAi : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         animator = GetComponent<Animator>();
         agent.destination = player.transform.position;
-        agent.autoTraverseOffMeshLink = false;
-        
-        TickSystem.frequenttickTime.AddListener(updateLogic);
+        agent.autoTraverseOffMeshLink = false;    
+        TickSystem.frequenttickTime.AddListener(trackPlayerPoistion);
     }
 
-    // Update is called once per frame
-   
-    void updateLogic(float time) 
+    
+    //tracks the player position; should be called on every frame;
+    void trackPlayerPoistion(float time) 
     {
-       
         agent.destination = player.transform.position;
-        if (agent.isOnOffMeshLink)
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("trigger:" + other.name);
+        if (other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<healthManager>()!=null) 
         {
-           
+            other.gameObject.GetComponent<healthManager>().takeDamage(stats.meleeDamage);
         }
     }
+
 
 }

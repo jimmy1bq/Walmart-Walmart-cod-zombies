@@ -2,10 +2,12 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class TickSystem : MonoBehaviour
-{//why a tick system?
+{  
     [SerializeField] GameObject gameManager;
     [SerializeField] GameObject UIManager;
     //normally you would implment a task scheduler with this since events are put in a random order;this allow determinstic order
+    //tick system allows you to remove update logic without needing to call and check an if statement inside update
+    //helps a lot since update is called every frame
     public static TickSystem instance;
     //every half of a second
     public static UnityEvent<float> tickEvent = new UnityEvent<float>();
