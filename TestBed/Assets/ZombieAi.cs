@@ -56,7 +56,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         if (other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>() != null && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0)
         {
            attackCoroutine = StartCoroutine(attackboard(other.gameObject));
-        }else if (other.gameObject.CompareTag("Player")) 
+        }else if (other.gameObject.CompareTag("Player") && attackCoroutine == null) 
         {
             animationer.Stop();
             animationer.Play(animationStates[0].name);
@@ -70,18 +70,29 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     {
         
         if (agent.remainingDistance < 1.3f)
-        {
+        {           
             agent.isStopped = true;
             //cancels the current animation and switches to smaking right away;
             animationer.Play(animationStates[0].name);
+            agent.velocity = Vector3.zero;
             //player Damage Logic
             //use attack(player,0);
         } 
         yield return new WaitForSeconds(1);
         //if the player get out of range this doesn't happen
-        if (agent.remainingDistance < 1.3f) { StartCoroutine(attackPlayer(player)); }
-        else { attackCoroutine = null; animationer.Play(animationStates[4].name); agent.isStopped = false; }
-    
+        if (Vector3.Distance(transform.position, player.transform.position) < 1.3f)
+        {
+            attackCoroutine = StartCoroutine(attackPlayer(player));
+        }
+        else
+        {
+            attackCoroutine = null;
+            animationer.Play(animationStates[4].name);
+          
+            agent.isStopped = false;
+            agent.SetDestination(player.transform.position); 
+        }
+
     }
     //attacks the board on the window
     //param board: the board gameObject to attack
