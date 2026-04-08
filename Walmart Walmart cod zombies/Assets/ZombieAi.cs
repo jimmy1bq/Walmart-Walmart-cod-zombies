@@ -46,7 +46,73 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     //tracks the player position; should be called on every frame;
     void trackPlayerPoistion(float time)
     {
-        agent.destination = player.transform.position;
+        if (_isDead || _player == null) return;
+
+        float dist = Vector3.Distance(transform.position, _player.position);
+
+        if (dist <= attackRange)
+        {
+            _agent.isStopped = true;
+            SetWalkAnim(false);
+            TryMeleeAttack();
+        }
+        else
+        {
+            _agent.isStopped = false;
+            _agent.speed = dist > 8f ? runSpeed : walkSpeed;
+            _agent.SetDestination(_player.position);
+            SetWalkAnim(true);
+        }
+    }
+
+    void TryMeleeAttack()
+    {
+        if (Time.time < _nextAttackTime) return;
+        _nextAttackTime = Time.time + attackCooldown;
+
+        if (_animator != null)
+            _animator.SetTrigger(HashAttack);
+
+        _playerHealth?.TakeDamage(attackDamage);
+    }
+
+    public void TakeDamage(float amount)
+    {
+        if (_isDead) return;
+
+        _currentHealth -= amount;
+        Debug.Log($"{gameObject.name} took {amount} damage. HP: {_currentHealth}/{maxHealth}");
+
+        if (_currentHealth <= 0f)
+            Die();
+    }
+
+    void Die()
+    {
+        _isDead = true;
+        _agent.isStopped = true;
+
+        if (_animator != null)
+            _animator.SetTrigger(HashDead);
+
+        // Disable collider so bullets pass through
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        Destroy(gameObject, 3f);
+    }
+
+    void SetWalkAnim(bool walking)
+    {
+        if (_animator != null)
+            _animator.SetBool(HashWalk, walking);
+    }
+
+    // Visualise attack range in editor
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
     
     private void OnTriggerEnter(Collider other)
