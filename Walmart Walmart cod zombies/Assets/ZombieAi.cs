@@ -46,7 +46,9 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     //tracks the player position; should be called on every frame;
     void trackPlayerPoistion(float time)
     {
+
         agent.destination = player.transform.position;
+        Debug.Log(player.transform.position);
     }
     
     private void OnTriggerEnter(Collider other)
@@ -60,7 +62,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         {
             animationer.Stop();
             animationer.Play(animationStates[0].name);
-            agent.isStopped = true;
+            Debug.Log("ATTACKING");
             attackCoroutine = StartCoroutine(attackPlayer(other.gameObject));
         }
         
@@ -70,7 +72,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     {
         
         if (agent.remainingDistance < 1.3f)
-        {           
+        {
+            Debug.Log("samking");
             agent.isStopped = true;
             //cancels the current animation and switches to smaking right away;
             animationer.Play(animationStates[0].name);
@@ -78,7 +81,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
             //player Damage Logic
             //use attack(player,0);
         } 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.25f);
         //if the player get out of range this doesn't happen
         //setting the destination to get the agent.remaining distance
         agent.SetDestination(player.transform.position);
@@ -112,7 +115,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         else
         {
             //attack again
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.75f);
             StartCoroutine(attackboard(board));
         }
     }
@@ -136,7 +139,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //wait for animation to finish playing
         yield return new WaitForSeconds(animation.length);
         
-        Debug.Log("passed");
+        
         switch (actionAfterWards)
         {
             case 0:  OffMeshLinkData linkData = agent.currentOffMeshLinkData; agent.CompleteOffMeshLink(); animationer.Play(animationStates[4].name); break;
