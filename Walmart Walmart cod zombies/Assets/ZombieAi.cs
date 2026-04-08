@@ -80,15 +80,18 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         } 
         yield return new WaitForSeconds(1);
         //if the player get out of range this doesn't happen
-        if (Vector3.Distance(transform.position, player.transform.position) < 1.3f)
+        //setting the destination to get the agent.remaining distance
+        agent.SetDestination(player.transform.position);
+        if (agent.remainingDistance < 1.3f)
         {
+            Debug.Log("true");
             attackCoroutine = StartCoroutine(attackPlayer(player));
         }
         else
         {
+            animationer.Stop();
             attackCoroutine = null;
             animationer.Play(animationStates[4].name);
-          
             agent.isStopped = false;
             agent.SetDestination(player.transform.position); 
         }
