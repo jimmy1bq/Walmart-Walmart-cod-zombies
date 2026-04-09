@@ -1,0 +1,13 @@
+NavMesh Information: 
+You set agent type so entites can walk on agent type surface
+Like for example if a zombie is an agent type humanoid it can only walk on surface with agent type surface
+Agent stats won't affect the entitiy only Obstcale avoidnace will affect it
+
+NavMesh Surface:
+Radius: Distance away from unwalkable area that can't be walked
+So like <unwalkable area><r><walkable area>
+
+NavMesh Link:
+Radius is the area where the entites can start using it.
+Ex:   <radius>-link-<radius>
+if an entity goes on the radius they can use the link
