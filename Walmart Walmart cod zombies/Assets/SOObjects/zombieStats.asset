@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: zombieStats
   m_EditorClassIdentifier: 
   hp: 0
-  meleeDamage: 10
+  meleeDamage: 7.5
   walkSpeed: 0
   destroyOnDeath: 0
   animationToPlayOnDamageTaken: {fileID: 0}

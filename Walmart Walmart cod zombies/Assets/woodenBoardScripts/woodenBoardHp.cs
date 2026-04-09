@@ -1,13 +1,18 @@
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-public class woodenBoardHp : MonoBehaviour, IDamageAble
+public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
 {
     [SerializeField] entityStatSO stats;
     float health;
     private void Start()
     {
         health = stats.hp;
+    }
+    public float heal(float healing) 
+    {
+        health+=healing;
+        return health;
     }
     //param  damageToTake: float to subtract off hp
     //return the health left after taking damage
