@@ -76,9 +76,9 @@ public class Weapon : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit, weaponData.range))
             {
-                ZombieAI zombie = hit.collider.GetComponentInParent<ZombieAI>();
+                IDamageAble zombie = hit.collider.GetComponent<IDamageAble>();
                 if (zombie != null)
-                    zombie.TakeDamage(weaponData.damage);
+                    zombie.takeDamage(weaponData.damage);
 
                 Debug.DrawLine(ray.origin, hit.point, Color.red, 0.5f);
             }
