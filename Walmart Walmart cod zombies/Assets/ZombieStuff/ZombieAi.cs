@@ -121,8 +121,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble
 
         if (other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>() != null && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0)
         {
-           attackCoroutine = StartCoroutine(attackboard(other.gameObject));
-        }else if (other.gameObject.CompareTag("Player") && attackCoroutine == null) 
+            agent.updateRotation = false;
+            attackCoroutine = StartCoroutine(attackboard(other.gameObject));
+        }
+        else if (other.gameObject.CompareTag("Player") && attackCoroutine == null) 
         {
             animationer.Stop();
             attackCoroutine = StartCoroutine(attackPlayer(other.gameObject));
@@ -165,6 +167,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     IEnumerator attackboard(GameObject board)
     {
         float hpLeft = attack(board,1);
+        gameObject.transform.rotation = Quaternion.Euler(gameObject.transform.rotation.x, 0, gameObject.transform.rotation.z);
         Debug.Log(hpLeft);
         if (hpLeft <= 0)
         {
@@ -178,6 +181,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
             yield return new WaitForSeconds(0.75f);
             StartCoroutine(attackboard(board));
         }
+        
     }
     float attack(GameObject other, int animationToPlay)
     {
@@ -195,9 +199,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     {
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animationStates[5].name);
-      
+       
         //wait for animation to finish playing
         yield return new WaitForSeconds(animation.length);
+        agent.updateRotation = true;
         switch (actionAfterWards)
         {
             case 0:  OffMeshLinkData linkData = agent.currentOffMeshLinkData; agent.CompleteOffMeshLink(); animationer.Play(animationStates[4].name); break;
