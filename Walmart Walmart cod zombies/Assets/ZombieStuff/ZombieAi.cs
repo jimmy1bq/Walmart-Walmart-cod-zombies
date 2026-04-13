@@ -7,6 +7,7 @@ using UnityEngine.AI;
 public class ZombieAi : MonoBehaviour, IDamageAble
 {
     [SerializeField] entityStatSO stats;
+    [SerializeField] float range;
     NavMeshAgent agent;
    
     //Animation variables
@@ -132,7 +133,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     IEnumerator attackPlayer(GameObject player) 
     {
         
-        if (agent.remainingDistance < 1.3f)
+        if (agent.remainingDistance < range)
         {        
             agent.isStopped = true;
             //cancels the current animation and switches to smaking right away;
@@ -144,7 +145,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         yield return new WaitForSeconds(0.25f);
         //if the player get out of range this doesn't happen
         //setting the destination to get the agent.remaining distance
-        if (agent.remainingDistance < 1.3f)
+        if (agent.remainingDistance < range)
         {
             attackCoroutine = StartCoroutine(attackPlayer(player));
         }
