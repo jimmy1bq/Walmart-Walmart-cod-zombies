@@ -1,7 +1,7 @@
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
+public class woodenBoardHp : MonoBehaviour, IDamageAble, IInteractable
 {
     [SerializeField] entityStatSO stats;
     float health;
@@ -23,6 +23,12 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
         if (health < 0) { health = 0; }
 
         return health;    
+    }
+    public float action(float healHp) 
+    {
+        health += healHp;
+        if (health > 0) { health = 100; }
+        return health;
     }
     //interface to return the hp upon getting called
     public float returnHP()
