@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 0e25ce27a014c3b41bab57a512d489ce
+  productGUID: 06b94d34866c87b4b83ae3514b3a8fab
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: Walmart Walmart cod zombies
+  productName: TestBed
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -838,14 +838,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Walmart Walmart cod zombies
+  metroPackageName: TestBed
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: Walmart Walmart cod zombies
+  metroApplicationDescription: TestBed
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -916,10 +916,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 968fe001-0999-41e0-babd-84fd8b071b5f
+  cloudProjectId: eb195a04-e579-4cdf-a6aa-4b32a965293c
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Walmart Walmart cod zombies
+  projectName: TestBed
   organizationId: jimmyzheng8298
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
