@@ -25,12 +25,17 @@ public class Weapon : MonoBehaviour
     void Awake()
     {
         _audio = GetComponent<AudioSource>();
-        if (weaponData != null)
-        {
-            _currentAmmo   = weaponData.clipSize;
-            _reserveAmmo   = weaponData.maxAmmo - weaponData.clipSize;
-            _currentSpread = weaponData.spread;
-        }
+        Initialize();
+    }
+
+    // Call this whenever weaponData is assigned at runtime (e.g. from a buy station)
+    public void Initialize()
+    {
+        if (weaponData == null) return;
+        _currentAmmo   = weaponData.clipSize;
+        _reserveAmmo   = weaponData.maxAmmo - weaponData.clipSize;
+        _currentSpread = weaponData.spread;
+        _isReloading   = false;
     }
 
     void OnEnable()
@@ -131,5 +136,12 @@ public class Weapon : MonoBehaviour
     {
         if (!_isReloading && _reserveAmmo > 0)
             StartCoroutine(Reload());
+    }
+
+    // Refills reserve ammo to max (used by buy station ammo purchase)
+    public void RefillAmmo()
+    {
+        if (weaponData == null) return;
+        _reserveAmmo = weaponData.maxAmmo - weaponData.clipSize;
     }
 }

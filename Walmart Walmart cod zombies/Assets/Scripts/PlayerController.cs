@@ -28,13 +28,16 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Auto-assign the pistol (or any starting weapon) to slot 0
+        // Auto-assign the pistol to slot 0
         if (startingWeaponData != null && weaponSlots[0] != null)
             weaponSlots[0].weaponData = startingWeaponData;
 
-        // Slot 1 starts empty — hide it until the player picks up a second weapon
-        if (weaponSlots[1] != null)
+        // Guarantee slot 1 starts with NO weapon data regardless of Inspector values
+        if (weaponSlots.Length > 1 && weaponSlots[1] != null)
+        {
+            weaponSlots[1].weaponData = null;
             weaponSlots[1].gameObject.SetActive(false);
+        }
 
         EquipWeapon(0);
     }
@@ -113,6 +116,50 @@ public class PlayerController : MonoBehaviour
         index >= 0 && index < weaponSlots.Length &&
         weaponSlots[index] != null &&
         weaponSlots[index].weaponData != null;
+
+    /// <summary>
+    /// Returns the best slot index to place a new weapon:
+    /// - First empty slot (component exists, no weapon data) → goes there (slot 1 stays free for pistol swap)
+    /// - All slots filled → returns the currently held slot (replaces it)
+    /// - Returns -1 only if no Weapon components are set up at all
+    /// </summary>
+    public int GetTargetSlot()
+    {
+        // Pass 1: find the first slot that has a Weapon component but no weapon assigned
+        for (int i = 0; i < weaponSlots.Length; i++)
+        {
+            if (weaponSlots[i] != null && weaponSlots[i].weaponData == null)
+                return i;
+        }
+
+        // Pass 2: all slots occupied — replace whichever the player is holding
+        for (int i = 0; i < weaponSlots.Length; i++)
+        {
+            if (weaponSlots[i] == CurrentWeapon) return i;
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// Assigns a WeaponData to the given slot, reinitialises its ammo,
+    /// activates its GameObject, and switches to it.
+    /// </summary>
+    public void GiveWeapon(int slotIndex, WeaponData data)
+    {
+        if (slotIndex < 0 || slotIndex >= weaponSlots.Length) return;
+        if (weaponSlots[slotIndex] == null)
+        {
+            Debug.LogWarning($"PlayerController: weaponSlots[{slotIndex}] has no Weapon component assigned.");
+            return;
+        }
+
+        // Activate the GameObject first so Initialize() runs on an active object
+        weaponSlots[slotIndex].gameObject.SetActive(true);
+        weaponSlots[slotIndex].weaponData = data;
+        weaponSlots[slotIndex].Initialize();
+        EquipWeapon(slotIndex);
+    }
 
     void HandleShooting()
     {

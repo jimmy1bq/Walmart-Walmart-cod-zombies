@@ -221,11 +221,12 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     public float takeDamage(float damage)
     {
         health -= damage;
-        if (health <= 0) 
+        if (health <= 0)
         {
+            PointsManager.Instance?.AddPoints(stats.killPoints);
             Destroy(gameObject);
         }
-         return health;
+        return health;
     }
 
     public float returnHP()
