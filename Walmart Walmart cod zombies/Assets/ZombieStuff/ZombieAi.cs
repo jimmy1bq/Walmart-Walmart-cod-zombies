@@ -167,7 +167,9 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     IEnumerator attackboard(GameObject board)
     {
         float hpLeft = attack(board,1);
-        gameObject.transform.rotation = Quaternion.Euler(gameObject.transform.rotation.x, 0, gameObject.transform.rotation.z);
+        //gameObject.transform.rotation = Quaternion.Euler(gameObject.transform.rotation.x, 0, gameObject.transform.rotation.z);
+        //gameObject.transform.LookAt(board.transform);
+        //rotate toward window??
         Debug.Log(hpLeft);
         if (hpLeft <= 0)
         {
