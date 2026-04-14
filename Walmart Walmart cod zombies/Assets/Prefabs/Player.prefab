@@ -32,6 +32,7 @@ Transform:
   - {fileID: 4385403488682233302}
   - {fileID: 841414640457651347}
   - {fileID: 3107468168185965188}
+  - {fileID: 1177889424075853262}
   m_Father: {fileID: 933965374697661044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2555955009179991623
@@ -542,3 +543,90 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7632223286303491097, guid: ff2ff1686e7627343b1aae7889fa86db, type: 3}
   m_PrefabInstance: {fileID: 7081440424692224138}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7703909645729071012
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6646123921262862134}
+    m_Modifications:
+    - target: {fileID: 2701968542965433685, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_Name
+      value: EmptyGun
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -29.065727
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -138.10004
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 581.82245
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2701968542965433685, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9043023650097080004}
+  m_SourcePrefab: {fileID: 100100000, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+--- !u!4 &1177889424075853262 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8840985195962823274, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+  m_PrefabInstance: {fileID: 7703909645729071012}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5734941683739458289 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2701968542965433685, guid: 0f8606e9e5de7bb4d91e6bc44d9f131e, type: 3}
+  m_PrefabInstance: {fileID: 7703909645729071012}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9043023650097080004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5734941683739458289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 924a9d518f455d24ba4bbb388057f7f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponData: {fileID: 0}
+  muzzlePoint: {fileID: 0}
+  muzzleFlashPrefab: {fileID: 0}
+  shootSound: {fileID: 0}
+  reloadSound: {fileID: 0}

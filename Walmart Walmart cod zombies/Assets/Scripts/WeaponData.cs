@@ -5,6 +5,7 @@ public class WeaponData : ScriptableObject
 {
     [Header("Identity")]
     public string weaponName = "Pistol";
+    public Sprite icon;                 // Drag the weapon icon sprite here
     public int buyCost = 500;
 
     [Header("Damage")]

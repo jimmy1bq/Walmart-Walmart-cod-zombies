@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Revolver
   m_EditorClassIdentifier: 
   weaponName: Revolver
+  icon: {fileID: 1089772037, guid: fc4ffda32dd8c8f4cab2f9793cc044df, type: 3}
   buyCost: 600
   damage: 55
   pelletCount: 1

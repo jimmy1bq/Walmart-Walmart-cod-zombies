@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   weaponName: Shotgun
+  icon: {fileID: 1816832569, guid: 89f5f386208c9254bbae6512a5bf86ca, type: 3}
   buyCost: 1100
   damage: 27
   pelletCount: 8
