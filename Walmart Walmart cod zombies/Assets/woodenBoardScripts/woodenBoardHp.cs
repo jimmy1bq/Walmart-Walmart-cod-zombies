@@ -3,7 +3,10 @@ using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 
+
 public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble, IHeapItem<woodenBoardHp>
+
+
 
 {
     [SerializeField] entityStatSO stats;
@@ -35,6 +38,12 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble, IHeapItem<wo
         if (health < 0) { health = 0; dead = true; }
         
         return health;    
+    }
+    public float action(float healHp) 
+    {
+        health += healHp;
+        if (health > 0) { health = 100; }
+        return health;
     }
     //interface to return the hp upon getting called
     public float returnHP()
