@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -10,4 +11,9 @@ public interface IHealAble
 {
     public float heal(float healing);
 
+}
+public interface IHeapItem<T> : IComparable<T>
+{
+
+    int HeapIndex { get; set; }
 }

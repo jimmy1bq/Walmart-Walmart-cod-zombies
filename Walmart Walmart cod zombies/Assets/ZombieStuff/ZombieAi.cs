@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.AI;
 //navmesh info:
@@ -15,7 +16,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     Animation animationer;
     AnimationState[] animationStates = new AnimationState[8];
     
-    GameObject player;
+    GameObject player = null;
+    bool targetIsBoard = false;
     Coroutine attackCoroutine;
 
     float health;
@@ -24,7 +26,6 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     {
         health = stats.hp;
         agent = GetComponent<NavMeshAgent>();
-        player = GameObject.FindGameObjectWithTag("Player");
         animationer = GetComponent<Animation>();
         int i = 0;
         //get them into an array so we can access for later
@@ -35,17 +36,42 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         }
         //we only need the zombie to jump the window once(play the animation once
         animationer[animationStates[5].name].wrapMode = WrapMode.Once;
-        agent.destination = player.transform.position;
-        agent.autoTraverseOffMeshLink = false;    
+        //target the highest hp board
+        //hmm if multiple zombies spawn in at the same time they could take the same board which isn't idle
+        //so lets make a queue
+        //and on the next frame we just dequeue each zombie
+        woodenBoardHp woodenBoardScript = WoodenBoardManager.instance.notDeadBoards.RemoveFirst();
+        Debug.Log(woodenBoardScript.gameObject.name);
+        if (woodenBoardScript != null)
+        {
+            
+            agent.destination = woodenBoardScript.gameObject.transform.position;
+            player = woodenBoardScript.gameObject;
+            targetIsBoard = true;
+        }
+        //otherwise target player position
+        else 
+        {
+            agent.destination = player.transform.position;
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
         TickSystem.frequenttickTime.AddListener(trackPlayerPoistion);
+        agent.autoTraverseOffMeshLink = false;    
+       
     }
 
 
     //tracks the player position; should be called on every frame;
     void trackPlayerPoistion(float time)
     {
-        agent.destination = player.transform.position;
-    }   
+       
+       trackTarget(player);
+    }
+    
+    void trackTarget(GameObject target) 
+    { 
+        agent.destination = target.transform.position;
+    }
      /*   if (_isDead || _player == null) return;
 
         float dist = Vector3.Distance(transform.position, _player.position);
@@ -119,7 +145,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     {
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
 
-        if (other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>() != null && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0)
+        if (targetIsBoard && (agent.remainingDistance < 1.3f) && other.gameObject.CompareTag("PotentialBoard"))
         {
             agent.updateRotation = false;
             attackCoroutine = StartCoroutine(attackboard(other.gameObject));
@@ -167,11 +193,12 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     IEnumerator attackboard(GameObject board)
     {
         float hpLeft = attack(board,1);
-        gameObject.transform.rotation = Quaternion.Euler(gameObject.transform.rotation.x, 0, gameObject.transform.rotation.z);
-        Debug.Log(hpLeft);
+        Debug.Log(board.transform.parent.rotation);
+        transform.rotation =Quaternion.Euler(transform.rotation.eulerAngles.x,board.transform.parent.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
         if (hpLeft <= 0)
         {
             //climb
+            targetIsBoard = false;
             attackCoroutine = null;
             StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
         }
@@ -199,14 +226,16 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     {
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animationStates[5].name);
-       
+        player = GameObject.FindGameObjectWithTag("Player");
         //wait for animation to finish playing
         yield return new WaitForSeconds(animation.length);
         agent.updateRotation = true;
         switch (actionAfterWards)
         {
-            case 0:  OffMeshLinkData linkData = agent.currentOffMeshLinkData; agent.CompleteOffMeshLink(); animationer.Play(animationStates[4].name); break;
+            case 0: OffMeshLinkData linkData = agent.currentOffMeshLinkData; agent.CompleteOffMeshLink(); animationer.Play(animationStates[4].name);  break;
         }
+       
+        
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------ 
@@ -219,12 +248,11 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     public float takeDamage(float damage)
     {
         health -= damage;
-        if (health <= 0)
+        if (health <= 0) 
         {
-            PointsManager.Instance?.AddPoints(stats.killPoints);
             Destroy(gameObject);
         }
-        return health;
+         return health;
     }
 
     public float returnHP()
