@@ -41,7 +41,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //so lets make a queue
         //and on the next frame we just dequeue each zombie
         woodenBoardHp woodenBoardScript = WoodenBoardManager.instance.notDeadBoards.RemoveFirst();
-        Debug.Log(woodenBoardScript.gameObject.name);
+      
         if (woodenBoardScript != null)
         {
             
@@ -52,8 +52,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //otherwise target player position
         else 
         {
-            agent.destination = player.transform.position;
+            targetIsBoard = false;
             player = GameObject.FindGameObjectWithTag("Player");
+            agent.destination = player.transform.position;
+          
         }
         TickSystem.frequenttickTime.AddListener(trackPlayerPoistion);
         agent.autoTraverseOffMeshLink = false;    
@@ -65,7 +67,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     void trackPlayerPoistion(float time)
     {
        
-       trackTarget(player);
+        trackTarget(player);
     }
     
     void trackTarget(GameObject target) 
@@ -144,7 +146,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     private void OnTriggerEnter(Collider other)
     {
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
-
+      
+        Debug.Log(targetIsBoard);
+        Debug.Log(agent.remainingDistance);
+        Debug.Log(other.CompareTag("PotentialBoard"));
         if (targetIsBoard && (agent.remainingDistance < 1.3f) && other.gameObject.CompareTag("PotentialBoard"))
         {
             agent.updateRotation = false;

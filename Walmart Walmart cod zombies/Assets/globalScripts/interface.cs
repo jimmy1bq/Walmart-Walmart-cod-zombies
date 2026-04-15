@@ -12,6 +12,11 @@ public interface IInteractable
     public float action(float healing);
 
 }
+public interface IHealAble 
+{
+    public float action(float heal);
+
+}
 public interface IHeapItem<T> : IComparable<T>
 {
 
