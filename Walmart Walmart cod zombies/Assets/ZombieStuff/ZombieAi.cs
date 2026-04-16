@@ -21,6 +21,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
 
     GameObject player = null;
     bool targetIsBoard = false;
+    bool isNotAnimating = true;
     Coroutine attackCoroutine;
 
     float health;
@@ -154,10 +155,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     private void OnTriggerEnter(Collider other)
     {
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
-        Debug.Log(gameObject.name +": " +targetIsBoard);
-        Debug.Log(gameObject.name + ": " +" inranfge "+ (agent.remainingDistance < 0.5f));
-        Debug.Log(gameObject.name + ": " +" tag: " + other.gameObject.CompareTag("PotentialBoard"));
-        if (targetIsBoard && (agent.remainingDistance < 1.3f) && other.gameObject.CompareTag("PotentialBoard"))
+        
+        if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && isNotAnimating)
         {
             agent.updateRotation = false;
             attackCoroutine = StartCoroutine(attackboard(other.gameObject));
@@ -229,7 +228,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //ok so funny story(not):
         //apprently unity doesn't realize if the agent is on a link if the agent is not using the link to the other side
         //The agent can literally be on the link and unity will still say NO NOT ONE LINK
-       
+        isNotAnimating = false;
         link = board.transform.parent.GetComponent<NavMeshLink>();
         player = board.transform.parent.GetChild(2).gameObject;
         agent.isStopped = true;
@@ -293,13 +292,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble
                  Debug.Log( endPoint.transform.position);
                  gameObject.transform.position = endPoint.transform.position;
                  endPoint.transform.parent = link.gameObject.transform;*/
+                //welp best I can do because it seems like theres no force complete on a link when you have  alink
                 agent.Warp(link.transform.TransformPoint(link.endPoint));
-                agent.isStopped = false;
-                OffMeshLinkData linkData =
-                agent.currentOffMeshLinkData;
-                //gameObject.transform.position = link.endPoint;
-                agent.CompleteOffMeshLink();
                 animationer.Play(animationStates[4].name);
+                isNotAnimating = true;
                 
               
                 
