@@ -24,7 +24,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
     GameObject player = null;
     GameObject board = null;
     bool targetIsBoard = false;
-    bool isNotAnimating = true;
+   
     Coroutine attackCoroutine;
 
     float health;
@@ -43,10 +43,9 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
         }
         //we only need the zombie to jump the window once(play the animation once
         animationer[animationStates[5].name].wrapMode = WrapMode.Once;
-        //target the highest hp board
-        //hmm if multiple zombies spawn in at the same time they could take the same board which isn't idle
-        //so lets make a queue
-        //and on the next frame we just dequeue each zombie
+
+        //targets a random window in the spawn area
+        //so like if the zombie spawn in the back we would target back windows
         targetWindow = WoodenBoardManager.instance.randomQueue();
         queuePosition = targetWindow.addZombieOntoQueue(gameObject);
         if (targetWindow != null)
@@ -56,6 +55,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
             StartCoroutine(onPosition());
             targetIsBoard = true;
         }
+
         //otherwise target player position
         //remove this later because we are going to make a coroutine to make the zombie wait until theres an aviable window
         //this should not happen but just in case yeahs
@@ -161,26 +161,21 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
     {
 
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
-       
-        if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && isNotAnimating)
+        //if the board has more than 0 hp we attack
+        if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() >= 0)
         {
             agent.updateRotation = false;
             attackCoroutine = StartCoroutine(attackboard(other.gameObject));
         }
-        else if (!targetIsBoard && other.gameObject.CompareTag("PotentialBoard") && (agent.remainingDistance < 1.3f))
-        {
-            
-            if (other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
-            {
-                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-                StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
-            } else if (other.gameObject.GetComponent<IDamageAble>().returnHP() >= 0)
-            {
-                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-                StartCoroutine(wait(other.gameObject));
-            }
 
+        //if the board doesn't have any hp we can skip the attack
+        else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0) 
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+            StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
         }
+
+        //if its the player we attack the player
         else if (other.gameObject.CompareTag("Player") && attackCoroutine == null)
         {
             animationer.Stop();
@@ -188,13 +183,14 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
         }
 
     }
-
+    //attacks the player if the zombie is close enough 
     IEnumerator attackPlayer(GameObject player)
     {
         
         if (agent.remainingDistance < range)
         {
             agent.isStopped = true;
+
             //cancels the current animation and switches to smaking right away;
             animationer.Play(animationStates[0].name);
             agent.velocity = Vector3.zero;
@@ -202,6 +198,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
             //use attack(player,0);
         }
         yield return new WaitForSeconds(0.25f);
+
         //if the player get out of range this doesn't happen
         //setting the destination to get the agent.remaining distance
         if (agent.remainingDistance < range)
@@ -222,7 +219,6 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
     IEnumerator wait(GameObject board)
     {
         //waits until the board is dead
-        
         yield return new WaitUntil(() => board.GetComponent<IDamageAble>().returnHP() <= 0);
         StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
         agent.SetDestination(player.transform.position);
@@ -232,10 +228,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
     IEnumerator attackboard(GameObject board)
     {
         float hpLeft = attack(board, 1);
+
         //ok so funny story(not):
         //apprently unity doesn't realize if the agent is on a link if the agent is not using the link to the other side
         //The agent can literally be on the link and unity will still say NO NOT ONE LINK
-        isNotAnimating = false;
         link = board.transform.parent.GetComponent<NavMeshLink>();
         player = board.transform.parent.GetChild(2).gameObject;
         agent.isStopped = true;
@@ -244,7 +240,6 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
         if (hpLeft <= 0)
         {
             //climb
-          
             targetIsBoard = false;
             attackCoroutine = null;
             StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
@@ -252,7 +247,6 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
         else
         {
             //attack again
-           
             yield return new WaitForSeconds(0.75f);
             StartCoroutine(attackboard(board));
         }
@@ -272,8 +266,6 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
     //param actionAfterWards : actoin to do after playing animations
     IEnumerator waitUntilAnimFinishPlaying(AnimationState animation, int actionAfterWards)
     {
-
-        
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animation.name);
         //wait for animation to finish playing
@@ -282,6 +274,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
 
 
     }
+    //param actionAfterWards: predetermined action determined by the switch case
     IEnumerator waittingSimulator(int actionAfterWards)
     {
         yield return new WaitForFixedUpdate();
@@ -291,19 +284,14 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
             case 0:
                 player = GameObject.FindGameObjectWithTag("Player");
                 GameObject endPoint = link.gameObject.transform.Find("p2").gameObject;
-                /* endPoint.transform.parent = null;
-                 Debug.Log( endPoint.transform.position);
-                 gameObject.transform.position = endPoint.transform.position;
-                 endPoint.transform.parent = link.gameObject.transform;*/
-                //welp best I can do because it seems like theres no force complete on a link when you have  alink
+              
                 agent.Warp(link.transform.TransformPoint(link.endPoint));
-                //agent.CompleteOffMeshLink();
+             
                 animationer.Play(animationStates[4].name);
-                isNotAnimating = true;
+               
                 targetWindow.moveQueueUp();
                 break;
-                //idle to walking 
-            case 1: break;
+            
         }
     }
 
@@ -313,7 +301,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
     {
         TickSystem.frequenttickTime.RemoveListener(trackPlayerPoistion);
     }
-
+    //takes damage from something
     public float takeDamage(float damage)
     {
         health -= damage;
@@ -323,12 +311,16 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
         }
          return health;
     }
+    //once the zombie is finished(animation and over the wall) we have to tell the zombie that its position has been update and now he should advance onto the next point
+    //and wait there once they reach it(or idle and climb over the window if its at window position)
+    //window position is handled by collision
     public void updateQueuePoistion(GameObject positionToMoveTo) 
     {
         animationer.Play(animationStates[4].name);
         agent.SetDestination(positionToMoveTo.transform.position);
         StartCoroutine(onPosition());
     }
+    //if its on the poistion play idle animation
     IEnumerator onPosition() 
     {
         //i just realized that coroutine can be used like a tick system but since this multithreads don't turn this into a update logic method
@@ -345,6 +337,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
             yield return null;
         }
     }
+    //returns the hp left
     public float returnHP()
     {
         return health;

@@ -31,10 +31,13 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
         queuePosition.Add(parentTransform.Find("i4").gameObject);
         queuePosition.Add(parentTransform.Find("i5").gameObject);
     }
+
     private void Start()
     {
         health = stats.hp;   
     }
+
+    //heals
     public float heal(float healing) 
     {
         health+=healing;
@@ -44,45 +47,35 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
         }
         return health;
     }
+
     //param  damageToTake: float to subtract off hp
     //return the health left after taking damage
     public float takeDamage(float damageToTake) 
     {
-        
         health -= damageToTake;
-        if (health < 0) { health = 0; dead = true; }
-        
+        if (health < 0) { health = 0; dead = true; }   
         return health;    
     }
+
+    //repair board
     public float action(float healHp) 
     {
         health += healHp;
         if (health > 0) { health = 100; }
         return health;
     }
+
     //interface to return the hp upon getting called
     public float returnHP()
     {
         return health;
     }
 
-    public int CompareTo(woodenBoardHp other)
-    {
-        if (other.health < health) 
-        {
-            return 1;
-        }
-        if (other.health > health)
-        {
-            return -1;
-        }
-        return 0;
-    }
+    //adds a zombie onto the Queue and if its greater than size we move this list onto the full queue
     public GameObject addZombieOntoQueue(GameObject zombie) 
     {
         if (zombieQueue.Count<=5)
         {
-         
             //adds a zombie onto the queue
             //return a queue position otherwise return null
             zombieQueue.Add(zombie);
@@ -95,6 +88,8 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
         }
         return null;
     }
+
+    //moves the zombies up the Queue once the first zombie finish climbing the window
     public GameObject moveQueueUp() 
     {
         if (zombieQueue.Count > 0) 

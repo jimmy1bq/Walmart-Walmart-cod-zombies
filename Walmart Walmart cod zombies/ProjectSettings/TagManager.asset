@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - PotentialBoard
+  - FrontBoards
+  - G0
   layers:
   - Default
   - TransparentFX
@@ -15,10 +17,10 @@ TagManager:
   - zombieHeadHitbox
   - NavLink
   - roomsCOllider
-  - 
-  - 
-  - 
-  - 
+  - frontWallRayCastAble
+  - backWallRayCastAble
+  - rightWallRayCastAble
+  - leftWallRayCastAble
   - 
   - 
   - 
