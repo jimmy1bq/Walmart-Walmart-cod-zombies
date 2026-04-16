@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.AI.Navigation;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.AI;
@@ -10,18 +11,20 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     [SerializeField] entityStatSO stats;
     [SerializeField] float range;
     NavMeshAgent agent;
-   
+    NavMeshLink link;
+    OffMeshLinkData link2;
+
     //Animation variables
     //maybe for the future an animation manager? it would produce cleaner code
     Animation animationer;
     AnimationState[] animationStates = new AnimationState[8];
-    
+
     GameObject player = null;
     bool targetIsBoard = false;
     Coroutine attackCoroutine;
 
     float health;
-    
+
     void Start()
     {
         health = stats.hp;
@@ -29,10 +32,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         animationer = GetComponent<Animation>();
         int i = 0;
         //get them into an array so we can access for later
-        foreach (AnimationState states in animationer) 
+        foreach (AnimationState states in animationer)
         {
-             animationStates[i] = states;
-             i++;
+            animationStates[i] = states;
+            i++;
         }
         //we only need the zombie to jump the window once(play the animation once
         animationer[animationStates[5].name].wrapMode = WrapMode.Once;
@@ -41,57 +44,61 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //so lets make a queue
         //and on the next frame we just dequeue each zombie
         woodenBoardHp woodenBoardScript = WoodenBoardManager.instance.notDeadBoards.RemoveFirst();
-      
+
         if (woodenBoardScript != null)
         {
-            
-            agent.destination = woodenBoardScript.gameObject.transform.position;
-            player = woodenBoardScript.gameObject;
+            agent.destination = woodenBoardScript.gameObject.transform.parent.GetChild(0).transform.position;
+            player = woodenBoardScript.gameObject.transform.parent.GetChild(0).transform.gameObject;
+            Debug.Log(player.name);
             targetIsBoard = true;
         }
         //otherwise target player position
-        else 
+      /*  else
         {
             targetIsBoard = false;
             player = GameObject.FindGameObjectWithTag("Player");
             agent.destination = player.transform.position;
-          
-        }
+
+        }*/
         TickSystem.frequenttickTime.AddListener(trackPlayerPoistion);
-        agent.autoTraverseOffMeshLink = false;    
-       
+        agent.autoTraverseOffMeshLink = false;
+
     }
 
 
     //tracks the player position; should be called on every frame;
     void trackPlayerPoistion(float time)
     {
+        Debug.Log(agent.isOnOffMeshLink);
+        if (player != null) 
+        {
+            trackTarget(player);
+        }
        
-        trackTarget(player);
     }
-    
-    void trackTarget(GameObject target) 
-    { 
+
+    void trackTarget(GameObject target)
+    {
         agent.destination = target.transform.position;
     }
-     /*   if (_isDead || _player == null) return;
+    /*   if (_isDead || _player == null) return;
 
-        float dist = Vector3.Distance(transform.position, _player.position);
+       float dist = Vector3.Distance(transform.position, _player.position);
 
-        if (dist <= attackRange)
-        {
-            _agent.isStopped = true;
-            SetWalkAnim(false);
-            TryMeleeAttack();
-        }
-        else
-        {
-            _agent.isStopped = false;
-            _agent.speed = dist > 8f ? runSpeed : walkSpeed;
-            _agent.SetDestination(_player.position);
-            SetWalkAnim(true);
-        }*/
-    
+       if (dist <= attackRange)
+       {
+           _agent.isStopped = true;
+           SetWalkAnim(false);
+           TryMeleeAttack();
+       }
+       else
+       {
+           _agent.isStopped = false;
+           _agent.speed = dist > 8f ? runSpeed : walkSpeed;
+           _agent.SetDestination(_player.position);
+           SetWalkAnim(true);
+       }*/
+
     /*
     void TryMeleeAttack()
     {
@@ -146,35 +153,46 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     private void OnTriggerEnter(Collider other)
     {
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
-      
-        Debug.Log(targetIsBoard);
         Debug.Log(agent.remainingDistance);
-        Debug.Log(other.CompareTag("PotentialBoard"));
         if (targetIsBoard && (agent.remainingDistance < 1.3f) && other.gameObject.CompareTag("PotentialBoard"))
         {
+           
             agent.updateRotation = false;
             attackCoroutine = StartCoroutine(attackboard(other.gameObject));
         }
-        else if (other.gameObject.CompareTag("Player") && attackCoroutine == null) 
+        else if (!targetIsBoard && other.gameObject.CompareTag("PotentialBoard") && (agent.remainingDistance < 1.3f))
+        {
+            if (other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
+            {
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+                StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
+            } else if (other.gameObject.GetComponent<IDamageAble>().returnHP() >= 0)
+            {
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+                StartCoroutine(wait(other.gameObject));
+            }
+
+        }
+        else if (other.gameObject.CompareTag("Player") && attackCoroutine == null)
         {
             animationer.Stop();
             attackCoroutine = StartCoroutine(attackPlayer(other.gameObject));
         }
-        
+
     }
-    
-    IEnumerator attackPlayer(GameObject player) 
+
+    IEnumerator attackPlayer(GameObject player)
     {
         
         if (agent.remainingDistance < range)
-        {        
+        {
             agent.isStopped = true;
             //cancels the current animation and switches to smaking right away;
             animationer.Play(animationStates[0].name);
             agent.velocity = Vector3.zero;
             //player Damage Logic
             //use attack(player,0);
-        } 
+        }
         yield return new WaitForSeconds(0.25f);
         //if the player get out of range this doesn't happen
         //setting the destination to get the agent.remaining distance
@@ -188,23 +206,36 @@ public class ZombieAi : MonoBehaviour, IDamageAble
             attackCoroutine = null;
             animationer.Play(animationStates[4].name);
             agent.isStopped = false;
-            agent.SetDestination(player.transform.position); 
+            agent.SetDestination(player.transform.position);
         }
 
     }
-    
+    //waits
+    IEnumerator wait(GameObject board)
+    {
+        //waits until the board is dead
+        
+        yield return new WaitUntil(() => board.GetComponent<IDamageAble>().returnHP() <= 0);
+        StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
+        agent.SetDestination(player.transform.position);
+    }
     //attacks the board on the window
     //param board: the board gameObject to attack
     IEnumerator attackboard(GameObject board)
     {
-        float hpLeft = attack(board,1);
-        Debug.Log(board.transform.parent.rotation);
-        transform.rotation =Quaternion.Euler(transform.rotation.eulerAngles.x,board.transform.parent.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
+        float hpLeft = attack(board, 1);
+        //ok so funny story(not):
+        //apprently unity doesn't realize if the agent is on a link if the agent is not using the link to the other side
+        //The agent can literally be on the link and unity will still say NO NOT ONE LINK
+
+        player = board.gameObject;
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, board.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         if (hpLeft <= 0)
         {
             //climb
             targetIsBoard = false;
             attackCoroutine = null;
+            link = board.transform.parent.GetComponent<NavMeshLink>();
             StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
         }
         else
@@ -213,7 +244,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
             yield return new WaitForSeconds(0.75f);
             StartCoroutine(attackboard(board));
         }
-        
+
     }
     float attack(GameObject other, int animationToPlay)
     {
@@ -227,20 +258,33 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     //a reuseable coroutine where the general idea is to wait for an animation to finish and we do an action based off int using switch case
     //param animation: animation to play
     //param actionAfterWards : actoin to do after playing animations
-    IEnumerator waitUntilAnimFinishPlaying(AnimationState animation,int actionAfterWards) 
+    IEnumerator waitUntilAnimFinishPlaying(AnimationState animation, int actionAfterWards)
     {
+
+        
         //animation clips ranges from 0 to 1 if you don't loop
-        animationer.Play(animationStates[5].name);
-        player = GameObject.FindGameObjectWithTag("Player");
+        animationer.Play(animation.name);
         //wait for animation to finish playing
         yield return new WaitForSeconds(animation.length);
+        StartCoroutine(waittingSimulator(actionAfterWards));
+
+
+    }
+    IEnumerator waittingSimulator(int actionAfterWards)
+    {
+        yield return new WaitForFixedUpdate();
         agent.updateRotation = true;
         switch (actionAfterWards)
         {
-            case 0: OffMeshLinkData linkData = agent.currentOffMeshLinkData; agent.CompleteOffMeshLink(); animationer.Play(animationStates[4].name);  break;
+            case 0:
+                OffMeshLinkData linkData =
+                agent.currentOffMeshLinkData;
+                //gameObject.transform.position = link.endPoint;
+                agent.CompleteOffMeshLink();
+                animationer.Play(animationStates[4].name);
+                player = GameObject.FindGameObjectWithTag("Player");
+                break;
         }
-       
-        
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------ 

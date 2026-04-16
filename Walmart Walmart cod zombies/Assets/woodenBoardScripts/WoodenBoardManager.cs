@@ -19,6 +19,6 @@ public class WoodenBoardManager : MonoBehaviour
     }
     private void Update()
     {
-        Debug.Log(notDeadBoards.Count);
+      
     }
 }
