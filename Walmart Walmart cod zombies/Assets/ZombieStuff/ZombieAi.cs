@@ -6,13 +6,15 @@ using UnityEngine;
 using UnityEngine.AI;
 //navmesh info:
 //the agent 
-public class ZombieAi : MonoBehaviour, IDamageAble
+public class ZombieAi : MonoBehaviour, IDamageAble,IQueue
 {
     [SerializeField] entityStatSO stats;
     [SerializeField] float range;
     NavMeshAgent agent;
     NavMeshLink link;
     OffMeshLinkData link2;
+    GameObject queuePosition = null;
+    woodenBoardHp targetWindow = null;
 
     //Animation variables
     //maybe for the future an animation manager? it would produce cleaner code
@@ -20,6 +22,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     AnimationState[] animationStates = new AnimationState[8];
 
     GameObject player = null;
+    GameObject board = null;
     bool targetIsBoard = false;
     bool isNotAnimating = true;
     Coroutine attackCoroutine;
@@ -44,16 +47,18 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //hmm if multiple zombies spawn in at the same time they could take the same board which isn't idle
         //so lets make a queue
         //and on the next frame we just dequeue each zombie
-        woodenBoardHp woodenBoardScript = WoodenBoardManager.instance.notDeadBoards.RemoveFirst();
-
-        if (woodenBoardScript != null)
+        targetWindow = WoodenBoardManager.instance.randomQueue();
+        queuePosition = targetWindow.addZombieOntoQueue(gameObject);
+        if (targetWindow != null)
         {
-            agent.destination = woodenBoardScript.gameObject.transform.parent.Find("p1").transform.position;
-            player = woodenBoardScript.gameObject.transform.parent.Find("p1").transform.gameObject;
-           
+            agent.destination = queuePosition.transform.position;
+            board = queuePosition;
+            StartCoroutine(onPosition());
             targetIsBoard = true;
         }
         //otherwise target player position
+        //remove this later because we are going to make a coroutine to make the zombie wait until theres an aviable window
+        //this should not happen but just in case yeahs
         else
         {
             targetIsBoard = false;
@@ -70,8 +75,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     //tracks the player position; should be called on every frame;
     void trackPlayerPoistion(float time)
     {
-     //   Debug.Log("zombie: "+gameObject.name + " target: " + player.name + " disLeft: " + agent.remainingDistance);
-      
+        //   Debug.Log("zombie: "+gameObject.name + " target: " + player.name + " disLeft: " + agent.remainingDistance);
+       
         if (player != null) 
         {
             trackTarget(player);
@@ -154,8 +159,9 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     */
     private void OnTriggerEnter(Collider other)
     {
+
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
-        
+       
         if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && isNotAnimating)
         {
             agent.updateRotation = false;
@@ -163,6 +169,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         }
         else if (!targetIsBoard && other.gameObject.CompareTag("PotentialBoard") && (agent.remainingDistance < 1.3f))
         {
+            
             if (other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
             {
                 transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
@@ -270,11 +277,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animation.name);
         //wait for animation to finish playing
-       
-           
-       
         yield return new WaitForSeconds(animation.length);
-        
         StartCoroutine(waittingSimulator(actionAfterWards));
 
 
@@ -294,12 +297,13 @@ public class ZombieAi : MonoBehaviour, IDamageAble
                  endPoint.transform.parent = link.gameObject.transform;*/
                 //welp best I can do because it seems like theres no force complete on a link when you have  alink
                 agent.Warp(link.transform.TransformPoint(link.endPoint));
+                //agent.CompleteOffMeshLink();
                 animationer.Play(animationStates[4].name);
                 isNotAnimating = true;
-                
-              
-                
+                targetWindow.moveQueueUp();
                 break;
+                //idle to walking 
+            case 1: break;
         }
     }
 
@@ -319,7 +323,28 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         }
          return health;
     }
-
+    public void updateQueuePoistion(GameObject positionToMoveTo) 
+    {
+        animationer.Play(animationStates[4].name);
+        agent.SetDestination(positionToMoveTo.transform.position);
+        StartCoroutine(onPosition());
+    }
+    IEnumerator onPosition() 
+    {
+        //i just realized that coroutine can be used like a tick system but since this multithreads don't turn this into a update logic method
+        while (true) 
+        {
+           
+          
+            if ((gameObject.transform.position - board.transform.position).magnitude < 0.4f) 
+            {
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, board.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+                animationer.Play(animationStates[3].name);
+                break;
+            }
+            yield return null;
+        }
+    }
     public float returnHP()
     {
         return health;

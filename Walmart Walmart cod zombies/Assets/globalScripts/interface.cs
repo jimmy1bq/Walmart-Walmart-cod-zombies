@@ -19,6 +19,9 @@ public interface IHealAble
 }
 public interface IHeapItem<T> : IComparable<T>
 {
-
     int HeapIndex { get; set; }
+}
+public interface IQueue 
+{
+    public void updateQueuePoistion(GameObject positionToMoveTo);
 }
