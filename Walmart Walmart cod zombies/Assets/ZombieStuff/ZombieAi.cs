@@ -47,19 +47,19 @@ public class ZombieAi : MonoBehaviour, IDamageAble
 
         if (woodenBoardScript != null)
         {
-            agent.destination = woodenBoardScript.gameObject.transform.parent.GetChild(0).transform.position;
-            player = woodenBoardScript.gameObject.transform.parent.GetChild(0).transform.gameObject;
-            Debug.Log(player.name);
+            agent.destination = woodenBoardScript.gameObject.transform.parent.Find("p1").transform.position;
+            player = woodenBoardScript.gameObject.transform.parent.Find("p1").transform.gameObject;
+           
             targetIsBoard = true;
         }
         //otherwise target player position
-      /*  else
+        else
         {
             targetIsBoard = false;
             player = GameObject.FindGameObjectWithTag("Player");
             agent.destination = player.transform.position;
 
-        }*/
+        }
         TickSystem.frequenttickTime.AddListener(trackPlayerPoistion);
         agent.autoTraverseOffMeshLink = false;
 
@@ -69,7 +69,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     //tracks the player position; should be called on every frame;
     void trackPlayerPoistion(float time)
     {
-        Debug.Log(agent.isOnOffMeshLink);
+     //   Debug.Log("zombie: "+gameObject.name + " target: " + player.name + " disLeft: " + agent.remainingDistance);
+      
         if (player != null) 
         {
             trackTarget(player);
@@ -153,10 +154,11 @@ public class ZombieAi : MonoBehaviour, IDamageAble
     private void OnTriggerEnter(Collider other)
     {
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
-        Debug.Log(agent.remainingDistance);
+        Debug.Log(gameObject.name +": " +targetIsBoard);
+        Debug.Log(gameObject.name + ": " +" inranfge "+ (agent.remainingDistance < 0.5f));
+        Debug.Log(gameObject.name + ": " +" tag: " + other.gameObject.CompareTag("PotentialBoard"));
         if (targetIsBoard && (agent.remainingDistance < 1.3f) && other.gameObject.CompareTag("PotentialBoard"))
         {
-           
             agent.updateRotation = false;
             attackCoroutine = StartCoroutine(attackboard(other.gameObject));
         }
@@ -227,20 +229,24 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //ok so funny story(not):
         //apprently unity doesn't realize if the agent is on a link if the agent is not using the link to the other side
         //The agent can literally be on the link and unity will still say NO NOT ONE LINK
-
-        player = board.gameObject;
+       
+        link = board.transform.parent.GetComponent<NavMeshLink>();
+        player = board.transform.parent.GetChild(2).gameObject;
+        agent.isStopped = true;
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, board.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+     
         if (hpLeft <= 0)
         {
             //climb
+          
             targetIsBoard = false;
             attackCoroutine = null;
-            link = board.transform.parent.GetComponent<NavMeshLink>();
             StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
         }
         else
         {
             //attack again
+           
             yield return new WaitForSeconds(0.75f);
             StartCoroutine(attackboard(board));
         }
@@ -265,7 +271,11 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animation.name);
         //wait for animation to finish playing
+       
+           
+       
         yield return new WaitForSeconds(animation.length);
+        
         StartCoroutine(waittingSimulator(actionAfterWards));
 
 
@@ -277,12 +287,22 @@ public class ZombieAi : MonoBehaviour, IDamageAble
         switch (actionAfterWards)
         {
             case 0:
+                player = GameObject.FindGameObjectWithTag("Player");
+                GameObject endPoint = link.gameObject.transform.Find("p2").gameObject;
+                /* endPoint.transform.parent = null;
+                 Debug.Log( endPoint.transform.position);
+                 gameObject.transform.position = endPoint.transform.position;
+                 endPoint.transform.parent = link.gameObject.transform;*/
+                agent.Warp(link.transform.TransformPoint(link.endPoint));
+                agent.isStopped = false;
                 OffMeshLinkData linkData =
                 agent.currentOffMeshLinkData;
                 //gameObject.transform.position = link.endPoint;
                 agent.CompleteOffMeshLink();
                 animationer.Play(animationStates[4].name);
-                player = GameObject.FindGameObjectWithTag("Player");
+                
+              
+                
                 break;
         }
     }
