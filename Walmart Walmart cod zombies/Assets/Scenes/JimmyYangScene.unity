@@ -1891,6 +1891,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: woodenBoard9
       objectReference: {fileID: 0}
+    - target: {fileID: 6313103310872209445, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_Name
+      value: board4
+      objectReference: {fileID: 0}
     - target: {fileID: 6408254802295032244, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.09
