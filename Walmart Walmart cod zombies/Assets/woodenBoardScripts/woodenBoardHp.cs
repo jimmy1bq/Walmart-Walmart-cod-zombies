@@ -74,16 +74,20 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     //adds a zombie onto the Queue and if its greater than size we move this list onto the full queue
     public GameObject addZombieOntoQueue(GameObject zombie) 
     {
+        
         if (zombieQueue.Count<=5)
         {
+           
             //adds a zombie onto the queue
             //return a queue position otherwise return null
             zombieQueue.Add(zombie);
-            if (zombieQueue.Count >= 5) 
+            if (zombieQueue.Count >= 5)
             {
+                
                 //tells the manager to get it out of queue
                 WoodenBoardManager.instance.switchQueueToFull(this);
             }
+          
             return queuePosition[zombieQueue.Count - 1];
         }
         return null;

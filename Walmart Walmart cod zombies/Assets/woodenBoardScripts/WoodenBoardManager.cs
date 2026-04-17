@@ -36,12 +36,7 @@ public class WoodenBoardManager : MonoBehaviour
     {
         if (instance == null) { instance = this; } else { Destroy(this); }
         addGR0Room();
-        foreach (GameObject boards in GameObject.FindGameObjectsWithTag("FrontBoards"))
-        {
-            //populate
-
-            notFullqueued.Add(boards.GetComponent<woodenBoardHp>());
-        }
+       
     }
     //removes from q1 and puts it into q2
     public void switchQueueToFull(woodenBoardHp objeck)
@@ -71,19 +66,23 @@ public class WoodenBoardManager : MonoBehaviour
     {
         foreach (GameObject boards in G0Board) 
         {
-            
             listToAddTo(boards,boards.layer);
-        }
-       
+        }  
     }
   
     public void addGR1Room()
     {
-
+        foreach (GameObject boards in G1Board)
+        {
+            listToAddTo(boards, boards.layer);
+        }
     }
     public void addGR2Room()
     {
-
+        foreach (GameObject boards in G2Board)
+        {
+            listToAddTo(boards, boards.layer);
+        }
     }
     //populates the list based off the given board and its layermask
     void listToAddTo(GameObject board,int maskLayer) 
