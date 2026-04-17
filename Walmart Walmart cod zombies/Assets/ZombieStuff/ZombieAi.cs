@@ -84,7 +84,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     }
 
     void trackTarget(GameObject target)
-    {
+    {    
         agent.destination = target.transform.position;
     }
 
@@ -95,6 +95,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         //if the board has more than 0 hp we attack
         if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() >= 0)
         {
+            animationer.Play(animationStates[3].name);
             agent.updateRotation = false;
             attackCoroutine = StartCoroutine(attackboard(other.gameObject));
         }
@@ -102,6 +103,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         //if the board doesn't have any hp we can skip the attack
         else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
         {
+            animationer.Play(animationStates[3].name);
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
             StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
         }
@@ -165,6 +167,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
         link = board.transform.parent.GetComponent<NavMeshLink>();
         agent.isStopped = true;
+      
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, board.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
 
         if (hpLeft <= 0)
@@ -248,6 +251,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //window position is handled by collision
     public void updateQueuePoistion(GameObject positionToMoveTo)
     {
+        board = positionToMoveTo;
         animationer.Play(animationStates[4].name);
         agent.SetDestination(positionToMoveTo.transform.position);
         StartCoroutine(onPosition());
@@ -259,9 +263,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         //i just realized that coroutine can be used like a tick system but since this multithreads don't turn this into a update logic method
         while (true)
         {
-
-
-            if ((gameObject.transform.position - board.transform.position).magnitude < 0.4f)
+            if ((gameObject.transform.position - board.transform.position).magnitude < 0.5f)
             {
                 transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, board.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
                 animationer.Play(animationStates[3].name);
