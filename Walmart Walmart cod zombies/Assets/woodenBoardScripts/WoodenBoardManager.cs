@@ -4,10 +4,14 @@ using System.Collections.Generic;
 //manages the boards of the map using a heap
 public class WoodenBoardManager : MonoBehaviour
 {
-
+    //boards to unlock for zombie when buying a place
     public List<GameObject> G0Board;
     public List<GameObject> G1Board;
     public List<GameObject> G2Board;
+
+    public List<GameObject> F1Board;
+    public List<GameObject> F2Board;
+    public List<GameObject> F3Board;
 
     //at the start fill the heap with boarded window
     //if a zombie targets a window remove it from queue
@@ -15,8 +19,7 @@ public class WoodenBoardManager : MonoBehaviour
     //queue size is 4
     //+1 for attack zombie
     public static WoodenBoardManager instance;
-    LayerMask mask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12;
-
+    
     //it looks like theres zones where the zombie spawn and randomly chooses the board from?
     public List<woodenBoardHp> notFullqueued = new List<woodenBoardHp>();
     public List<woodenBoardHp> fullQueued = new List<woodenBoardHp>();
@@ -85,6 +88,28 @@ public class WoodenBoardManager : MonoBehaviour
             listToAddTo(boards, boards.layer);
         }
     }
+    public void addF1Room()
+    {
+        foreach (GameObject boards in F1Board)
+        {
+            listToAddTo(boards, boards.layer);
+        }
+    }
+    public void addF2Room()
+    {
+        foreach (GameObject boards in F2Board)
+        {
+            listToAddTo(boards, boards.layer);
+        }
+    }
+    public void addF3Room()
+    {
+        foreach (GameObject boards in F3Board)
+        {
+            listToAddTo(boards, boards.layer);
+        }
+    }
+
     //populates the list based off the given board and its layermask
     void listToAddTo(GameObject board,int maskLayer) 
     {

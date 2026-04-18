@@ -120,11 +120,12 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
         {
             zombieQueue.Remove(zombieQueue[0]);
             int i = 0;
-            foreach (GameObject zombies in zombieQueue) 
-            {
-                zombies.GetComponent<IQueue>().updateQueuePoistion(queuePosition[i]);
-                i++;
-            }
+            /* foreach (GameObject zombies in zombieQueue) 
+             {
+                 zombies.GetComponent<IQueue>().updateQueuePoistion(queuePosition[i]);
+                 i++;
+             }*/
+            zombieQueue[0].GetComponent<IQueue>().updateQueuePoistion(queuePosition[0]);
         }
         return null;
     }
