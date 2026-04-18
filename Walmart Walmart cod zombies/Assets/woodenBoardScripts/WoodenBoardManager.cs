@@ -67,6 +67,7 @@ public class WoodenBoardManager : MonoBehaviour
         foreach (GameObject boards in G0Board) 
         {
             listToAddTo(boards,boards.layer);
+            break;
         }  
     }
   

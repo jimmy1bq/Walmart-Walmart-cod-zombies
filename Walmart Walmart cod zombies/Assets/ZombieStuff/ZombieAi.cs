@@ -53,7 +53,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         {
             agent.destination = queuePosition.transform.position;
             board = queuePosition;
-            StartCoroutine(onPosition());
+            StartCoroutine(onPosition(queuePosition));
             targetIsBoard = true;
         }
 
@@ -93,7 +93,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
         //if the board has more than 0 hp we attack
-        if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() >= 0)
+        if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0)
         {
             animationer.Play(animationStates[3].name);
             agent.updateRotation = false;
@@ -104,8 +104,9 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
         {
             animationer.Play(animationStates[3].name);
+            link = other.transform.parent.GetComponent<NavMeshLink>();
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-            StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
+            StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0 , 2 ,other.gameObject));
         }
 
         //if its the player we attack the player
@@ -159,29 +160,15 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //attacks the board on the window(yes 2 seconds to register that it killed the board to jump over it apprently)
     //param board: the board gameObject to attack
 
-    IEnumerator attackboard(GameObject board)
+    //not to get confused with the variable board; boards is the acutal window board
+    IEnumerator attackboard(GameObject boards)
     {
-        yield return new WaitForSeconds(2.0f);
-        float hpLeft = attack(board, 1);
-
-
-        link = board.transform.parent.GetComponent<NavMeshLink>();
+        link = boards.transform.parent.GetComponent<NavMeshLink>();
         agent.isStopped = true;
-      
-        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, board.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-
-        if (hpLeft <= 0)
-        {
-            //climb
-            targetIsBoard = false;
-            attackCoroutine = null;
-            StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0));
-        }
-        else
-        {
-            //attack again
-            StartCoroutine(attackboard(board));
-        }
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, boards.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+        yield return new WaitForSeconds(2.0f);
+        float hpLeft = attack(boards, 1);
+       
 
     }
 
@@ -189,8 +176,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     float attack(GameObject other, int animationToPlay)
     {
         //0 for player 1 for window
-        animationer.Play(animationStates[animationToPlay].name);
-        other.gameObject.GetComponent<IDamageAble>().takeDamage(stats.meleeDamage);
+      
+        StartCoroutine(waitUntilAnimFinishPlaying(animationStates[animationToPlay], 1 , 1 , other));
         return other.gameObject.GetComponent<IDamageAble>().returnHP();
     }
 
@@ -198,33 +185,64 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //a reuseable coroutine where the general idea is to wait for an animation to finish and we do an action based off int using switch case
     //param animation: animation to play
     //param actionAfterWards : actoin to do after playing animations
-    IEnumerator waitUntilAnimFinishPlaying(AnimationState animation, int actionAfterWards)
+    //param wairPeriod: Time to wait for animation
+    //param other: gameObject to do something with
+    IEnumerator waitUntilAnimFinishPlaying(AnimationState animation, int actionAfterWards,int waitPeriod,GameObject other)
     {
+
+        yield return new WaitForSeconds(waitPeriod);    
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animation.name);
+        
         //wait for animation to finish playing
-        yield return new WaitForSeconds(animation.length);
-        StartCoroutine(waittingSimulator(actionAfterWards));
+        switch (actionAfterWards) 
+        {
+            case 0: yield return new WaitForSeconds(animation.length); break;
+
+            case 1: yield return new WaitForSeconds(animation.length-0.5f); break;
+        }
+       
+        StartCoroutine(waittingSimulator(actionAfterWards,other));
 
 
     }
 
     //param actionAfterWards: predetermined action determined by the switch case
-    IEnumerator waittingSimulator(int actionAfterWards)
+    IEnumerator waittingSimulator(int actionAfterWards,GameObject directedGameObject)
     {
         yield return new WaitForFixedUpdate();
         agent.updateRotation = true;
         switch (actionAfterWards)
         {
             case 0:
+
                 agent.isStopped = false;
-                player = GameObject.FindGameObjectWithTag("Player");
-                GameObject endPoint = link.gameObject.transform.Find("p2").gameObject;
-                agent.Warp(link.transform.TransformPoint(link.endPoint));
+                player = GameObject.FindGameObjectWithTag("Player");             
+                GameObject endPoints = link.gameObject.transform.Find("p2").gameObject;
+                endPoints.transform.parent = null;
+                //for some reason unity's navmesh is high as hell and apprently doesn't get link.endpoint right
+                agent.Warp(endPoints.transform.position);
+                //agent.Warp(link.transform.TransformPoint(link.endPoint));
+                endPoints.transform.parent = link.transform;
+
                 animationer.Play(animationStates[4].name);
                 targetWindow.moveQueueUp();
                 break;
 
+            case 1:
+                float hpLeft = directedGameObject.GetComponent<IDamageAble>().takeDamage(stats.meleeDamage);
+                if (hpLeft <= 0)
+                {
+                    //climb
+                    targetIsBoard = false;
+                    attackCoroutine = null;
+                    StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0 , 2 , board));
+                }
+                else
+                {
+                    StartCoroutine(attackboard(directedGameObject));
+                }
+                break;
         }
     }
 
@@ -251,21 +269,24 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //window position is handled by collision
     public void updateQueuePoistion(GameObject positionToMoveTo)
     {
-        board = positionToMoveTo;
+        
         animationer.Play(animationStates[4].name);
         agent.SetDestination(positionToMoveTo.transform.position);
-        StartCoroutine(onPosition());
+        StartCoroutine(onPosition(positionToMoveTo));
     }
 
     //if its on the poistion play idle animation
-    IEnumerator onPosition()
+    IEnumerator onPosition(GameObject positionToMove)
     {
         //i just realized that coroutine can be used like a tick system but since this multithreads don't turn this into a update logic method
         while (true)
         {
-            if ((gameObject.transform.position - board.transform.position).magnitude < 0.5f)
+            Debug.Log((gameObject.transform.position - positionToMove.transform.position).magnitude < 0.5f);
+            if ((gameObject.transform.position - positionToMove.transform.position).magnitude < 0.5f)
             {
-                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, board.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+
+                Debug.Log(positionToMove.transform.rotation.eulerAngles.y);
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, positionToMove.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
                 animationer.Play(animationStates[3].name);
                 break;
             }

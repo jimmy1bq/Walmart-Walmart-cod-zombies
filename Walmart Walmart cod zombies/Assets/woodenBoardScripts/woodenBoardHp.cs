@@ -15,7 +15,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     //macdonalds simulator outhere
     List<GameObject> queuePosition = new List<GameObject>();
     List<GameObject> zombieQueue = new List<GameObject>();
-    int index;
+    int index = 1;
     float health;
     public bool dead = false;
 
@@ -53,7 +53,16 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     public float takeDamage(float damageToTake) 
     {
         health -= damageToTake;
-        if (health < 0) { health = 0; dead = true; }   
+
+        //get the board's animation 1-6(based on what board is left and index)
+        
+        GameObject boardToRemove = gameObject.transform.parent.Find("board" + index).gameObject;
+        Animation animateComp = obtainAnimationComp(boardToRemove);
+        animateComp.Play("BoardAnimation" + index);
+        index++;
+
+        //i will be set to 1 so that when we repair we can call index without having to worry of not playing animation
+        if (health <= 0) { health = 0; dead = true; index = 6; }   
         return health;    
     }
 
@@ -61,8 +70,19 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     public float action(float healHp) 
     {
         health += healHp;
-        if (health > 0) { health = 100; }
+        GameObject boardToRemove = gameObject.transform.parent.Find("board" + index).gameObject;
+       
+        Animation animateComp = obtainAnimationComp(boardToRemove);
+
+        animateComp.Play("repairBoard" + index + "Anim");
+        index--;
+        //same reason but oppsite way of take damage
+        if (health >= 100) { health = 100; index = 1; }
         return health;
+    }
+    Animation obtainAnimationComp(GameObject gameObjek) 
+    {
+        return gameObjek.GetComponent<Animation>();
     }
 
     //interface to return the hp upon getting called
