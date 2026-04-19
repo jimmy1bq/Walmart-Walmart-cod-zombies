@@ -27,15 +27,21 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     bool targetIsBoard = false;
     bool isWalking = false;
 
+    int groanChance = 0;
+    int groanTheresHold = 100;
+
     Coroutine attackCoroutine;
 
     AudioSource zombieSrc;
+    AudioSource zombieFootStepSrc;
 
     //i can't find the graon interval so Im going to assume every 3 second it has an 100% chance to groan if it hasn't already
 
     void Start()
     {
-        zombieSrc = GetComponent<AudioSource>();
+        AudioSource[] arrayOfSrcs = GetComponents<AudioSource>();
+        zombieSrc = arrayOfSrcs[0];
+        zombieFootStepSrc = arrayOfSrcs[1];
         health = stats.hp;
         agent = GetComponent<NavMeshAgent>();
         animationer = GetComponent<Animation>();
@@ -78,6 +84,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
         }
         TickSystem.frequenttickTime.AddListener(trackPlayerPoistion);
+        TickSystem.tickEvent.AddListener(groan);
         agent.autoTraverseOffMeshLink = false;
 
     }
@@ -88,7 +95,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     {
         if (isWalking) 
         {
-            audioManagerZombies.instance.playZombieWalkingSound(zombieSrc, gameObject.transform.position, 50);
+            audioManagerZombies.instance.playZombieWalkingSound(zombieFootStepSrc, gameObject.transform.position, 50);
         }
         if (player != null)
         {
@@ -140,10 +147,11 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             isWalking = false;
             //cancels the current animation and switches to smaking right away;
             animationer.Play(animationStates[0].name);
-            audioManagerZombies.instance.playRandomZombieSound(zombieSrc,gameObject.transform.position,50,audioManagerZombies.instance.zombieAttackClips);
+            audioManagerZombies.instance.playRandomZombieSound(zombieSrc,gameObject.transform.position,50,audioManagerZombies.instance.zombieAttackClips,1);
             agent.velocity = Vector3.zero;
             //player Damage Logic
             //use attack(player,0);
+            //player is damaged first before the animation finish playing
         }
         yield return new WaitForSeconds(2.00f);
 
@@ -193,7 +201,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     {
         List<AudioClip> zombieClip = audioManagerZombies.instance.zombieAttackClips;
         //0 for player 1 for window
-        audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50, zombieClip);
+        audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50, zombieClip,1);
         StartCoroutine(waitUntilAnimFinishPlaying(animationStates[animationToPlay], 1 , 0 , other));
         return other.gameObject.GetComponent<IDamageAble>().returnHP();
     }
@@ -300,15 +308,36 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         //i just realized that coroutine can be used like a tick system but since this multithreads don't turn this into a update logic method
         while (true)
         {
-            
+
             if ((gameObject.transform.position - positionToMove.transform.position).magnitude < 0.5f)
-            {            
+            {
                 transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, positionToMove.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
                 isWalking = false;
                 animationer.Play(animationStates[3].name);
                 break;
             }
             yield return null;
+        }
+    }
+
+    void groan(float time) 
+    {
+        //only groan when the zombie is walking
+        if (isWalking)
+        {
+            groanChance += 1;
+            if (groanChance >= groanTheresHold)
+            {
+                audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50f, audioManagerZombies.instance.zombieGroanClips, 1.1f);
+            }
+            else
+            {
+                int rng = Random.Range(0, groanTheresHold);
+                if (groanChance >= rng)
+                {
+                    audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50f, audioManagerZombies.instance.zombieGroanClips, 1.1f);
+                }
+            }
         }
     }
 

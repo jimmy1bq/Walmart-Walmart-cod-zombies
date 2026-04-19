@@ -61,3 +61,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6a46bd86cee3b2a48b3f648d12092383, type: 3}
   - {fileID: 8300000, guid: aefbe99f5d311d14faf6d3b20f8aa284, type: 3}
   zombieFootStep: {fileID: 8300000, guid: d235d3fe87e77804c9c0ca7e846a9bcc, type: 3}
+  sfxVolume: 50
+  musicVolume: 50
+  masterVolume: 50
