@@ -345,12 +345,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3607193212911818469, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
   m_PrefabInstance: {fileID: 4626750756590082666}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &136510678 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3628510804309545567, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
-  m_PrefabInstance: {fileID: 4626750756590082666}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &163602822
+--- !u!1001 &105248902
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -358,37 +353,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 829995184896034335, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
-      propertyPath: m_AutoRepath
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 829995184896034335, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
-      propertyPath: m_StoppingDistance
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 875016730094442991, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
       propertyPath: m_Name
-      value: zombiea
-      objectReference: {fileID: 0}
-    - target: {fileID: 875016730094442991, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3534408244131348346, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
-      propertyPath: m_Radius
-      value: 0.4
+      value: zombie
       objectReference: {fileID: 0}
     - target: {fileID: 6159920973946115976, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.36
+      value: 11.475791
       objectReference: {fileID: 0}
     - target: {fileID: 6159920973946115976, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.062
+      value: 0.35568905
       objectReference: {fileID: 0}
     - target: {fileID: 6159920973946115976, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -19.72
+      value: -18.76982
       objectReference: {fileID: 0}
     - target: {fileID: 6159920973946115976, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
       propertyPath: m_LocalRotation.w
@@ -418,11 +397,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5787376997555140194, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 995a54b626c5c0847b00540f9b20adb8, type: 3}
+--- !u!1 &136510678 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3628510804309545567, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+  m_PrefabInstance: {fileID: 4626750756590082666}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &172403033 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2566996701922269492, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
@@ -1129,6 +1114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   systemToInstantiate:
   - {fileID: 4347167107973444100, guid: ad0489f92be4ace4b925309f24e39437, type: 3}
+  - {fileID: 2107542573111973157, guid: 8bd2c10fa55210a4fa0bd99d920a7b3e, type: 3}
 --- !u!4 &1127033619
 Transform:
   m_ObjectHideFlags: 0
@@ -1273,7 +1259,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1301867185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1612,6 +1598,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2555955009179991623, guid: 6dfd66d72b9740f47aacac9a5991d038, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
+      objectReference: {fileID: 0}
     - target: {fileID: 5554376470798466686, guid: 6dfd66d72b9740f47aacac9a5991d038, type: 3}
       propertyPath: 'weaponSlots.Array.data[0]'
       value: 
@@ -1766,7 +1756,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 107775894057452888, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard3
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 107775894057452888, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -1780,9 +1770,13 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 10.69
       objectReference: {fileID: 0}
+    - target: {fileID: 276301300463486117, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 525445734583693214, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard4
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 528295903565041257, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
@@ -1798,7 +1792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 551222599632369685, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard5
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 551222599632369685, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -1816,6 +1810,18 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 683016502672713912, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 712934126537064472, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 821783155857424389, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 867420485561443955, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
       value: woodenBoard3
@@ -1824,13 +1830,33 @@ PrefabInstance:
       propertyPath: m_TagString
       value: PotentialBoard
       objectReference: {fileID: 0}
+    - target: {fileID: 902910396279895744, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 952297087594540447, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 958889430211564695, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard2
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 1003424799033715839, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
       value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132154234824219039, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 1139482798101141512, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 1159842826442211209, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
       objectReference: {fileID: 0}
     - target: {fileID: 1199384673929946319, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -1838,7 +1864,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1237361079355967638, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard5
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 1237361079355967638, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -1846,7 +1872,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1248997975218412716, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard5
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 1248997975218412716, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -1946,7 +1972,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2172280082493154219, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard3
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 2172280082493154219, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2020,17 +2046,33 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 5.83
       objectReference: {fileID: 0}
+    - target: {fileID: 2350522311634950054, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2350522311634950054, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2388493870806174851, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 2401834107627099453, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 2516998513808603824, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.835
       objectReference: {fileID: 0}
     - target: {fileID: 2552653981358549971, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard3
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 2578514323497725131, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard7
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 2605713014197575297, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
@@ -2070,15 +2112,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2632445008724163880, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard5
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 2640453811247442169, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard4
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 2704789997013408004, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.z
       value: -0.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826165279825145745, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 2840787598551338091, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_Name
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 2840787598551338091, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2120,13 +2170,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3000716462614578025, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 3006225547573091237, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3030675551878058343, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard1
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 3083929285176599553, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_IsActive
@@ -2138,7 +2192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3172729073134255104, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard8
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 3172729073134255104, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2152,17 +2206,25 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 1.042
       objectReference: {fileID: 0}
+    - target: {fileID: 3272595147369689361, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 3291480099170477526, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.z
       value: -5.72
       objectReference: {fileID: 0}
     - target: {fileID: 3357872932887605555, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard2
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 3357872932887605555, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3399138926546390208, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
       objectReference: {fileID: 0}
     - target: {fileID: 3547870053442200604, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalScale.z
@@ -2181,6 +2243,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3607193212911818469, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_Name
+      value: woodenBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 3607193212911818469, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
@@ -2191,6 +2257,10 @@ PrefabInstance:
     - target: {fileID: 3611121964386022137, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.z
       value: 12.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628510804309545567, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_Name
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 3628510804309545567, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2286,7 +2356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4530644876413665958, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard4
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 4530644876413665958, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2304,6 +2374,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.025
       objectReference: {fileID: 0}
+    - target: {fileID: 4771709151251643194, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 4793664458356695181, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.32999927
@@ -2318,7 +2392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4848242055051598617, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard2
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 4848242055051598617, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2328,9 +2402,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -10.650002
       objectReference: {fileID: 0}
+    - target: {fileID: 5101329831379004115, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 5134282442466022135, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357723161238195574, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 5422563708544209465, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
       objectReference: {fileID: 0}
     - target: {fileID: 5536404501562594824, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalScale.z
@@ -2374,7 +2460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5569254823579480545, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard1
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 5569254823579480545, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_TagString
@@ -2404,6 +2490,14 @@ PrefabInstance:
       propertyPath: 'm_Animations.Array.data[1]'
       value: 
       objectReference: {fileID: 7400000, guid: 8ee01367df77d6d4f94e71f7579426b1, type: 2}
+    - target: {fileID: 6078598886677941414, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 6091180943336830810, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 6130126494911126628, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
       value: woodenBoard6
@@ -2450,7 +2544,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6325306387641911864, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard4
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 6325306387641911864, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2488,6 +2582,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -1.4540002
       objectReference: {fileID: 0}
+    - target: {fileID: 6441584447609821683, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 6477399697546411017, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
       value: woodenBoardF15
@@ -2510,7 +2608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6997397108285480965, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard3
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 6997397108285480965, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2520,6 +2618,10 @@ PrefabInstance:
       propertyPath: m_NavMeshData
       value: 
       objectReference: {fileID: 23800000, guid: a9cb27cfd7f5a3a4592418c543282c29, type: 2}
+    - target: {fileID: 7187581357852725458, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 7208760869519982531, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Animation
       value: 
@@ -2564,9 +2666,13 @@ PrefabInstance:
       propertyPath: 'm_Animations.Array.data[1]'
       value: 
       objectReference: {fileID: 7400000, guid: 9f68c065c89d6ad498d5f73e8b994065, type: 2}
+    - target: {fileID: 7289521440417860176, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 7317014785730976757, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard6
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 7386641107348977157, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
@@ -2590,11 +2696,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7431875663670554611, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard3
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 7431875663670554611, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7459099307889664118, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_Name
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 7760237337812209825, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalScale.z
@@ -2603,6 +2713,10 @@ PrefabInstance:
     - target: {fileID: 7760237337812209825, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.z
       value: -0.559
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762054491784979107, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
       objectReference: {fileID: 0}
     - target: {fileID: 7793188341745401962, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
@@ -2642,7 +2756,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8249760502641426533, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard2
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 8249760502641426533, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2651,6 +2765,10 @@ PrefabInstance:
     - target: {fileID: 8365105020753589291, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8374947638231488088, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
       objectReference: {fileID: 0}
     - target: {fileID: 8378792646646543064, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2670,7 +2788,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8433497047865856765, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard2
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 8433497047865856765, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2712,9 +2830,13 @@ PrefabInstance:
       propertyPath: 'm_Animations.Array.data[1]'
       value: 
       objectReference: {fileID: 7400000, guid: e54f53a4405d87948b1a1c8390bb411a, type: 2}
+    - target: {fileID: 8685984098878953905, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 8707955955644156418, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard4
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 8707955955644156418, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
@@ -2729,6 +2851,10 @@ PrefabInstance:
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8905280626209230863, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_Name
+      value: woodenBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 8905280626209230863, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
@@ -2740,6 +2866,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -1.1640003
       objectReference: {fileID: 0}
+    - target: {fileID: 9093462573182594261, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 9150361104948864747, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.1
@@ -2748,13 +2878,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9183511370884521114, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
+      objectReference: {fileID: 0}
     - target: {fileID: 9202306834951292738, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Name
-      value: woodenBoard3
+      value: woodenBoard
       objectReference: {fileID: 0}
     - target: {fileID: 9202306834951292738, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Layer
       value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 9222318886288694790, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_TagString
+      value: PotentialBoard
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1385819883644379599, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
@@ -2907,6 +3045,7 @@ PrefabInstance:
     - {fileID: 2073605033866706030, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
     - {fileID: 7516556088360365543, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
     - {fileID: 2827071042741017815, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+    - {fileID: 6289433343084844789, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2566996701922269492, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
@@ -2923,7 +3062,6 @@ SceneRoots:
   - {fileID: 1127033619}
   - {fileID: 1887224356}
   - {fileID: 1301867186}
-  - {fileID: 163602822}
   - {fileID: 51042562}
   - {fileID: 1228741753}
   - {fileID: 500534155}
@@ -2933,3 +3071,4 @@ SceneRoots:
   - {fileID: 47909479}
   - {fileID: 1885565981}
   - {fileID: 686838453}
+  - {fileID: 105248902}

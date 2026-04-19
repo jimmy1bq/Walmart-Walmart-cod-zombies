@@ -116,7 +116,8 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     //moves the zombies up the Queue once the first zombie finish climbing the window
     public GameObject moveQueueUp() 
     {
-        if (zombieQueue.Count > 0) 
+        Debug.Log(zombieQueue.Count);
+        if (zombieQueue.Count-1 > 0) 
         {
             zombieQueue.Remove(zombieQueue[0]);
             int i = 0;

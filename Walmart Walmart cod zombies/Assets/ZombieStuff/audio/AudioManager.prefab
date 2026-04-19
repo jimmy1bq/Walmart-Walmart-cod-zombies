@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2107542573111973157
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2199680550072385960}
+  - component: {fileID: 8288736976945250250}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2199680550072385960
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107542573111973157}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.941074, y: 1.7958443, z: -3.801535}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8288736976945250250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107542573111973157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4dbced6e7abd6b45810b3b6cb238b93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zombieAttackClips:
+  - {fileID: 8300000, guid: 0eb0358299f0790468e43e3bc279f3c5, type: 3}
+  - {fileID: 8300000, guid: 41a7706eeba4f6841b1f949b5f80381c, type: 3}
+  - {fileID: 8300000, guid: f1cfc627c09fa7f4195c7dc1ac8e0f66, type: 3}
+  - {fileID: 8300000, guid: 0fb6d1e88339fb346b8a4bc68864675c, type: 3}
+  - {fileID: 8300000, guid: ce1f8bacd59bc2d4a8ca1d9af6caa114, type: 3}
+  - {fileID: 8300000, guid: 3b43d9dd30226184fbb81cf982fcca27, type: 3}
+  - {fileID: 8300000, guid: a240d1cdb4d050a4fb643a0b628c0570, type: 3}
+  zombieGroanClips:
+  - {fileID: 8300000, guid: 6fa731270daa3c347a5a5c85aef210c1, type: 3}
+  - {fileID: 8300000, guid: 3bf4245d76b1dc0408eaea0aaa8698f8, type: 3}
+  - {fileID: 8300000, guid: 7af3adb9840b2d94f9bc42b4c933350b, type: 3}
+  - {fileID: 8300000, guid: 12d89db2334e74f4aaa955eae7bdc058, type: 3}
+  - {fileID: 8300000, guid: 515c43ce071194a43ac47368c79e37bb, type: 3}
+  - {fileID: 8300000, guid: 6a46bd86cee3b2a48b3f648d12092383, type: 3}
+  - {fileID: 8300000, guid: aefbe99f5d311d14faf6d3b20f8aa284, type: 3}
+  zombieFootStep: {fileID: 8300000, guid: d235d3fe87e77804c9c0ca7e846a9bcc, type: 3}

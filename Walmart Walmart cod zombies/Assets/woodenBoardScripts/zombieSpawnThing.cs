@@ -8,18 +8,19 @@ public class zombieSpawnThing : MonoBehaviour
     int i = 0;
     void Start()
     {
-        TickSystem.tickEvent.AddListener(spawnZombies);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        spawnZombies(2);
     }
     void spawnZombies(float time)
     {
         if (i < number)
         {
+           
             Instantiate(zombies);
             i++;
         }

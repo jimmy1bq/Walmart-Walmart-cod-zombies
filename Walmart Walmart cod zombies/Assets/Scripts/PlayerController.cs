@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     Vector3 _velocity;
     float _verticalRotation;
     int _currentWeaponIndex;
+    Camera playerCam;
 
     void Start()
     {
@@ -38,7 +39,7 @@ public class PlayerController : MonoBehaviour
             weaponSlots[1].weaponData = null;
             weaponSlots[1].gameObject.SetActive(false);
         }
-
+        playerCam = transform.GetChild(0).GetComponent<Camera>();
         EquipWeapon(0);
     }
 
@@ -48,8 +49,25 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleWeaponSwitch();
         HandleShooting();
+        repairWindow();
     }
+    void repairWindow()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                //check if it needs repair otherwise slap text
+                if (hit.collider.gameObject.CompareTag("PotentialBoard") && hit.collider.transform.parent.Find("woodenBoard").GetComponent<IDamageAble>().returnHP()<120)
+                {
+                    hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
+                }
+            }
 
+        }
+    }
     void HandleMouseLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;

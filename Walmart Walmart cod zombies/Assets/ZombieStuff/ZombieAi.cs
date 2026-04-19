@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
@@ -23,17 +25,23 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     AnimationState[] animationStates = new AnimationState[8];
 
     bool targetIsBoard = false;
+    bool isWalking = false;
 
     Coroutine attackCoroutine;
 
+    AudioSource zombieSrc;
+
+    //i can't find the graon interval so Im going to assume every 3 second it has an 100% chance to groan if it hasn't already
 
     void Start()
     {
+        zombieSrc = GetComponent<AudioSource>();
         health = stats.hp;
         agent = GetComponent<NavMeshAgent>();
         animationer = GetComponent<Animation>();
         int i = 0;
         //get them into an array so we can access for later
+        
         foreach (AnimationState states in animationer)
         {
             animationStates[i] = states;
@@ -44,6 +52,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         //don't need to loop attacl
         animationer[animationStates[5].name].wrapMode = WrapMode.Once;
         animationer[animationStates[1].name].wrapMode = WrapMode.Once;
+        animationer[animationStates[0].name].wrapMode = WrapMode.Once;
 
         //targets a random window in the spawn area
         //so like if the zombie spawn in the back we would target back windows
@@ -53,6 +62,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         {
             agent.destination = queuePosition.transform.position;
             board = queuePosition;
+            isWalking = true;
             StartCoroutine(onPosition(queuePosition));
             targetIsBoard = true;
         }
@@ -76,11 +86,14 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //tracks the player position; should be called on every frame;
     void trackPlayerPoistion(float time)
     {
+        if (isWalking) 
+        {
+            audioManagerZombies.instance.playZombieWalkingSound(zombieSrc, gameObject.transform.position, 50);
+        }
         if (player != null)
         {
             trackTarget(player);
         }
-
     }
 
     void trackTarget(GameObject target)
@@ -124,14 +137,15 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         if (agent.remainingDistance < range)
         {
             agent.isStopped = true;
-
+            isWalking = false;
             //cancels the current animation and switches to smaking right away;
             animationer.Play(animationStates[0].name);
+            audioManagerZombies.instance.playRandomZombieSound(zombieSrc,gameObject.transform.position,50,audioManagerZombies.instance.zombieAttackClips);
             agent.velocity = Vector3.zero;
             //player Damage Logic
             //use attack(player,0);
         }
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(2.00f);
 
         //if the player get out of range this doesn't happen
         //setting the destination to get the agent.remaining distance
@@ -141,6 +155,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         }
         else
         {
+            isWalking = true;
             animationer.Stop();
             attackCoroutine = null;
             animationer.Play(animationStates[4].name);
@@ -164,6 +179,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     IEnumerator attackboard(GameObject boards)
     {
         link = boards.transform.parent.GetComponent<NavMeshLink>();
+        isWalking = false;
         agent.isStopped = true;
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, boards.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         yield return new WaitForSeconds(2.0f);
@@ -175,9 +191,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //attacks the gameobject "other" and plays the animation based on the given int
     float attack(GameObject other, int animationToPlay)
     {
+        List<AudioClip> zombieClip = audioManagerZombies.instance.zombieAttackClips;
         //0 for player 1 for window
-      
-        StartCoroutine(waitUntilAnimFinishPlaying(animationStates[animationToPlay], 1 , 1 , other));
+        audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50, zombieClip);
+        StartCoroutine(waitUntilAnimFinishPlaying(animationStates[animationToPlay], 1 , 0 , other));
         return other.gameObject.GetComponent<IDamageAble>().returnHP();
     }
 
@@ -227,6 +244,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
                 animationer.Play(animationStates[4].name);
                 targetWindow.moveQueueUp();
+                isWalking= true;    
                 break;
 
             case 1:
@@ -240,6 +258,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                 }
                 else
                 {
+                    
                     StartCoroutine(attackboard(directedGameObject));
                 }
                 break;
@@ -269,7 +288,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //window position is handled by collision
     public void updateQueuePoistion(GameObject positionToMoveTo)
     {
-        
+    
         animationer.Play(animationStates[4].name);
         agent.SetDestination(positionToMoveTo.transform.position);
         StartCoroutine(onPosition(positionToMoveTo));
@@ -281,12 +300,11 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         //i just realized that coroutine can be used like a tick system but since this multithreads don't turn this into a update logic method
         while (true)
         {
-            Debug.Log((gameObject.transform.position - positionToMove.transform.position).magnitude < 0.5f);
+            
             if ((gameObject.transform.position - positionToMove.transform.position).magnitude < 0.5f)
-            {
-
-                Debug.Log(positionToMove.transform.rotation.eulerAngles.y);
+            {            
                 transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, positionToMove.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+                isWalking = false;
                 animationer.Play(animationStates[3].name);
                 break;
             }
