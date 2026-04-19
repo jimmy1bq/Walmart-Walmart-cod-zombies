@@ -8,21 +8,57 @@ public class audioManagerZombies : MonoBehaviour
     public static audioManagerZombies instance;
     public List<AudioClip> zombieAttackClips;
     public List<AudioClip> zombieGroanClips;
+    public List<AudioClip> backgroundMusic;
+    public AudioClip PlayerAddBoard;
+    public AudioClip zombieRemoveBoard;
     public AudioClip zombieFootStep;
     public float sfxVolume = 100;
     public float musicVolume = 100;
     public float masterVolume = 100;
+    int loop = 0;
 
-    
     private void Awake()
     {
         if (instance == null) { instance = this; } else { Destroy(this); }
+        playBackgroundMusic(GetComponent<AudioSource>(),gameObject.transform.position,0);
+        TickSystem.tickEvent.AddListener(loopMusic);
     }
 
-    //plays a random sound given the source position  volume and list
-    public void playRandomZombieSound(AudioSource zombSource, Vector3 position, float volume, List<AudioClip> list,float speed)
+    void loopMusic(float time) 
     {
+        time = loop * 1060 + time;
+        float case1 = loop * 1060;
+        float case2 = 276 + loop * 1060;
+        float case3 = 539 + loop * 1060;
+        float case4 = 833 + loop * 1060;
+        if (time == case1)
+        {
+            Debug.Log("looped");
+            playBackgroundMusic(GetComponent<AudioSource>(), gameObject.transform.position, 0);
+            loop++;
+        }
+        else if (time == case2)
+        {
+            Debug.Log("loopCase2");
+            playBackgroundMusic(GetComponent<AudioSource>(), gameObject.transform.position, 1);
+        }
+        else if (time == case3)
+        {
+            Debug.Log("loopCase3");
+            playBackgroundMusic(GetComponent<AudioSource>(), gameObject.transform.position, 2);
+        }
+        else if (time == case4) 
+        {
+            playBackgroundMusic(GetComponent<AudioSource>(), gameObject.transform.position, 3);
+        }
+            
+         
         
+    }
+    //plays a random sound given the source position  volume and list
+    public void playRandomZombieSound(AudioSource zombSource, Vector3 position, float volume, List<AudioClip> list, float speed)
+    {
+
         //speed up the pitch
         zombSource.pitch = speed;
         zombSource.volume = sfxVolume;
@@ -33,16 +69,43 @@ public class audioManagerZombies : MonoBehaviour
 
     public void playZombieWalkingSound(AudioSource zombSource, Vector3 position, float volume)
     {
-        Debug.Log("attempt");
+
         //so basically the only other clips are groaning if we are playing walking sound because attacking turn isWalkingoff
+        //do not do !zombSource.clip because that check nullity of zombSource
         if (!zombSource.isPlaying)
-        { 
+        {
             //slow down the sound 
-        //    zombSource.volume = sfxVolume;
+            //    zombSource.volume = sfxVolume;
             zombSource.pitch = 0.5f;
             zombSource.clip = zombieFootStep;
             zombSource.Play();
         }
+    }
+
+    public void playWoodenBoard(AudioSource zombSource, Vector3 position, float pitch,int removeOrAdd) 
+    {
+        zombSource.pitch = pitch;
+        switch (removeOrAdd) 
+        {
+            case 0: zombSource.clip = PlayerAddBoard; break;
+            case 1: zombSource.clip = zombieRemoveBoard; break;
+        }
+        zombSource.Play();
+    }
+
+    public void playBackgroundMusic(AudioSource playerSource,Vector3 position,int number) 
+    {
+        switch (number)
+        {
+            //I think after 1060s it cycles back
+            case 0: playerSource.clip = backgroundMusic[0]; break;
+            case 1: playerSource.clip = backgroundMusic[1]; break;
+            case 2: playerSource.clip = backgroundMusic[2]; break;
+            case 3: playerSource.clip = backgroundMusic[3]; break;
+        }
+        //playervolume here by doing playersource.volume
+        playerSource.volume = 200f;
+        playerSource.Play();
     }
     //changes the value so later on UI manager can call
     public void changeSfxVolume(float val) 

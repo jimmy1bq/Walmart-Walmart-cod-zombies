@@ -22,6 +22,13 @@ public class PlayerController : MonoBehaviour
     float _verticalRotation;
     int _currentWeaponIndex;
     Camera playerCam;
+    AudioSource footStep;
+ 
+
+    private void Awake()
+    {
+         footStep = GetComponent<AudioSource>();
+    }
 
     void Start()
     {

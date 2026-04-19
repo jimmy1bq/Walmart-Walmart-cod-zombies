@@ -15,6 +15,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     //macdonalds simulator outhere
     List<GameObject> queuePosition = new List<GameObject>();
     List<GameObject> zombieQueue = new List<GameObject>();
+    AudioSource woodenBoardSrc; 
     int index = 1;
     float health;
     public bool dead = false;
@@ -23,6 +24,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     public int HeapIndex { get; set; }
     private void Awake()
     {
+        woodenBoardSrc = GetComponent<AudioSource>();
         //populate list
         Transform parentTransform = gameObject.transform.parent.transform;
         queuePosition.Add(parentTransform.Find("p1").gameObject);
@@ -52,33 +54,45 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     //return the health left after taking damage
     public float takeDamage(float damageToTake) 
     {
-        health -= damageToTake;
+        if (health > 0) 
+        {
+            health -= damageToTake;
 
-        //get the board's animation 1-6(based on what board is left and index)
-        
-        GameObject boardToRemove = gameObject.transform.parent.Find("board" + index).gameObject;
-        Animation animateComp = obtainAnimationComp(boardToRemove);
-        animateComp.Play("BoardAnimation" + index);
-        index++;
+            //get the board's animation 1-6(based on what board is left and index)
 
-        //i will be set to 1 so that when we repair we can call index without having to worry of not playing animation
-        if (health <= 0) { health = 0; dead = true; index = 6; }   
+            GameObject boardToRemove = gameObject.transform.parent.Find("board" + index).gameObject;
+            Animation animateComp = obtainAnimationComp(boardToRemove);
+            audioManagerZombies.instance.playWoodenBoard(woodenBoardSrc, transform.TransformPoint(gameObject.transform.position), 1, 1);
+            animateComp.Play("BoardAnimation" + index);
+            index++;
+
+            //this is just a safety set
+            if (health <= 0) { health = 0; dead = true; index = 6; }
+
+        }
         return health;    
     }
 
     //repair board
     public float action(float healHp) 
     {
-        health += healHp;
-        GameObject boardToRemove = gameObject.transform.parent.Find("board" + index).gameObject;
-       
-        Animation animateComp = obtainAnimationComp(boardToRemove);
-
-        animateComp.Play("repairBoard" + index + "Anim");
-        index--;
-        //same reason but oppsite way of take damage
-        if (health >= 100) { health = 100; index = 1; }
+        if (health<120)
+        {
+            health += healHp;
+            GameObject boardToRemove = gameObject.transform.parent.Find("board" + index).gameObject;
+            //sound
+            audioManagerZombies.instance.playWoodenBoard(woodenBoardSrc, transform.TransformPoint(gameObject.transform.position), 1, 0);
+            //animation
+            Animation animateComp = obtainAnimationComp(boardToRemove);
+            animateComp.Play("repairBoard" + index + "Anim");
+            index--;
+            //safety set
+            if (health >= 120) { health = 100; index = 1; }
+        }
         return health;
+      
+
+
     }
     Animation obtainAnimationComp(GameObject gameObjek) 
     {
