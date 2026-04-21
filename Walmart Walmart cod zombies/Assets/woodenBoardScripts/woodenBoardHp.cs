@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
-public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble, IHeapItem<woodenBoardHp>
+public class woodenBoardHp : MonoBehaviour, IDamageAble, IInteractable, IHeapItem<woodenBoardHp>
 
 
 

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Assault_Rifle
   m_EditorClassIdentifier: 
   weaponName: Assault Rifle
+  icon: {fileID: 21300000, guid: c6d7451736148ed41bb68d575122fce3, type: 3}
   buyCost: 1100
   damage: 27
   pelletCount: 1
