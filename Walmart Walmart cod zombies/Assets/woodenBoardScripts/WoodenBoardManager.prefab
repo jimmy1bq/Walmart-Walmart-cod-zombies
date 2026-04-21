@@ -44,3 +44,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83505198d14510a459aa51317ad8b08c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boards1:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  boards2: []
+  boards3: []
+  notFullqueued: []
+  fullQueued: []
+  leftNotFullqueued: []
+  leftFullQueued: []
+  rightNotFullqueued: []
+  rightFullQueued: []
+  backNotFullqueued: []
+  baclFullQueued: []

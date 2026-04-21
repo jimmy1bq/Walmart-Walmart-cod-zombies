@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 925e18350a42fa84ea0be18a963cc45a, type: 3}
   m_Name: woodenBoardStat
   m_EditorClassIdentifier: 
-  hp: 100
+  hp: 120
   meleeDamage: 0
   walkSpeed: 0
   destroyOnDeath: 0
   animationToPlayOnDamageTaken: {fileID: 0}
+  killPoints: 50

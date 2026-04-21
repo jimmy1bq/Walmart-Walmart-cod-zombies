@@ -26,6 +26,14 @@ public class PlayerController : MonoBehaviour
     Vector3 _velocity;
     float _verticalRotation;
     int _currentWeaponIndex;
+    Camera playerCam;
+    AudioSource footStep;
+ 
+
+    private void Awake()
+    {
+         footStep = GetComponent<AudioSource>();
+    }
     bool _isSprinting;
     Quaternion _weaponIdleRotation;
     Quaternion _currentSprintTilt = Quaternion.identity;
@@ -81,7 +89,23 @@ public class PlayerController : MonoBehaviour
         foreach (Weapon slot in weaponSlots)
             if (slot != null) slot.TickReload();
     }
+    void repairWindow()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                //check if it needs repair otherwise slap text
+                if (hit.collider.gameObject.CompareTag("PotentialBoard") && hit.collider.transform.parent.Find("woodenBoard").GetComponent<IDamageAble>().returnHP()<120)
+                {
+                    hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
+                }
+            }
 
+        }
+    }
     void HandleMouseLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;

@@ -34,7 +34,7 @@ public class TickSystem : MonoBehaviour
         {
             tickTimer -= tickRate;
             tick++;
-            tickEvent.Invoke(tick);
+            tickEvent.Invoke(tick);           
         }
         frequenttickTime.Invoke(totalTIme);
     }
