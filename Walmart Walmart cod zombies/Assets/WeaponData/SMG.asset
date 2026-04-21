@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SMG
   m_EditorClassIdentifier: 
   weaponName: SMG
+  icon: {fileID: 307519789, guid: 8f2f87ffabd956342851e3bf082e0725, type: 3}
   buyCost: 1100
   damage: 22
   pelletCount: 1

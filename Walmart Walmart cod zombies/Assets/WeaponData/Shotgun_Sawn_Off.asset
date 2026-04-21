@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Shotgun_Sawn_Off
   m_EditorClassIdentifier: 
   weaponName: Shotgun Sawn Off
+  icon: {fileID: -1835075394, guid: e6898d8527bed4442b776294b4910ad8, type: 3}
   buyCost: 600
   damage: 20
   pelletCount: 8

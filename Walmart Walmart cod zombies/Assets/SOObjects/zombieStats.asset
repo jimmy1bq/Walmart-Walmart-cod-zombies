@@ -17,4 +17,4 @@ MonoBehaviour:
   walkSpeed: 0
   destroyOnDeath: 0
   animationToPlayOnDamageTaken: {fileID: 0}
-  killPoints: 2147483647
+  killPoints: 2000
