@@ -111,24 +111,27 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     private void OnTriggerEnter(Collider other)
     {
 
+        IDamageAble damageAble = other.gameObject.GetComponent<IDamageAble>();
         //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
         //if the board has more than 0 hp we attack
-        if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0)
+        if (damageAble != null)
         {
-            animationer.Play(animationStates[3].name);
-            agent.updateRotation = false;
-            attackCoroutine = StartCoroutine(attackboard(other.gameObject));
-        }
+            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0)
+            {
+                animationer.Play(animationStates[3].name);
+                agent.updateRotation = false;
+                attackCoroutine = StartCoroutine(attackboard(other.gameObject));
+            }
 
-        //if the board doesn't have any hp we can skip the attack
-        else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
-        {
-            animationer.Play(animationStates[3].name);
-            link = other.transform.parent.GetComponent<NavMeshLink>();
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-            StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0 , 2 ,other.gameObject));
+            //if the board doesn't have any hp we can skip the attack
+            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
+            {
+                animationer.Play(animationStates[3].name);
+                link = other.transform.parent.GetComponent<NavMeshLink>();
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+                StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0, 2, other.gameObject));
+            }
         }
-
         //if its the player we attack the player
         else if (other.gameObject.CompareTag("Player") && attackCoroutine == null)
         {

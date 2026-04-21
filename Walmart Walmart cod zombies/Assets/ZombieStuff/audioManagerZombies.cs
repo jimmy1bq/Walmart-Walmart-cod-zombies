@@ -23,7 +23,7 @@ public class audioManagerZombies : MonoBehaviour
         playBackgroundMusic(GetComponent<AudioSource>(),gameObject.transform.position,0);
         TickSystem.tickEvent.AddListener(loopMusic);
     }
-
+    //loops the background music 
     void loopMusic(float time) 
     {
         time = loop * 1060 + time;
