@@ -26,6 +26,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     bool targetIsBoard = false;
     bool isWalking = false;
+    bool collided = false;
 
     int groanChance = 0;
     int groanTheresHold = 100;
@@ -116,16 +117,18 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         //if the board has more than 0 hp we attack
         if (damageAble != null)
         {
-            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0)
+            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0 && !collided)
             {
+                collided = true;
                 animationer.Play(animationStates[3].name);
                 agent.updateRotation = false;
                 attackCoroutine = StartCoroutine(attackboard(other.gameObject));
             }
 
             //if the board doesn't have any hp we can skip the attack
-            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
+            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0 && !collided)
             {
+                collided = true;
                 animationer.Play(animationStates[3].name);
                 link = other.transform.parent.GetComponent<NavMeshLink>();
                 transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
@@ -216,8 +219,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //param wairPeriod: Time to wait for animation
     //param other: gameObject to do something with
     IEnumerator waitUntilAnimFinishPlaying(AnimationState animation, int actionAfterWards,int waitPeriod,GameObject other)
-    {
-
+    {       
         yield return new WaitForSeconds(waitPeriod);    
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animation.name);
@@ -243,7 +245,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         switch (actionAfterWards)
         {
             case 0:
-
+               
                 agent.isStopped = false;
                 player = GameObject.FindGameObjectWithTag("Player");             
                 GameObject endPoints = link.gameObject.transform.Find("p2").gameObject;
