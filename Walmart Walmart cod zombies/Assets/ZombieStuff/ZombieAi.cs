@@ -291,6 +291,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         health -= damage;
         if (health <= 0)
         {
+            if (PointsManager.Instance != null)
+                PointsManager.Instance.AddPoints(PointsManager.Instance.killPoints);
+            if (RoundManager.Instance != null)
+                RoundManager.Instance.OnZombieKilled();
             Destroy(gameObject);
         }
         return health;

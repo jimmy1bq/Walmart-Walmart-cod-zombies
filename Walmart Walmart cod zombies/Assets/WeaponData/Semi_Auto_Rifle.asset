@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Semi_Auto_Rifle
   m_EditorClassIdentifier: 
   weaponName: Semi Auto Rifle
+  icon: {fileID: -1555410478, guid: 1ac0e7b06a23fd044b3a531a54fabe89, type: 3}
   buyCost: 900
   damage: 30
   pelletCount: 1

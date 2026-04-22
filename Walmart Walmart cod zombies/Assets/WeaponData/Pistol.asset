@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   weaponName: Pistol
+  icon: {fileID: -2046296161, guid: 8c636830548bf744cb75c5cc41c60985, type: 3}
   buyCost: 300
   damage: 20
   pelletCount: 1

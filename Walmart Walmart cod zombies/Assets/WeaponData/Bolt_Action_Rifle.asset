@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Bolt_Action_Rifle
   m_EditorClassIdentifier: 
   weaponName: Bolt Action Rifle
+  icon: {fileID: -194699698, guid: f07a9ca681f0b9548b6591c933dc3245, type: 3}
   buyCost: 900
   damage: 80
   pelletCount: 1
