@@ -26,10 +26,13 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     bool targetIsBoard = false;
     bool isWalking = false;
+    bool isClmbingANDOutside = false;
     bool collided = false;
+    float timeBeenClimbing = 0;
 
     int groanChance = 0;
     int groanTheresHold = 100;
+    float timer = 0;
 
     Coroutine attackCoroutine;
 
@@ -201,7 +204,20 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
        
 
     }
-
+    //when the zombie climbs the board the first x second its considered outside so we have to play climb out death animation if it dies
+    IEnumerator climbBoardTimer(AnimationState animation,int timeTowait) 
+    {
+        yield return new WaitForSeconds(timeTowait);
+        while (true) 
+        {
+            //this is so peak
+            //for the first 0.25f second ish the zombie is climbing the window and outside and if it dies should play the climb window out death anim
+            isClmbingANDOutside = true;
+            timer += Time.deltaTime;
+            if (timer>0.25f) { Debug.Log("INSIDE"); isClmbingANDOutside = false; break;}
+            yield return new WaitForFixedUpdate();
+        }
+    }
     //attacks the gameobject "other" and plays the animation based on the given int
     float attack(GameObject other, int animationToPlay)
     {
@@ -219,7 +235,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //param wairPeriod: Time to wait for animation
     //param other: gameObject to do something with
     IEnumerator waitUntilAnimFinishPlaying(AnimationState animation, int actionAfterWards,int waitPeriod,GameObject other)
-    {       
+    {     
         yield return new WaitForSeconds(waitPeriod);    
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animation.name);
@@ -268,6 +284,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                     targetIsBoard = false;
                     attackCoroutine = null;
                     StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0 , 2 , board));
+                    StartCoroutine(climbBoardTimer(animationStates[5], 2));
                 }
                 else
                 {
@@ -295,9 +312,20 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                 PointsManager.Instance.AddPoints(PointsManager.Instance.killPoints);
             if (RoundManager.Instance != null)
                 RoundManager.Instance.OnZombieKilled();
-            Destroy(gameObject);
+            StartCoroutine(zombieDeath());
         }
         return health;
+    }
+    IEnumerator zombieDeath() 
+    {
+        if (isClmbingANDOutside)
+        {
+            animationer.Play(animationStates[7].ToString());
+        }
+        else { animationer.Play(animationStates[6].ToString()); }
+        yield return new WaitForSeconds(2f);
+        Destroy(gameObject);
+
     }
 
     //once the zombie is finished(animation and over the wall) we have to tell the zombie that its position has been update and now he should advance onto the next point
@@ -320,7 +348,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
             if ((gameObject.transform.position - positionToMove.transform.position).magnitude < 0.5f)
             {
-                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, positionToMove.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, targetWindow.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
                 isWalking = false;
                 animationer.Play(animationStates[3].name);
                 break;
@@ -355,6 +383,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     {
         return health;
     }
+    
 }
 
 
