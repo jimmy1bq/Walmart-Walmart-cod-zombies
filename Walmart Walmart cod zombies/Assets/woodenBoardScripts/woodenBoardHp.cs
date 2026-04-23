@@ -52,7 +52,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
 
     //param  damageToTake: float to subtract off hp
     //return the health left after taking damage
-    public float takeDamage(float damageToTake) 
+    public float takeDamage(float damageToTake,int damageType) 
     {
         if (health > 0) 
         {

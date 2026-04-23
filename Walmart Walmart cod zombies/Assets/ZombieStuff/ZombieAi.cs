@@ -9,6 +9,7 @@ using UnityEngine.AI;
 public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 {
     //entity stats like range agent and targeys
+    [SerializeField] GameObject head;
     [SerializeField] entityStatSO stats;
     [SerializeField] float range;
     float health;
@@ -277,7 +278,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                 break;
 
             case 1:
-                float hpLeft = directedGameObject.GetComponent<IDamageAble>().takeDamage(stats.meleeDamage);
+                ///ignore the int args
+                float hpLeft = directedGameObject.GetComponent<IDamageAble>().takeDamage(stats.meleeDamage,0);
                 if (hpLeft <= 0)
                 {
                     //climb
@@ -303,21 +305,28 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     }
 
     //takes damage from something
-    public float takeDamage(float damage)
+    public float takeDamage(float damage,int damageType)
     {
-        health -= damage;
+        bool headShotkIll = false;
+        //1 for headshots
+        switch (damageType) 
+        {
+            case 0:  health-=damage;  headShotkIll = false; break;
+            case 1: health -= damage*2.5f; headShotkIll = true; break;
+        }
         if (health <= 0)
         {
             if (PointsManager.Instance != null)
                 PointsManager.Instance.AddPoints(PointsManager.Instance.killPoints);
             if (RoundManager.Instance != null)
                 RoundManager.Instance.OnZombieKilled();
-            StartCoroutine(zombieDeath());
+            StartCoroutine(zombieDeath(headShotkIll));
         }
         return health;
     }
-    IEnumerator zombieDeath() 
+    IEnumerator zombieDeath(bool headShotKill) 
     {
+        if(headShotKill)
         if (isClmbingANDOutside)
         {
             animationer.Play(animationStates[7].ToString());

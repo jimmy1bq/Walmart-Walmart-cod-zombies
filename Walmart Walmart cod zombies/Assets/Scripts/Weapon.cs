@@ -115,7 +115,7 @@ public class Weapon : MonoBehaviour
             {
                 IDamageAble zombie = hit.collider.GetComponent<IDamageAble>();
                 if (zombie != null)
-                    zombie.takeDamage(weaponData.damage);
+                    zombie.takeDamage(weaponData.damage,0);
 
                 tracerEnd = hit.point;
             }
