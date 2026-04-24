@@ -326,12 +326,14 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     }
     IEnumerator zombieDeath(bool headShotKill) 
     {
-        if(headShotKill)
+        if (headShotKill) { Destroy(head);/*play particle*/}
         if (isClmbingANDOutside)
         {
             animationer.Play(animationStates[7].ToString());
         }
         else { animationer.Play(animationStates[6].ToString()); }
+        GameObject gibParticle = head.transform.Find("gib").transform.gameObject;
+        gibParticle.SetActive(true);
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
 
