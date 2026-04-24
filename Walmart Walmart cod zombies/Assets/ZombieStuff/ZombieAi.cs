@@ -305,6 +305,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     }
 
     //takes damage from something
+    //check if its correct the damageType
     public float takeDamage(float damage,int damageType)
     {
         bool headShotkIll = false;
