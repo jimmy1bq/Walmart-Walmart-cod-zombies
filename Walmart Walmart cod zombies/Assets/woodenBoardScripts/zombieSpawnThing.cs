@@ -6,6 +6,7 @@ public class zombieSpawnThing : MonoBehaviour
     [SerializeField] GameObject zombies;
     public int number;
     int i = 0;
+    float tick = 0;
     void Start()
     {
         
@@ -18,9 +19,9 @@ public class zombieSpawnThing : MonoBehaviour
     }
     void spawnZombies(float time)
     {
-        if (i < number)
+        tick+=Time.deltaTime;
+        if (i < number && tick>= 0.1f)
         {
-           
             Instantiate(zombies);
             i++;
         }

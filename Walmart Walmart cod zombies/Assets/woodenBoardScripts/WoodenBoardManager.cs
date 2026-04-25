@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 //manages the boards of the map using a heap
 public class WoodenBoardManager : MonoBehaviour
 {
@@ -41,28 +42,43 @@ public class WoodenBoardManager : MonoBehaviour
         addGR0Room();
        
     }
-    //removes from q1 and puts it into q2
-    public void switchQueueToFull(woodenBoardHp objeck)
+    //removes from q1 and puts it into q2 or removes from the not full list and moves it into the full list
+    public void switchQueueToFull(woodenBoardHp objeck,int maskLayer)
     {
-        if (notFullqueued.Contains(objeck))
+        List<woodenBoardHp> notFull = listToReturnOffLayer(maskLayer);
+        List<woodenBoardHp> full = listToReturnOffLayerFULL(maskLayer);
+        if (notFull.Contains(objeck))
         {
-            notFullqueued.Remove(objeck);
-            fullQueued.Add(objeck);
+            notFull.Remove(objeck);
+            full.Add(objeck);
         }
+        Debug.Log("SHOULD SWITCH QUEUE" + full.Count);
     }
-    //q2 to q1
-    public void switchQueueToNotFull(woodenBoardHp objeck)
+    //q2 to q1 vice versa to the method above
+    public void switchQueueToNotFull(woodenBoardHp objeck,int maskLayer)
     {
-        if (fullQueued.Contains(objeck))
+        List<woodenBoardHp> notFull = listToReturnOffLayer(maskLayer);
+        List<woodenBoardHp> full = listToReturnOffLayerFULL(maskLayer);
+        if (full.Contains(objeck))
         {
-            fullQueued.Remove(objeck);
-            notFullqueued.Add(objeck);
+            full.Remove(objeck);
+            notFull.Add(objeck);
         }
+        Debug.Log("SHOULD SWITCH QUEUE" + full.Count);
+
     }
     //returns a randomBoardOn the Mapadd
-    public woodenBoardHp randomQueue()
+    public woodenBoardHp randomQueue(ZombieSpawnPosition position)
     {
-        return notFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.notFullqueued.Count)];
+        switch (position) 
+        {
+            case ZombieSpawnPosition.Front: return notFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.notFullqueued.Count)];
+            case ZombieSpawnPosition.Left: return leftNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.leftNotFullqueued.Count)];
+            case ZombieSpawnPosition.Back: return backNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.backNotFullqueued.Count)];
+            case ZombieSpawnPosition.Right: return rightNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.rightNotFullqueued.Count)];
+        }
+        Debug.Log("SHOULD RETURN SOMETHING"); return null;
+     
     }
     //adds room 0's board so the zombie can target them
     public void addGR0Room()
@@ -70,7 +86,6 @@ public class WoodenBoardManager : MonoBehaviour
         foreach (GameObject boards in G0Board) 
         {
             listToAddTo(boards,boards.layer);
-            break;
         }  
     }
   
@@ -95,7 +110,7 @@ public class WoodenBoardManager : MonoBehaviour
             listToAddTo(boards, boards.layer);
         }
     }
-    public void addF2Room()
+    public void addF2oom()
     {
         foreach (GameObject boards in F2Board)
         {
@@ -116,10 +131,33 @@ public class WoodenBoardManager : MonoBehaviour
       
         switch (maskLayer) 
         {
-            case  9: notFullqueued.Add(board.GetComponent<woodenBoardHp>()); break;
+            case  9: notFullqueued.Add(board.GetComponent<woodenBoardHp>());   break;
             case 10: backNotFullqueued.Add(board.GetComponent<woodenBoardHp>()); break;
             case 11: rightNotFullqueued.Add(board.GetComponent<woodenBoardHp>()); break;
             case 12: leftNotFullqueued.Add(board.GetComponent<woodenBoardHp>()); break;
+        }
+    }
+    //returns the list need to add/remove based of the object mask layer
+    List<woodenBoardHp> listToReturnOffLayer(int maskLayer) 
+    {
+        switch (maskLayer)
+        {
+            case 9:  return notFullqueued;
+            case 10: return backNotFullqueued;
+            case 11: return rightNotFullqueued;
+            case 12: return leftNotFullqueued;
+            default: return null;
+        }
+    }
+    List<woodenBoardHp> listToReturnOffLayerFULL(int maskLayer)
+    {
+        switch (maskLayer)
+        {
+            case 9: return fullQueued;
+            case 10: return baclFullQueued;
+            case 11: return rightFullQueued;
+            case 12: return leftFullQueued;
+            default: return null;
         }
     }
 }
