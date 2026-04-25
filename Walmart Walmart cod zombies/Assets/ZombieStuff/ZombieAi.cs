@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
@@ -44,7 +45,9 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     void Start()
     {
-        spawnPosition = ZombieSpawnPosition.Front;
+        ZombieSpawnPosition[] spawnPositions = (ZombieSpawnPosition[])Enum.GetValues(typeof(ZombieSpawnPosition));
+        spawnPosition = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Length - 1)];
+
         AudioSource[] arrayOfSrcs = GetComponents<AudioSource>();
         zombieSrc = arrayOfSrcs[0];
         zombieFootStepSrc = arrayOfSrcs[1];
@@ -382,7 +385,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             }
             else
             {
-                int rng = Random.Range(0, groanTheresHold);
+                int rng = UnityEngine.Random.Range(0, groanTheresHold);
                 if (groanChance >= rng)
                 {
                     audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50f, audioManagerZombies.instance.zombieGroanClips, 1.1f);
