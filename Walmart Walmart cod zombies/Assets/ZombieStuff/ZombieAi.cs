@@ -29,7 +29,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     bool isWalking = false;
     bool isClmbingANDOutside = false;
     bool collided = false;
-    float timeBeenClimbing = 0;
+    ZombieSpawnPosition spawnPosition;
 
     int groanChance = 0;
     int groanTheresHold = 100;
@@ -44,6 +44,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     void Start()
     {
+        spawnPosition = ZombieSpawnPosition.Front;
         AudioSource[] arrayOfSrcs = GetComponents<AudioSource>();
         zombieSrc = arrayOfSrcs[0];
         zombieFootStepSrc = arrayOfSrcs[1];
@@ -67,7 +68,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
         //targets a random window in the spawn area
         //so like if the zombie spawn in the back we would target back windows
-        targetWindow = WoodenBoardManager.instance.randomQueue();
+        targetWindow = WoodenBoardManager.instance.randomQueue(spawnPosition);
         queuePosition = targetWindow.addZombieOntoQueue(gameObject);
         if (targetWindow != null)
         {
@@ -388,6 +389,12 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                 }
             }
         }
+    }
+    //tells the which position it spawns in. Happens before start. Awake->interfaces->start.
+    //this is important because we need to know the spawn position before start to determine which window to target
+    public void zombieSpawnPos(ZombieSpawnPosition position) 
+    {
+        spawnPosition = position;
     }
 
     //returns the hp left

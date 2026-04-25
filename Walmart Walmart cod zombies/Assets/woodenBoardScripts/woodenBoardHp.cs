@@ -119,7 +119,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
             {
                 
                 //tells the manager to get it out of queue
-                WoodenBoardManager.instance.switchQueueToFull(this);
+                WoodenBoardManager.instance.switchQueueToFull(this,gameObject.layer);
             }
           
             return queuePosition[zombieQueue.Count - 1];
@@ -130,8 +130,11 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     //moves the zombies up the Queue once the first zombie finish climbing the window
     public GameObject moveQueueUp() 
     {     
+
         if (zombieQueue.Count-1 > 0) 
         {
+            //switch to not full
+            WoodenBoardManager.instance.switchQueueToNotFull(this, gameObject.layer);
             zombieQueue.Remove(zombieQueue[0]);
             /* foreach (GameObject zombies in zombieQueue) 
              {
