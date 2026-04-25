@@ -69,6 +69,7 @@ MonoBehaviour:
   PlayerAddBoard: {fileID: 8300000, guid: e128f62673d0f8e4ca0c6e449ee7048c, type: 3}
   zombieRemoveBoard: {fileID: 8300000, guid: aa84472b7e6917a4e89746f2b7c00106, type: 3}
   zombieFootStep: {fileID: 8300000, guid: d235d3fe87e77804c9c0ca7e846a9bcc, type: 3}
+  playerFootSteps: {fileID: 8300000, guid: 6ff7ff6e0572636438f31d0dc11e377a, type: 3}
   sfxVolume: 50
   musicVolume: 50
   masterVolume: 50

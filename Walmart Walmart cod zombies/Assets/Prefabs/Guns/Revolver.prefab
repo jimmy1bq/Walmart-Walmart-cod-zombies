@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7632223286303491097
 Transform:
   m_ObjectHideFlags: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924a9d518f455d24ba4bbb388057f7f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponData: {fileID: 11400000, guid: 0e6eecf1018e2154cbdedb774320c412, type: 2}
+  weaponData: {fileID: 0}
   muzzlePoint: {fileID: 2767877422199911589}
   muzzleFlashSprites:
   - {fileID: -852581652, guid: ed1d6708d190238468f27a09fb290b7a, type: 3}

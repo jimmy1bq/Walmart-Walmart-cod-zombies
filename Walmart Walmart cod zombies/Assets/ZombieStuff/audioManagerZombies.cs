@@ -5,6 +5,8 @@ using System.Security.Cryptography.X509Certificates;
 
 public class audioManagerZombies : MonoBehaviour
 {
+    //audio clips
+    //put all audio clip here please
     public static audioManagerZombies instance;
     public List<AudioClip> zombieAttackClips;
     public List<AudioClip> zombieGroanClips;
@@ -12,6 +14,7 @@ public class audioManagerZombies : MonoBehaviour
     public AudioClip PlayerAddBoard;
     public AudioClip zombieRemoveBoard;
     public AudioClip zombieFootStep;
+    public AudioClip playerFootSteps;
     public float sfxVolume = 100;
     public float musicVolume = 100;
     public float masterVolume = 100;
@@ -78,6 +81,7 @@ public class audioManagerZombies : MonoBehaviour
             //    zombSource.volume = sfxVolume;
             zombSource.pitch = 0.5f;
             zombSource.clip = zombieFootStep;
+            zombSource.volume = sfxVolume;
             zombSource.Play();
         }
     }
@@ -85,6 +89,7 @@ public class audioManagerZombies : MonoBehaviour
     public void playWoodenBoard(AudioSource zombSource, Vector3 position, float pitch,int removeOrAdd) 
     {
         zombSource.pitch = pitch;
+        zombSource.volume = sfxVolume;
         switch (removeOrAdd) 
         {
             case 0: zombSource.clip = PlayerAddBoard; break;
@@ -104,10 +109,23 @@ public class audioManagerZombies : MonoBehaviour
             case 3: playerSource.clip = backgroundMusic[3]; break;
         }
         //playervolume here by doing playersource.volume
-        playerSource.volume = 200f;
+        playerSource.volume = musicVolume;
         playerSource.Play();
     }
+    //plays the footstep for the player if its not alreadying playing
+    public void playPlayerFootStep(AudioSource playerSoruce,Vector3 playerPosition) 
+    {
+        if (!playerSoruce.isPlaying) 
+        {
+            //pitch is the speed 
+            playerSoruce.pitch = 0.5f;
+            playerSoruce.clip = playerFootSteps;
+            playerSoruce.volume = sfxVolume;
+            playerSoruce.Play();
+        }
+    }
     //changes the value so later on UI manager can call
+    //so like if the sfx vol gets changed then this should also change
     public void changeSfxVolume(float val) 
     {
     
