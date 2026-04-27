@@ -383,7 +383,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             yield return null;
         }
     }
-    //polish and adjust this later
+   
     void groan(float time) 
     {
         //only groan when the zombie is walking
