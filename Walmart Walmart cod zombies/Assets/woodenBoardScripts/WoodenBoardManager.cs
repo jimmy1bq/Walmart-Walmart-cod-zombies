@@ -72,7 +72,7 @@ public class WoodenBoardManager : MonoBehaviour
     {
         switch (position) 
         {
-            case ZombieSpawnPosition.Front: return notFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.notFullqueued.Count)];
+            case ZombieSpawnPosition.Front:return notFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.notFullqueued.Count)];
             case ZombieSpawnPosition.Left: return leftNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.leftNotFullqueued.Count)];
             case ZombieSpawnPosition.Back: return backNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.backNotFullqueued.Count)];
             case ZombieSpawnPosition.Right: return rightNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.rightNotFullqueued.Count)];
@@ -86,6 +86,7 @@ public class WoodenBoardManager : MonoBehaviour
         foreach (GameObject boards in G0Board) 
         {
             listToAddTo(boards,boards.layer);
+           
         }  
     }
   

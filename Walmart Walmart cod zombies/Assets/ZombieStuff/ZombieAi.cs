@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
@@ -44,7 +45,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     void Start()
     {
-        spawnPosition = ZombieSpawnPosition.Front;
+        head = transform.GetChild(0).gameObject.transform.Find("Head").gameObject;
+        ZombieSpawnPosition[] spawnPositions = (ZombieSpawnPosition[])Enum.GetValues(typeof(ZombieSpawnPosition));
+        spawnPosition = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Length - 1)];
+        
         AudioSource[] arrayOfSrcs = GetComponents<AudioSource>();
         zombieSrc = arrayOfSrcs[0];
         zombieFootStepSrc = arrayOfSrcs[1];
@@ -62,10 +66,12 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
         //we only need the zombie to jump the window once(play the animation once)
         //don't need to loop attacl
+        animationer[animationStates[7].name].wrapMode = WrapMode.Once;
+        animationer[animationStates[6].name].wrapMode = WrapMode.Once;
         animationer[animationStates[5].name].wrapMode = WrapMode.Once;
         animationer[animationStates[1].name].wrapMode = WrapMode.Once;
         animationer[animationStates[0].name].wrapMode = WrapMode.Once;
-
+       
         //targets a random window in the spawn area
         //so like if the zombie spawn in the back we would target back windows
         targetWindow = WoodenBoardManager.instance.randomQueue(spawnPosition);
@@ -92,7 +98,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         TickSystem.frequenttickTime.AddListener(trackPlayerPoistion);
         TickSystem.tickEvent.AddListener(groan);
         agent.autoTraverseOffMeshLink = false;
-
+        
     }
 
 
@@ -318,6 +324,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         }
         if (health <= 0)
         {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
             if (PointsManager.Instance != null)
                 PointsManager.Instance.AddPoints(PointsManager.Instance.killPoints);
             if (RoundManager.Instance != null)
@@ -328,14 +336,20 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     }
     IEnumerator zombieDeath(bool headShotKill) 
     {
-        if (headShotKill) { Destroy(head);/*play particle*/}
+
+        Debug.Log(headShotKill);
+        if (headShotKill)
+        {
+            Destroy(head);
+            GameObject gibParticle = transform.GetChild(0).transform.Find("gib").transform.gameObject;
+            gibParticle.SetActive(true);
+        }
         if (isClmbingANDOutside)
         {
-            animationer.Play(animationStates[7].ToString());
+            animationer.Play(animationStates[7].name);
         }
-        else { animationer.Play(animationStates[6].ToString()); }
-        GameObject gibParticle = head.transform.Find("gib").transform.gameObject;
-        gibParticle.SetActive(true);
+        else {animationer.Play(animationStates[6].name);}
+      
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
 
@@ -369,7 +383,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             yield return null;
         }
     }
-
+    //polish and adjust this later
     void groan(float time) 
     {
         //only groan when the zombie is walking
@@ -382,7 +396,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             }
             else
             {
-                int rng = Random.Range(0, groanTheresHold);
+                int rng = UnityEngine.Random.Range(0, groanTheresHold);
                 if (groanChance >= rng)
                 {
                     audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50f, audioManagerZombies.instance.zombieGroanClips, 1.1f);
