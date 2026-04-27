@@ -393,6 +393,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             if (groanChance >= groanTheresHold)
             {
                 audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50f, audioManagerZombies.instance.zombieGroanClips, 1.1f);
+                groanChance = 0;
             }
             else
             {
@@ -400,6 +401,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                 if (groanChance >= rng)
                 {
                     audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50f, audioManagerZombies.instance.zombieGroanClips, 1.1f);
+                    groanChance = 0;
                 }
             }
         }
