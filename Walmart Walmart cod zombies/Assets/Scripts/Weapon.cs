@@ -99,7 +99,7 @@ public class Weapon : MonoBehaviour
 
         Shoot(aimOrigin);
     }
-
+    //check tag for headshot; if its the head then zombie takeDamage should be (weaponData.damage,1)
     void Shoot(Transform aimOrigin)
     {
         _currentAmmo--;
@@ -115,7 +115,7 @@ public class Weapon : MonoBehaviour
             {
                 IDamageAble zombie = hit.collider.GetComponent<IDamageAble>();
                 if (zombie != null)
-                    zombie.takeDamage(weaponData.damage);
+                    zombie.takeDamage(weaponData.damage,0);
 
                 tracerEnd = hit.point;
             }

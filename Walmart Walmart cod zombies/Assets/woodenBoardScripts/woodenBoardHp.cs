@@ -52,7 +52,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
 
     //param  damageToTake: float to subtract off hp
     //return the health left after taking damage
-    public float takeDamage(float damageToTake) 
+    public float takeDamage(float damageToTake,int damageType) 
     {
         if (health > 0) 
         {
@@ -119,7 +119,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
             {
                 
                 //tells the manager to get it out of queue
-                WoodenBoardManager.instance.switchQueueToFull(this);
+                WoodenBoardManager.instance.switchQueueToFull(this,gameObject.layer);
             }
           
             return queuePosition[zombieQueue.Count - 1];
@@ -129,12 +129,13 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
 
     //moves the zombies up the Queue once the first zombie finish climbing the window
     public GameObject moveQueueUp() 
-    {
-        Debug.Log(zombieQueue.Count);
+    {     
+
         if (zombieQueue.Count-1 > 0) 
         {
+            //switch to not full
+            WoodenBoardManager.instance.switchQueueToNotFull(this, gameObject.layer);
             zombieQueue.Remove(zombieQueue[0]);
-            int i = 0;
             /* foreach (GameObject zombies in zombieQueue) 
              {
                  zombies.GetComponent<IQueue>().updateQueuePoistion(queuePosition[i]);

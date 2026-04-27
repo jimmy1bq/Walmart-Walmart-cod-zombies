@@ -11,3 +11,8 @@ NavMesh Link:
 Radius is the area where the entites can start using it.
 Ex:   <radius>-link-<radius>
 if an entity goes on the radius they can use the link
+Acutally only if they decide to use ti they are considred on the link.
+
+
+For player fireAudio: I already attached the clip for it just change the pitch to liking. Also for zombie gibbing its a bit hard to get with unity's particle system
+

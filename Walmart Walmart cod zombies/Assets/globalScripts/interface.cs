@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 public interface IDamageAble 
 {
-    public float takeDamage(float damage);
+    public float takeDamage(float damage,int damageType);
     public float returnHP();
 }
 public interface IInteractable

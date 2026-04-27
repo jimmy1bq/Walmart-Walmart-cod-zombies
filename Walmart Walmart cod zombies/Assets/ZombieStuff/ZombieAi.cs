@@ -9,6 +9,7 @@ using UnityEngine.AI;
 public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 {
     //entity stats like range agent and targeys
+    [SerializeField] GameObject head;
     [SerializeField] entityStatSO stats;
     [SerializeField] float range;
     float health;
@@ -26,9 +27,13 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     bool targetIsBoard = false;
     bool isWalking = false;
+    bool isClmbingANDOutside = false;
+    bool collided = false;
+    ZombieSpawnPosition spawnPosition;
 
     int groanChance = 0;
     int groanTheresHold = 100;
+    float timer = 0;
 
     Coroutine attackCoroutine;
 
@@ -39,6 +44,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     void Start()
     {
+        spawnPosition = ZombieSpawnPosition.Front;
         AudioSource[] arrayOfSrcs = GetComponents<AudioSource>();
         zombieSrc = arrayOfSrcs[0];
         zombieFootStepSrc = arrayOfSrcs[1];
@@ -62,7 +68,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
         //targets a random window in the spawn area
         //so like if the zombie spawn in the back we would target back windows
-        targetWindow = WoodenBoardManager.instance.randomQueue();
+        targetWindow = WoodenBoardManager.instance.randomQueue(spawnPosition);
         queuePosition = targetWindow.addZombieOntoQueue(gameObject);
         if (targetWindow != null)
         {
@@ -116,16 +122,18 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         //if the board has more than 0 hp we attack
         if (damageAble != null)
         {
-            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0)
+            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0 && !collided)
             {
+                collided = true;
                 animationer.Play(animationStates[3].name);
                 agent.updateRotation = false;
                 attackCoroutine = StartCoroutine(attackboard(other.gameObject));
             }
 
             //if the board doesn't have any hp we can skip the attack
-            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0)
+            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0 && !collided)
             {
+                collided = true;
                 animationer.Play(animationStates[3].name);
                 link = other.transform.parent.GetComponent<NavMeshLink>();
                 transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
@@ -198,7 +206,20 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
        
 
     }
-
+    //when the zombie climbs the board the first x second its considered outside so we have to play climb out death animation if it dies
+    IEnumerator climbBoardTimer(AnimationState animation,int timeTowait) 
+    {
+        yield return new WaitForSeconds(timeTowait);
+        while (true) 
+        {
+            //this is so peak
+            //for the first 0.25f second ish the zombie is climbing the window and outside and if it dies should play the climb window out death anim
+            isClmbingANDOutside = true;
+            timer += Time.deltaTime;
+            if (timer>0.25f) { Debug.Log("INSIDE"); isClmbingANDOutside = false; break;}
+            yield return new WaitForFixedUpdate();
+        }
+    }
     //attacks the gameobject "other" and plays the animation based on the given int
     float attack(GameObject other, int animationToPlay)
     {
@@ -216,8 +237,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //param wairPeriod: Time to wait for animation
     //param other: gameObject to do something with
     IEnumerator waitUntilAnimFinishPlaying(AnimationState animation, int actionAfterWards,int waitPeriod,GameObject other)
-    {
-
+    {     
         yield return new WaitForSeconds(waitPeriod);    
         //animation clips ranges from 0 to 1 if you don't loop
         animationer.Play(animation.name);
@@ -243,7 +263,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         switch (actionAfterWards)
         {
             case 0:
-
+               
                 agent.isStopped = false;
                 player = GameObject.FindGameObjectWithTag("Player");             
                 GameObject endPoints = link.gameObject.transform.Find("p2").gameObject;
@@ -259,13 +279,15 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                 break;
 
             case 1:
-                float hpLeft = directedGameObject.GetComponent<IDamageAble>().takeDamage(stats.meleeDamage);
+                ///ignore the int args
+                float hpLeft = directedGameObject.GetComponent<IDamageAble>().takeDamage(stats.meleeDamage,0);
                 if (hpLeft <= 0)
                 {
                     //climb
                     targetIsBoard = false;
                     attackCoroutine = null;
                     StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0 , 2 , board));
+                    StartCoroutine(climbBoardTimer(animationStates[5], 2));
                 }
                 else
                 {
@@ -284,18 +306,39 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     }
 
     //takes damage from something
-    public float takeDamage(float damage)
+    //check if its correct the damageType
+    public float takeDamage(float damage,int damageType)
     {
-        health -= damage;
+        bool headShotkIll = false;
+        //1 for headshots
+        switch (damageType) 
+        {
+            case 0:  health-=damage;  headShotkIll = false; break;
+            case 1: health -= damage*2.5f; headShotkIll = true; break;
+        }
         if (health <= 0)
         {
             if (PointsManager.Instance != null)
                 PointsManager.Instance.AddPoints(PointsManager.Instance.killPoints);
             if (RoundManager.Instance != null)
                 RoundManager.Instance.OnZombieKilled();
-            Destroy(gameObject);
+            StartCoroutine(zombieDeath(headShotkIll));
         }
         return health;
+    }
+    IEnumerator zombieDeath(bool headShotKill) 
+    {
+        if (headShotKill) { Destroy(head);/*play particle*/}
+        if (isClmbingANDOutside)
+        {
+            animationer.Play(animationStates[7].ToString());
+        }
+        else { animationer.Play(animationStates[6].ToString()); }
+        GameObject gibParticle = head.transform.Find("gib").transform.gameObject;
+        gibParticle.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        Destroy(gameObject);
+
     }
 
     //once the zombie is finished(animation and over the wall) we have to tell the zombie that its position has been update and now he should advance onto the next point
@@ -318,7 +361,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
             if ((gameObject.transform.position - positionToMove.transform.position).magnitude < 0.5f)
             {
-                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, positionToMove.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, targetWindow.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
                 isWalking = false;
                 animationer.Play(animationStates[3].name);
                 break;
@@ -347,12 +390,19 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             }
         }
     }
+    //tells the which position it spawns in. Happens before start. Awake->interfaces->start.
+    //this is important because we need to know the spawn position before start to determine which window to target
+    public void zombieSpawnPos(ZombieSpawnPosition position) 
+    {
+        spawnPosition = position;
+    }
 
     //returns the hp left
     public float returnHP()
     {
         return health;
     }
+    
 }
 
 
