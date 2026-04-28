@@ -6,17 +6,12 @@ public class RoundManager : MonoBehaviour
 {
     public static RoundManager Instance { get; private set; }
 
-    [Header("Zombie Prefab & Spawn Points")]
-    public GameObject zombiePrefab;
-    public Transform[] spawnPoints;
-
     [Header("Round Scaling")]
-    public int baseZombieCount = 6;
+    public int baseZombieCount        = 6;
     public int zombiesPerRoundIncrease = 2;
 
-    [Header("Spawn Pacing")]
-    public int maxZombiesAlive = 24;
-    public float spawnInterval = 1.5f;
+    [Header("Pacing")]
+    public int   maxZombiesAlive = 24;
     public float roundStartDelay = 5f;
 
     public int CurrentRound       { get; private set; }
@@ -39,9 +34,11 @@ public class RoundManager : MonoBehaviour
 
     IEnumerator RoundLoop(int round)
     {
+        // Wait one frame so all Start() methods (including spawner subscriptions) finish
+        yield return null;
+
         while (true)
         {
-            // ---- setup ----
             CurrentRound       = round;
             ZombiesAlive       = 0;
             ZombiesLeftToSpawn = ZombieCountForRound(round);
@@ -49,33 +46,24 @@ public class RoundManager : MonoBehaviour
 
             yield return new WaitForSeconds(roundStartDelay);
 
-            // ---- spawn all zombies for this round ----
-            while (ZombiesLeftToSpawn > 0)
-            {
-                yield return new WaitUntil(() => ZombiesAlive < maxZombiesAlive);
-                SpawnZombie();
-                ZombiesLeftToSpawn--;
-                yield return new WaitForSeconds(spawnInterval);
-            }
+            // Wait until all zombies have been spawned AND killed
+            yield return new WaitUntil(() => ZombiesLeftToSpawn <= 0 && ZombiesAlive <= 0);
 
-            // ---- wait for every zombie to be killed ----
-            yield return new WaitUntil(() => ZombiesAlive <= 0);
-
-            // ---- round over ----
             onRoundEnd?.Invoke();
             round++;
         }
     }
 
-    void SpawnZombie()
+    // Called by zombieSpawnThing to atomically claim one spawn slot.
+    // Returns true if a zombie should be spawned.
+    public bool TryClaimSpawn()
     {
-        if (zombiePrefab == null || spawnPoints == null || spawnPoints.Length == 0) return;
-        Transform sp = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        Instantiate(zombiePrefab, sp.position, sp.rotation);
+        if (ZombiesLeftToSpawn <= 0 || ZombiesAlive >= maxZombiesAlive) return false;
+        ZombiesLeftToSpawn--;
         ZombiesAlive++;
+        return true;
     }
 
-    // Called by ZombieAi on death — just a counter decrement now
     public void OnZombieKilled()
     {
         ZombiesAlive = Mathf.Max(0, ZombiesAlive - 1);

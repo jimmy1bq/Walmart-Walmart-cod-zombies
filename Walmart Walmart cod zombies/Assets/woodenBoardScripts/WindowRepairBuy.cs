@@ -1,31 +1,25 @@
-using System.Collections;
 using UnityEngine;
 using TMPro;
 
 [RequireComponent(typeof(Collider))]
-public class interactables : MonoBehaviour
+public class WindowRepairBuy : MonoBehaviour
 {
-    [Header("Cost")]
-    public int cost = 750;
+    [Header("Windows")]
+    public woodenBoardHp[] windows;
 
-    [Header("Room Unlock")]
-    public bool unlocksRoom = false;
-    public RoomId[] roomsToUnlock = new RoomId[] { RoomId.G1 };
+    [Header("Cost")]
+    public int cost = 1500;
 
     [Header("Interaction")]
     public KeyCode interactKey = KeyCode.E;
 
-    [Header("Audio")]
-    public AudioClip clearSound;
-
-    [Header("Screen-Space Prompt (HUD Canvas)")]
+    [Header("UI")]
     public GameObject promptPanel;
     public TextMeshProUGUI promptText;
     public TextMeshProUGUI cantAffordText;
 
     PlayerController _playerInRange;
     float _cantAffordTimer;
-    bool _purchased;
 
     void Start()
     {
@@ -36,10 +30,10 @@ public class interactables : MonoBehaviour
 
     void Update()
     {
-        if (_playerInRange == null || _purchased) return;
+        if (_playerInRange == null) return;
 
         if (Input.GetKeyDown(interactKey))
-            TryPurchase();
+            TryRepair();
 
         if (_cantAffordTimer > 0f)
         {
@@ -49,7 +43,7 @@ public class interactables : MonoBehaviour
         }
     }
 
-    void TryPurchase()
+    void TryRepair()
     {
         if (PointsManager.Instance == null) return;
 
@@ -59,31 +53,11 @@ public class interactables : MonoBehaviour
             return;
         }
 
-        _purchased = true;
-        SetPromptVisible(false);
-
-        if (unlocksRoom && WoodenBoardManager.instance != null)
-            foreach (RoomId room in roomsToUnlock)
-                WoodenBoardManager.instance.UnlockRoom(room);
-
-        StartCoroutine(PlaySoundThenDestroy());
-    }
-
-    IEnumerator PlaySoundThenDestroy()
-    {
-        if (clearSound != null)
+        foreach (woodenBoardHp window in windows)
         {
-            // Spawn a temporary AudioSource so the sound survives the destroy
-            GameObject soundObj = new GameObject("ObstructionClearSound");
-            soundObj.transform.position = transform.position;
-            AudioSource src = soundObj.AddComponent<AudioSource>();
-            src.clip = clearSound;
-            src.Play();
-            Destroy(soundObj, clearSound.length + 0.1f);
+            if (window != null)
+                window.repairAll();
         }
-
-        Destroy(gameObject);
-        yield break;
     }
 
     void ShowCantAfford()
@@ -97,18 +71,12 @@ public class interactables : MonoBehaviour
     void SetPromptVisible(bool visible)
     {
         if (promptPanel != null) promptPanel.SetActive(visible);
-        RefreshPrompt();
-    }
-
-    void RefreshPrompt()
-    {
         if (promptText != null)
-            promptText.text = $"[{interactKey}]  Clear Obstruction  –  {cost} pts";
+            promptText.text = $"[{interactKey}]  Repair All Windows  –  {cost} pts";
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (_purchased) return;
         PlayerController pc = other.GetComponent<PlayerController>();
         if (pc != null)
         {

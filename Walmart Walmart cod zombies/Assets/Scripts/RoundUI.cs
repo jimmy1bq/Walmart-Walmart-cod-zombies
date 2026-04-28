@@ -2,18 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-/// <summary>
-/// Single red round-number text that lives permanently in the top-left corner.
-/// On each new round it slides at an angle to the screen centre, scales up,
-/// holds briefly, then travels back and shrinks to its home position.
-///
-/// Setup:
-///   1. Create a TMP Text in the Canvas, set its colour to red, position it
-///      where you want it to live (top-left corner area).
-///   2. Assign that Text to the roundText field.
-///   3. Set centerPosition to (0,0) if the Canvas anchor is at centre,
-///      or tweak until the text lands in the middle of the screen.
-/// </summary>
+
 public class RoundUI : MonoBehaviour
 {
     [Header("UI")]

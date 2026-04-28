@@ -99,29 +99,46 @@ public class Weapon : MonoBehaviour
 
         Shoot(aimOrigin);
     }
+    public void RefillAmmo()
+    {
+        if (weaponData == null) return;
+        _currentAmmo  = weaponData.clipSize;
+        _reserveAmmo  = weaponData.maxAmmo - weaponData.clipSize;
+        _isReloading  = false;
+    }
+
     //check tag for headshot; if its the head then zombie takeDamage should be (weaponData.damage,1)
     void Shoot(Transform aimOrigin)
     {
         _currentAmmo--;
         _nextFireTime = Time.time + weaponData.fireRate;
 
+        bool doubleTap = PowerupManager.Instance != null && PowerupManager.Instance.IsDoubleTap;
+        int shots = doubleTap ? 2 : 1;
+
+        for (int s = 0; s < shots; s++)
         for (int i = 0; i < weaponData.pelletCount; i++)
         {
             Vector3 direction = ApplySpread(aimOrigin.forward);
             Ray ray = new Ray(aimOrigin.position, direction);
-            Vector3 tracerEnd;
+            Vector3 tracerEnd = ray.origin + ray.direction * weaponData.range;
 
-            if (Physics.Raycast(ray, out RaycastHit hit, weaponData.range))
+            RaycastHit[] hits = Physics.RaycastAll(ray, weaponData.range);
+            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            foreach (RaycastHit hit in hits)
             {
-                IDamageAble zombie = hit.collider.GetComponent<IDamageAble>();
-                if (zombie != null)
-                    zombie.takeDamage(weaponData.damage,0);
+                IDamageAble damageable = hit.collider.GetComponentInParent<IDamageAble>();
 
+                // Skip non-damageable mesh/box colliders — walls, window frames, stairs, etc.
+                if (damageable == null && (hit.collider is MeshCollider || hit.collider is BoxCollider)) continue;
+
+                if (damageable != null)
+                {
+                    int damageType = hit.collider.CompareTag("Head") ? 1 : 0;
+                    damageable.takeDamage(weaponData.damage, damageType);
+                }
                 tracerEnd = hit.point;
-            }
-            else
-            {
-                tracerEnd = ray.origin + ray.direction * weaponData.range;
+                break;
             }
 
             StartCoroutine(SpawnTracer(ray.origin, tracerEnd));
@@ -189,10 +206,4 @@ public class Weapon : MonoBehaviour
     }
 
     public void ForceReload() => BeginReload();
-
-    public void RefillAmmo()
-    {
-        if (weaponData == null) return;
-        _reserveAmmo = weaponData.maxAmmo - weaponData.clipSize;
-    }
 }

@@ -1,22 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Shows a controls-screen overlay at game start.
-/// The panel is hidden the moment the player presses any key or clicks.
-///
-/// Setup in the Inspector:
-///   controlsPanel  — assign the root UI panel that contains the controls layout
-///   (Build your panel with the layout shown in the HUD reference image)
-///
-/// Controls shown:
-///   Move          : W A S D
-///   Look Around   : Mouse
-///   Shoot         : Left Click
-///   Interact      : E
-///   Sprint        : Shift
-///   Reload        : R
-///   Switch Weapon : F
-/// </summary>
+
 public class ControlsDisplay : MonoBehaviour
 {
     [Header("UI")]

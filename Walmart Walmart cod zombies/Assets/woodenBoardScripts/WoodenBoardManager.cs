@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using UnityEngine.Events;
 //manages the boards of the map using a heap
 public class WoodenBoardManager : MonoBehaviour
 {
@@ -20,7 +21,9 @@ public class WoodenBoardManager : MonoBehaviour
     //queue size is 4
     //+1 for attack zombie
     public static WoodenBoardManager instance;
-    
+    public static UnityEvent<RoomId> onRoomUnlocked = new UnityEvent<RoomId>();
+    private HashSet<RoomId> _unlockedRooms = new HashSet<RoomId>();
+
     //it looks like theres zones where the zombie spawn and randomly chooses the board from?
     public List<woodenBoardHp> notFullqueued = new List<woodenBoardHp>();
     public List<woodenBoardHp> fullQueued = new List<woodenBoardHp>();
@@ -39,8 +42,25 @@ public class WoodenBoardManager : MonoBehaviour
     private void Awake()
     {
         if (instance == null) { instance = this; } else { Destroy(this); }
-        addGR0Room();
-       
+        UnlockRoom(RoomId.G0);
+    }
+
+    public bool IsRoomUnlocked(RoomId room) => _unlockedRooms.Contains(room);
+
+    public void UnlockRoom(RoomId room)
+    {
+        if (_unlockedRooms.Contains(room)) return;
+        _unlockedRooms.Add(room);
+        switch (room)
+        {
+            case RoomId.G0: addGR0Room(); break;
+            case RoomId.G1: addGR1Room(); break;
+            case RoomId.G2: addGR2Room(); break;
+            case RoomId.F1: addF1Room();  break;
+            case RoomId.F2: addF2oom();   break;
+            case RoomId.F3: addF3Room();  break;
+        }
+        onRoomUnlocked.Invoke(room);
     }
     //removes from q1 and puts it into q2 or removes from the not full list and moves it into the full list
     public void switchQueueToFull(woodenBoardHp objeck,int maskLayer)
@@ -70,15 +90,17 @@ public class WoodenBoardManager : MonoBehaviour
     //returns a randomBoardOn the Mapadd
     public woodenBoardHp randomQueue(ZombieSpawnPosition position)
     {
-        switch (position) 
+        List<woodenBoardHp> list;
+        switch (position)
         {
-            case ZombieSpawnPosition.Front:return notFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.notFullqueued.Count)];
-            case ZombieSpawnPosition.Left: return leftNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.leftNotFullqueued.Count)];
-            case ZombieSpawnPosition.Back: return backNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.backNotFullqueued.Count)];
-            case ZombieSpawnPosition.Right: return rightNotFullqueued[(int)UnityEngine.Random.Range(0, WoodenBoardManager.instance.rightNotFullqueued.Count)];
+            case ZombieSpawnPosition.Front:  list = notFullqueued;      break;
+            case ZombieSpawnPosition.Left:   list = leftNotFullqueued;  break;
+            case ZombieSpawnPosition.Back:   list = backNotFullqueued;  break;
+            case ZombieSpawnPosition.Right:  list = rightNotFullqueued; break;
+            default: return null;
         }
-        Debug.Log("SHOULD RETURN SOMETHING"); return null;
-     
+        if (list == null || list.Count == 0) return null;
+        return list[UnityEngine.Random.Range(0, list.Count)];
     }
     //adds room 0's board so the zombie can target them
     public void addGR0Room()

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageAble
 {
     [Header("Movement")]
     public float moveSpeed = 6f;
@@ -22,21 +22,32 @@ public class PlayerController : MonoBehaviour
     public Vector3 sprintTiltEuler = new Vector3(10f, -40f, 45f);
     public float sprintTiltSpeed = 10f;
 
+    [Header("Health")]
+    public int maxHits = 5;
+    public float regenDelay = 15f;
+    [SerializeField] GameObject deathPanel;
+
     CharacterController _controller;
     Vector3 _velocity;
     float _verticalRotation;
     int _currentWeaponIndex;
     Camera playerCam;
     AudioSource footStep;
+
+    int _hitsRemaining;
+    float _regenTimer;
+    bool _isDead;
  
 
     private void Awake()
     {
-         footStep = GetComponent<AudioSource>();
+        footStep = GetComponent<AudioSource>();
+        _hitsRemaining = maxHits;
     }
     bool _isSprinting;
     Quaternion _weaponIdleRotation;
     Quaternion _currentSprintTilt = Quaternion.identity;
+    float _repairCooldown = 0f;
 
     void Start()
     {
@@ -68,11 +79,19 @@ public class PlayerController : MonoBehaviour
 
         _weaponIdleRotation = weaponHolder != null ? weaponHolder.localRotation : Quaternion.identity;
 
+        playerCam = cameraHolder != null ? cameraHolder.GetComponentInChildren<Camera>() : Camera.main;
+
         EquipWeapon(0);
     }
 
     void Update()
     {
+        if (_isDead) return;
+
+        _regenTimer += Time.deltaTime;
+        if (_regenTimer >= regenDelay && _hitsRemaining < maxHits)
+            _hitsRemaining = maxHits;
+
         HandleMouseLook();
         HandleMovement();
         HandleWeaponTilt();
@@ -80,6 +99,7 @@ public class PlayerController : MonoBehaviour
         HandleReload();
         HandleShooting();
         TickReloads();
+        repairWindow();
     }
 
     // Tick reload timers from PlayerController so they complete even when
@@ -91,19 +111,17 @@ public class PlayerController : MonoBehaviour
     }
     void repairWindow()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                //check if it needs repair otherwise slap text
-                if (hit.collider.gameObject.CompareTag("PotentialBoard") && hit.collider.transform.parent.Find("woodenBoard").GetComponent<IDamageAble>().returnHP()<120)
-                {
-                    hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
-                }
-            }
+        _repairCooldown -= Time.deltaTime;
+        if (!Input.GetKey(KeyCode.E) || _repairCooldown > 0f) return;
 
+        Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (!Physics.Raycast(ray, out hit, 2.5f)) return;
+
+        if (hit.collider.gameObject.CompareTag("PotentialBoard"))
+        {
+            hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
+            _repairCooldown = 0.75f;
         }
     }
     void HandleMouseLook()
@@ -286,4 +304,24 @@ public class PlayerController : MonoBehaviour
     }
 
     public Weapon CurrentWeapon => weaponSlots[_currentWeaponIndex];
+
+    public float takeDamage(float damage, int damageType)
+    {
+        if (_isDead) return 0f;
+        _hitsRemaining--;
+        _regenTimer = 0f;
+        if (_hitsRemaining <= 0)
+            Die();
+        return _hitsRemaining;
+    }
+
+    public float returnHP() => _hitsRemaining;
+
+    void Die()
+    {
+        _isDead = true;
+        if (deathPanel != null) deathPanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
 }

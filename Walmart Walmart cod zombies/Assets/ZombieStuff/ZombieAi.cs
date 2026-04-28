@@ -12,7 +12,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //entity stats like range agent and targeys
     [SerializeField] GameObject head;
     [SerializeField] entityStatSO stats;
-    [SerializeField] float range;
+    [SerializeField] float range = 1.5f;
     float health;
     NavMeshAgent agent;
     NavMeshLink link;
@@ -24,12 +24,12 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     //Animation variables
     Animation animationer;
-    AnimationState[] animationStates = new AnimationState[8];
 
     bool targetIsBoard = false;
     bool isWalking = false;
     bool isClmbingANDOutside = false;
     bool collided = false;
+    bool isDead = false;
     ZombieSpawnPosition spawnPosition;
 
     int groanChance = 0;
@@ -46,8 +46,6 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     void Start()
     {
         head = transform.GetChild(0).gameObject.transform.Find("Head").gameObject;
-        ZombieSpawnPosition[] spawnPositions = (ZombieSpawnPosition[])Enum.GetValues(typeof(ZombieSpawnPosition));
-        spawnPosition = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Length - 1)];
         
         AudioSource[] arrayOfSrcs = GetComponents<AudioSource>();
         zombieSrc = arrayOfSrcs[0];
@@ -55,45 +53,40 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         health = stats.hp;
         agent = GetComponent<NavMeshAgent>();
         animationer = GetComponent<Animation>();
-        int i = 0;
-        //get them into an array so we can access for later
-        
-        foreach (AnimationState states in animationer)
-        {
-            animationStates[i] = states;
-            i++;
-        }
-
-        //we only need the zombie to jump the window once(play the animation once)
-        //don't need to loop attacl
-        animationer[animationStates[7].name].wrapMode = WrapMode.Once;
-        animationer[animationStates[6].name].wrapMode = WrapMode.Once;
-        animationer[animationStates[5].name].wrapMode = WrapMode.Once;
-        animationer[animationStates[1].name].wrapMode = WrapMode.Once;
-        animationer[animationStates[0].name].wrapMode = WrapMode.Once;
+        animationer["window_death_out 1"].wrapMode = WrapMode.Once;
+        animationer["window_death_in 1"].wrapMode = WrapMode.Once;
+        animationer["window_climb 1"].wrapMode = WrapMode.Once;
+        animationer["attack_window 1"].wrapMode = WrapMode.Once;
+        animationer["attack_player_1 1"].wrapMode = WrapMode.Once;
+        animationer["death_1 1"].wrapMode = WrapMode.Once;
        
-        //targets a random window in the spawn area
-        //so like if the zombie spawn in the back we would target back windows
+        //targets a random window in the spawn area; falls back to player if all queues are full
         targetWindow = WoodenBoardManager.instance.randomQueue(spawnPosition);
-        queuePosition = targetWindow.addZombieOntoQueue(gameObject);
         if (targetWindow != null)
         {
-            agent.destination = queuePosition.transform.position;
-            board = queuePosition;
-            isWalking = true;
-            StartCoroutine(onPosition(queuePosition));
-            targetIsBoard = true;
+            queuePosition = targetWindow.addZombieOntoQueue(gameObject);
+            if (queuePosition != null)
+            {
+                agent.destination = queuePosition.transform.position;
+                board = queuePosition;
+                isWalking = true;
+                StartCoroutine(onPosition(queuePosition));
+                targetIsBoard = true;
+            }
+            else
+            {
+                targetIsBoard = false;
+                isWalking = true;
+                player = GameObject.FindGameObjectWithTag("Player");
+                agent.destination = player.transform.position;
+            }
         }
-
-        //otherwise target player position
-        //remove this later because we are going to make a coroutine to make the zombie wait until theres an aviable window
-        //this should not happen but just in case yeahs
         else
         {
             targetIsBoard = false;
+            isWalking = true;
             player = GameObject.FindGameObjectWithTag("Player");
             agent.destination = player.transform.position;
-
         }
         TickSystem.frequenttickTime.AddListener(trackPlayerPoistion);
         TickSystem.tickEvent.AddListener(groan);
@@ -122,59 +115,46 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     private void OnTriggerEnter(Collider other)
     {
-
-        IDamageAble damageAble = other.gameObject.GetComponent<IDamageAble>();
-        //this should only happen when a board enters the zombies range AND only once so no need to check if theres an coroutine happening
-        //if the board has more than 0 hp we attack
-        if (damageAble != null)
-        {
-            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() > 0 && !collided)
-            {
-                collided = true;
-                animationer.Play(animationStates[3].name);
-                agent.updateRotation = false;
-                attackCoroutine = StartCoroutine(attackboard(other.gameObject));
-            }
-
-            //if the board doesn't have any hp we can skip the attack
-            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && other.gameObject.GetComponent<IDamageAble>().returnHP() <= 0 && !collided)
-            {
-                collided = true;
-                animationer.Play(animationStates[3].name);
-                link = other.transform.parent.GetComponent<NavMeshLink>();
-                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-                StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0, 2, other.gameObject));
-            }
-        }
-        //if its the player we attack the player
-        else if (other.gameObject.CompareTag("Player") && attackCoroutine == null)
+        if (other.gameObject.CompareTag("Player") && attackCoroutine == null)
         {
             animationer.Stop();
             attackCoroutine = StartCoroutine(attackPlayer(other.gameObject));
+            return;
         }
 
+        IDamageAble damageAble = other.gameObject.GetComponent<IDamageAble>();
+        if (damageAble != null)
+        {
+            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && damageAble.returnHP() > 0 && !collided)
+            {
+                collided = true;
+                animationer.Play("idle_1_loop 1");
+                agent.updateRotation = false;
+                attackCoroutine = StartCoroutine(attackboard(other.gameObject));
+            }
+            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && damageAble.returnHP() <= 0 && !collided)
+            {
+                collided = true;
+                animationer.Play("idle_1_loop 1");
+                link = other.transform.parent.GetComponent<NavMeshLink>();
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, other.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+                StartCoroutine(waitUntilAnimFinishPlaying(animationer["window_climb 1"], 0, 2, other.gameObject));
+            }
+        }
     }
     //attacks the player if the zombie is close enough 
     IEnumerator attackPlayer(GameObject player)
     {
+        agent.isStopped = true;
+        isWalking = false;
+        agent.velocity = Vector3.zero;
+        animationer.Play("attack_player_1 1");
+        audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50, audioManagerZombies.instance.zombieAttackClips, 1);
+        player.GetComponent<IDamageAble>()?.takeDamage(1f, 0);
 
-        if (agent.remainingDistance < range)
-        {
-            agent.isStopped = true;
-            isWalking = false;
-            //cancels the current animation and switches to smaking right away;
-            animationer.Play(animationStates[0].name);
-            audioManagerZombies.instance.playRandomZombieSound(zombieSrc,gameObject.transform.position,50,audioManagerZombies.instance.zombieAttackClips,1);
-            agent.velocity = Vector3.zero;
-            //player Damage Logic
-            //use attack(player,0);
-            //player is damaged first before the animation finish playing
-        }
         yield return new WaitForSeconds(2.00f);
 
-        //if the player get out of range this doesn't happen
-        //setting the destination to get the agent.remaining distance
-        if (agent.remainingDistance < range)
+        if (Vector3.Distance(transform.position, player.transform.position) <= range)
         {
             attackCoroutine = StartCoroutine(attackPlayer(player));
         }
@@ -183,11 +163,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             isWalking = true;
             animationer.Stop();
             attackCoroutine = null;
-            animationer.Play(animationStates[4].name);
+            animationer.Play("walk_1_loop 2");
             agent.isStopped = false;
             agent.SetDestination(player.transform.position);
         }
-
     }
 
 
@@ -232,7 +211,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         List<AudioClip> zombieClip = audioManagerZombies.instance.zombieAttackClips;
         //0 for player 1 for window
         audioManagerZombies.instance.playRandomZombieSound(zombieSrc, gameObject.transform.position, 50, zombieClip,1);
-        StartCoroutine(waitUntilAnimFinishPlaying(animationStates[animationToPlay], 1 , 0 , other));
+        StartCoroutine(waitUntilAnimFinishPlaying(animationer["attack_window 1"], 1, 0, other));
         return other.gameObject.GetComponent<IDamageAble>().returnHP();
     }
 
@@ -279,7 +258,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                 //agent.Warp(link.transform.TransformPoint(link.endPoint));
                 endPoints.transform.parent = link.transform;
 
-                animationer.Play(animationStates[4].name);
+                animationer.Play("walk_1_loop 2");
                 targetWindow.moveQueueUp();
                 isWalking= true;    
                 break;
@@ -292,8 +271,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
                     //climb
                     targetIsBoard = false;
                     attackCoroutine = null;
-                    StartCoroutine(waitUntilAnimFinishPlaying(animationStates[5], 0 , 2 , board));
-                    StartCoroutine(climbBoardTimer(animationStates[5], 2));
+                    StartCoroutine(waitUntilAnimFinishPlaying(animationer["window_climb 1"], 0, 2, board));
+                    StartCoroutine(climbBoardTimer(animationer["window_climb 1"], 2));
                 }
                 else
                 {
@@ -315,21 +294,27 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //check if its correct the damageType
     public float takeDamage(float damage,int damageType)
     {
+        if (isDead) return health;
         bool headShotkIll = false;
         //1 for headshots
-        switch (damageType) 
+        switch (damageType)
         {
             case 0:  health-=damage;  headShotkIll = false; break;
             case 1: health -= damage*2.5f; headShotkIll = true; break;
         }
         if (health <= 0)
         {
+            isDead = true;
+            StopAllCoroutines();
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
+            targetWindow?.onZombieDied(gameObject);
             if (PointsManager.Instance != null)
                 PointsManager.Instance.AddPoints(PointsManager.Instance.killPoints);
             if (RoundManager.Instance != null)
                 RoundManager.Instance.OnZombieKilled();
+            if (UnityEngine.Random.value < 0.2f)
+                PowerupDropTable.Instance?.TryDrop(transform.position);
             StartCoroutine(zombieDeath(headShotkIll));
         }
         return health;
@@ -345,10 +330,9 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             gibParticle.SetActive(true);
         }
         if (isClmbingANDOutside)
-        {
-            animationer.Play(animationStates[7].name);
-        }
-        else {animationer.Play(animationStates[6].name);}
+            animationer.Play("window_death_out 1");
+        else
+            animationer.Play("death_1 1");
       
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
@@ -361,7 +345,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     public void updateQueuePoistion(GameObject positionToMoveTo)
     {
     
-        animationer.Play(animationStates[4].name);
+        animationer.Play("walk_1_loop 2");
         agent.SetDestination(positionToMoveTo.transform.position);
         StartCoroutine(onPosition(positionToMoveTo));
     }
@@ -377,7 +361,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
             {
                 transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, targetWindow.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
                 isWalking = false;
-                animationer.Play(animationStates[3].name);
+                animationer.Play("idle_1_loop 1");
                 break;
             }
             yield return null;
