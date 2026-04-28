@@ -11,6 +11,7 @@ public class audioManagerZombies : MonoBehaviour
     public List<AudioClip> zombieAttackClips;
     public List<AudioClip> zombieGroanClips;
     public List<AudioClip> backgroundMusic;
+    public List<AudioClip> gunSFX;
     public AudioClip PlayerAddBoard;
     public AudioClip zombieRemoveBoard;
     public AudioClip zombieFootStep;

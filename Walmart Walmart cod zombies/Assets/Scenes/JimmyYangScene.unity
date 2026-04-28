@@ -20194,7 +20194,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zombies: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
-  number: 5
+  spawnSide: 0
+  spawnInterval: 1.5
+  roomId: 0
 --- !u!4 &1301867186
 Transform:
   m_ObjectHideFlags: 0
