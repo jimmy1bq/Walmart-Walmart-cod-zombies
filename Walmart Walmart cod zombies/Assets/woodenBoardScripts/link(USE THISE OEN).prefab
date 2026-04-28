@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4290572558311007325}
   - component: {fileID: 3516869519585263110}
   - component: {fileID: 452326650650998888}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: p1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 4146818845160134571}
   - component: {fileID: 892983239714863854}
   - component: {fileID: 2552558356656852612}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: link(USE THISE OEN)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 7729078418683464749}
   - component: {fileID: 4887361204624428577}
   - component: {fileID: 8684375359951652665}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: woodenBoard
   m_TagString: PotentialBoard
   m_Icon: {fileID: 0}
@@ -265,7 +265,7 @@ GameObject:
   - component: {fileID: 4062125884631120043}
   - component: {fileID: 2304729076748850318}
   - component: {fileID: 2825332855060706094}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: p2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

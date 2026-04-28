@@ -74,26 +74,40 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     }
 
     //repair board
-    public float action(float healHp) 
+    public float action(float healHp)
     {
-        if (health<120)
+        if (health < stats.hp)
         {
             health += healHp;
-            GameObject boardToRemove = gameObject.transform.parent.Find("board" + index).gameObject;
-            //sound
-            audioManagerZombies.instance.playWoodenBoard(woodenBoardSrc, transform.TransformPoint(gameObject.transform.position), 1, 0);
-            //animation
-            Animation animateComp = obtainAnimationComp(boardToRemove);
-            animateComp.Play("repairBoard" + index + "Anim");
-            index--;
-            //safety set
-            if (health >= 120) { health = 100; index = 1; }
+            dead = false;
+            index = Mathf.Clamp(index - 1, 1, 5);
+            playRepairAnim(index);
+            PointsManager.Instance?.AddPoints(10);
+            if (health >= stats.hp) { health = stats.hp; index = 1; }
         }
         return health;
-      
-
-
     }
+
+    void playRepairAnim(int boardIndex)
+    {
+        GameObject boardObj = gameObject.transform.parent.Find("board" + boardIndex).gameObject;
+        audioManagerZombies.instance.playWoodenBoard(woodenBoardSrc, transform.TransformPoint(gameObject.transform.position), 1, 0);
+        obtainAnimationComp(boardObj).Play("repairBoard" + boardIndex + "Anim");
+    }
+
+    // Repairs all broken boards at once — used by the room wall-buy. No points awarded.
+    public void repairAll()
+    {
+        while (index > 1)
+        {
+            index--;
+            playRepairAnim(index);
+        }
+        health = stats.hp;
+        dead = false;
+        index = 1;
+    }
+
     Animation obtainAnimationComp(GameObject gameObjek) 
     {
         return gameObjek.GetComponent<Animation>();
@@ -106,10 +120,9 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     }
 
     //adds a zombie onto the Queue and if its greater than size we move this list onto the full queue
-    public GameObject addZombieOntoQueue(GameObject zombie) 
+    public GameObject addZombieOntoQueue(GameObject zombie)
     {
-        
-        if (zombieQueue.Count<=5)
+        if (zombieQueue.Count < 5)
         {
            
             //adds a zombie onto the queue
@@ -128,15 +141,15 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     }
 
     //moves the zombies up the Queue once the first zombie finish climbing the window
-    public GameObject moveQueueUp() 
-    {     
+    public GameObject moveQueueUp()
+    {
 
-        if (zombieQueue.Count-1 > 0) 
+        if (zombieQueue.Count-1 > 0)
         {
             //switch to not full
             WoodenBoardManager.instance.switchQueueToNotFull(this, gameObject.layer);
             zombieQueue.Remove(zombieQueue[0]);
-            /* foreach (GameObject zombies in zombieQueue) 
+            /* foreach (GameObject zombies in zombieQueue)
              {
                  zombies.GetComponent<IQueue>().updateQueuePoistion(queuePosition[i]);
                  i++;
@@ -144,5 +157,19 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
             zombieQueue[0].GetComponent<IQueue>().updateQueuePoistion(queuePosition[0]);
         }
         return null;
+    }
+
+    // Called when a zombie that was queued at this window dies so it doesn't permanently occupy a slot.
+    public void onZombieDied(GameObject zombie)
+    {
+        int idx = zombieQueue.IndexOf(zombie);
+        if (idx < 0) return;
+        bool wasFull = zombieQueue.Count >= 5;
+        zombieQueue.Remove(zombie);
+        // If the front-of-queue (attacker) died, advance the next zombie to the attack position.
+        if (idx == 0 && zombieQueue.Count > 0)
+            zombieQueue[0].GetComponent<IQueue>()?.updateQueuePoistion(queuePosition[0]);
+        if (wasFull && zombieQueue.Count < 5)
+            WoodenBoardManager.instance.switchQueueToNotFull(this, gameObject.layer);
     }
 }

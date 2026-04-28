@@ -32,7 +32,11 @@ public class AmmoUI : MonoBehaviour
 
     void Update()
     {
-        if (player == null) return;
+        if (player == null)
+        {
+            player = FindFirstObjectByType<PlayerController>();
+            if (player == null) return;
+        }
 
         // Use the currently tracked weapon; fall back to the first slot with data.
         Weapon w = player.CurrentWeapon;

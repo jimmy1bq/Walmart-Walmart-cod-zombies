@@ -25,6 +25,8 @@ public class PointsManager : MonoBehaviour
 
     public void AddPoints(int amount)
     {
+        if (PowerupManager.Instance != null && PowerupManager.Instance.IsDoublePoints)
+            amount *= 2;
         CurrentPoints += amount;
         onPointsChanged?.Invoke(CurrentPoints);
     }
