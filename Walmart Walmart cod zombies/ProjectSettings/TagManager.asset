@@ -8,6 +8,7 @@ TagManager:
   - FrontBoards
   - G0
   - Head
+  - PSCanvas
   layers:
   - Default
   - TransparentFX
