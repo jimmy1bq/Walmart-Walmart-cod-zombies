@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour, IDamageAble
@@ -102,7 +104,9 @@ public class PlayerController : MonoBehaviour, IDamageAble
         TickReloads();
         repairWindow();
         PauseGame();
+       
     }
+
     //if the game isn't paused and we hit ESC pause it otherwise we unpause it
     void PauseGame() 
     {
