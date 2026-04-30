@@ -133,11 +133,13 @@ public class Weapon : MonoBehaviour
               
                 IDamageAble damageable = hit.collider.GetComponentInParent<IDamageAble>();
 
-                    // Skip non-damageable mesh/box colliders — walls, window frames, stairs, etc.
-                 
-                    if (hit.collider.gameObject.CompareTag("PotentialBoard") && damageable == null && (hit.collider is MeshCollider || hit.collider is BoxCollider) ) continue;
+                // Skip non-damageable mesh/box colliders — walls, window frames, stairs, etc.
+                if (damageable == null && (hit.collider is MeshCollider || hit.collider is BoxCollider)) continue;
 
-                if (damageable != null && !hit.collider.gameObject.CompareTag("PotentialBoard"))
+                // Skip window boards — they're damaged only by zombies, not bullets
+                if (hit.collider.CompareTag("PotentialBoard")) continue;
+
+                if (damageable != null)
                 {
                     int damageType = hit.collider.CompareTag("Head") ? 1 : 0;
                     damageable.takeDamage(weaponData.damage, damageType);
