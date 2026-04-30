@@ -145,12 +145,14 @@ public class buyGunHandler : MonoBehaviour
         {
            
             promptText.text = $"[{buyKey}]  Buy Ammo  –  {ammoCost} pts";
+            
         }
         else
         {
             //Its [BUY - {weaponData.buyCost}], [Ammo - ammoCost]
             //not $"[{buyKey}]  Buy {weaponData.weaponName}  –  {weaponData.buyCost} pts"
             promptText.text = $"[BUY - {weaponData.buyCost}], [Ammo - {ammoCost}]";
+           
         }
     }
 
