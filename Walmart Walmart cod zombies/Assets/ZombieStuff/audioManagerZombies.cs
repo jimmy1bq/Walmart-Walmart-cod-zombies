@@ -23,7 +23,7 @@ public class audioManagerZombies : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null) { instance = this; } else { Destroy(this); }
+        if (instance == null) { instance = this; DontDestroyOnLoad(gameObject); } else { Destroy(this); }
         playBackgroundMusic(GetComponent<AudioSource>(),gameObject.transform.position,0);
         TickSystem.tickEvent.AddListener(loopMusic);
     }

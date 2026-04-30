@@ -1,12 +1,12 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 
 //we are goign to use leanTween for the UI animations
 //theres fading in/out and moving
 //Should be Dont Destroy on Load along with the canvas
 //LeanTweens are coroutines so becareful because it will skip to the next line right away;
+//its instances.load so the inscene gets used not prefab
 public class UIManager : MonoBehaviour
 {
     GameObject PSCanvas;
@@ -18,16 +18,18 @@ public class UIManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            gameObject.SetActive(true);
             DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
-        PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
-        pasueScreen = PSCanvas.transform.GetChild(0).gameObject;
-        originalPosition = pasueScreen.transform.position;
+        Instance.PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
+        Instance.pasueScreen = Instance.PSCanvas.transform.GetChild(0).gameObject;
+        Instance.originalPosition = Instance.pasueScreen.transform.position;
     }
+
 
     //pulls up the pause menu and stops time
     public void pauseScreen()
@@ -35,7 +37,7 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 0f;
         UnityEngine.Cursor.lockState = CursorLockMode.None;
         UnityEngine.Cursor.visible = true;
-        fade(pasueScreen, 0.3f, 1f, () => PSCanvas.SetActive(true));
+        Instance.fade(Instance.pasueScreen, 0.3f, 1f, () => PSCanvas.SetActive(true));
 
     }
     //unpasues the game
@@ -44,8 +46,8 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1f;
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
-        fade(pasueScreen, 0.3f, 0f, () => PSCanvas.SetActive(false));
-        backButton();
+        Instance.fade(Instance.pasueScreen, 0.3f, 0f, () => PSCanvas.SetActive(false));
+        Instance.backButton();
     }
     //-------------------------------------------------------------------------------------------------------------------------------------------
     //Method for changing volume for audioManager
@@ -66,20 +68,20 @@ public class UIManager : MonoBehaviour
     {
 
     }
-    public void playTitleScreenButton() 
+    public void playTitleScreenButton()
     {
-       StartCoroutine(waitForSceneToLoad(1));
+        Instance.StartCoroutine(waitForSceneToLoad(1));
     }
     //PAUSE SCREEN BUTTONS---------------------------------------------------------------------------------------------------------------------------------
     public void reStart()
     {
-        LeanTween.value(pasueScreen, 0f, 1f, 0.3f).setIgnoreTimeScale(true).setOnUpdate((float val) =>
+        LeanTween.value(Instance.pasueScreen, 0f, 1f, 0.3f).setIgnoreTimeScale(true).setOnUpdate((float val) =>
         {
-            pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(23 / 255f, 23 / 255f, 23 / 255f, val);
+            Instance.pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(23 / 255f, 23 / 255f, 23 / 255f, val);
         }).setIgnoreTimeScale(true).setOnComplete(() =>
         {
             Time.timeScale = 1f;
-            StartCoroutine(waitForSceneToLoad(1));
+            Instance.StartCoroutine(waitForSceneToLoad(1));
         });
 
     }
@@ -90,23 +92,24 @@ public class UIManager : MonoBehaviour
         {
             yield return null;
         }
-        onSceneChange();
+        Instance.onSceneChange();
     }
     public void resumeButtonOnClick()
     {
-        unPauseScreen();
+        Instance.unPauseScreen();
     }
     public void pauseMenuSettingButtonOnClick()
     {
-        move(pasueScreen, new Vector3(pasueScreen.transform.position.x + -800, pasueScreen.transform.position.y, pasueScreen.transform.position.z), 0.3f);
+        Instance.move(Instance.pasueScreen, new Vector3(Instance.pasueScreen.transform.position.x + -1200, Instance.pasueScreen.transform.position.y, Instance.pasueScreen.transform.position.z), 0.3f);
     }
     public void controlMenuSettingButtonOnClick()
     {
-        move(pasueScreen, new Vector3(pasueScreen.transform.position.x + 1500, pasueScreen.transform.position.y, pasueScreen.transform.position.z), 0.3f);
+        
+        Instance.move(Instance.pasueScreen, new Vector3(Instance.pasueScreen.transform.position.x + 1200, Instance.pasueScreen.transform.position.y, Instance.pasueScreen.transform.position.z), 0.3f);
     }
     public void backButton()
     {
-        move(pasueScreen, originalPosition, 0.3f);
+        Instance.move(Instance.pasueScreen, Instance.originalPosition, 0.3f);
     }
     //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -131,10 +134,10 @@ public class UIManager : MonoBehaviour
     }
     public void onSceneChange()
     {
-        PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
-        PSCanvas.SetActive(false);
-        pasueScreen = PSCanvas.transform.GetChild(0).gameObject;
-        originalPosition = pasueScreen.transform.position;
-        pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(96 / 255f, 96 / 255f, 96 / 255f, 160 / 255f);
+        Instance.PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
+        Instance.PSCanvas.SetActive(false);
+        Instance.pasueScreen = Instance.PSCanvas.transform.GetChild(0).gameObject;
+        Instance.originalPosition = Instance.pasueScreen.transform.position;
+        Instance.pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(96 / 255f, 96 / 255f, 96 / 255f, 160 / 255f);
     }
 }
