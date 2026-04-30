@@ -136,13 +136,19 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        Debug.DrawRay(ray.origin, ray.direction * 2.5f, Color.green, 0.1f);
         if (!Physics.Raycast(ray, out hit, 2.5f)) return;
 
-        IInteractable interactable = hit.collider.gameObject.GetComponent<IInteractable>();
-        if (hit.collider.gameObject.CompareTag("PotentialBoard") && interactable!=null && !interactable.zombieInteract())
+       
+    
+        if (hit.collider.gameObject.CompareTag("PotentialBoard"))
         {
-            hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
-            _repairCooldown = 0.75f;
+           IInteractable interact = hit.collider.transform.parent.Find("woodenBoard").GetComponent<IInteractable>();
+            if (interact != null && !interact.zombieInteract()) 
+            {
+                hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
+                _repairCooldown = 0.75f;
+            }
         }
     }
     void HandleMouseLook()
