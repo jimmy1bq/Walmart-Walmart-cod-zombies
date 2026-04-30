@@ -66,7 +66,6 @@ public class audioManagerZombies : MonoBehaviour
         //speed up the pitch
         zombSource.pitch = speed;
         zombSource.volume = sfxVolume;
-        Debug.Log(list.Count);
         zombSource.clip = list[Random.Range(0, list.Count - 1)];
         zombSource.Play();
     }

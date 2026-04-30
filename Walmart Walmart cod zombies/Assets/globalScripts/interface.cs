@@ -9,7 +9,7 @@ public interface IDamageAble
 }
 public interface IInteractable
 {
-    public float action(float healing);
+    public bool zombieInteract();
 
 }
 public interface IHealAble 

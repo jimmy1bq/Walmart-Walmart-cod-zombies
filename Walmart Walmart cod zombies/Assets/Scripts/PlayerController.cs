@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
         TickReloads();
         repairWindow();
         PauseGame();
-        Debug.Log(Cursor.lockState);
+       
     }
 
     //if the game isn't paused and we hit ESC pause it otherwise we unpause it
@@ -138,7 +138,8 @@ public class PlayerController : MonoBehaviour, IDamageAble
         RaycastHit hit;
         if (!Physics.Raycast(ray, out hit, 2.5f)) return;
 
-        if (hit.collider.gameObject.CompareTag("PotentialBoard"))
+        IInteractable interactable = hit.collider.gameObject.GetComponent<IInteractable>();
+        if (hit.collider.gameObject.CompareTag("PotentialBoard") && interactable!=null && !interactable.zombieInteract())
         {
             hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
             _repairCooldown = 0.75f;

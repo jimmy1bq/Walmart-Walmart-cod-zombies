@@ -124,15 +124,20 @@ public class Weapon : MonoBehaviour
             Vector3 tracerEnd = ray.origin + ray.direction * weaponData.range;
 
             RaycastHit[] hits = Physics.RaycastAll(ray, weaponData.range);
+
+            Debug.DrawRay(ray.origin, ray.direction * weaponData.range, Color.red, 1f);
+
             System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
             foreach (RaycastHit hit in hits)
             {
+              
                 IDamageAble damageable = hit.collider.GetComponentInParent<IDamageAble>();
 
-                // Skip non-damageable mesh/box colliders — walls, window frames, stairs, etc.
-                if (damageable == null && (hit.collider is MeshCollider || hit.collider is BoxCollider)) continue;
+                    // Skip non-damageable mesh/box colliders — walls, window frames, stairs, etc.
+                 
+                    if (hit.collider.gameObject.CompareTag("PotentialBoard") && damageable == null && (hit.collider is MeshCollider || hit.collider is BoxCollider) ) continue;
 
-                if (damageable != null)
+                if (damageable != null && !hit.collider.gameObject.CompareTag("PotentialBoard"))
                 {
                     int damageType = hit.collider.CompareTag("Head") ? 1 : 0;
                     damageable.takeDamage(weaponData.damage, damageType);

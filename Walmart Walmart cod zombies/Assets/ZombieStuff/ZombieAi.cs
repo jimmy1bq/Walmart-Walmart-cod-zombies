@@ -322,7 +322,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     IEnumerator zombieDeath(bool headShotKill) 
     {
 
-        Debug.Log(headShotKill);
+        
         if (headShotKill)
         {
             Destroy(head);
