@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour, IDamageAble
@@ -37,6 +39,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     int _hitsRemaining;
     float _regenTimer;
     bool _isDead;
+    bool _pasued = false;
  
 
     private void Awake()
@@ -100,6 +103,23 @@ public class PlayerController : MonoBehaviour, IDamageAble
         HandleShooting();
         TickReloads();
         repairWindow();
+        PauseGame();
+       
+    }
+
+    //if the game isn't paused and we hit ESC pause it otherwise we unpause it
+    void PauseGame() 
+    {
+        if (!_pasued && Input.GetKeyDown(KeyCode.Escape))
+        {
+            _pasued = true;
+            UIManager.Instance.pauseScreen();
+        }
+        else if (_pasued && Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            UIManager.Instance.unPauseScreen();
+            _pasued = false;
+        }
     }
 
     // Tick reload timers from PlayerController so they complete even when

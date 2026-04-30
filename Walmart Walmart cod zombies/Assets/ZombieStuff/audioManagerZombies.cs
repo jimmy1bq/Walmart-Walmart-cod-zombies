@@ -11,6 +11,7 @@ public class audioManagerZombies : MonoBehaviour
     public List<AudioClip> zombieAttackClips;
     public List<AudioClip> zombieGroanClips;
     public List<AudioClip> backgroundMusic;
+    public List<AudioClip> gunSFX;
     public AudioClip PlayerAddBoard;
     public AudioClip zombieRemoveBoard;
     public AudioClip zombieFootStep;
@@ -128,15 +129,18 @@ public class audioManagerZombies : MonoBehaviour
     //so like if the sfx vol gets changed then this should also change
     public void changeSfxVolume(float val) 
     {
-    
+        Debug.Log("CHANGED SFX");
+       sfxVolume = val * 100;
     }
     public void changeMasterVolume(float val)
     {
-
+        Debug.Log("CHANGED MASTER");
+        masterVolume = val * 100;
     }
     public void changeMusicVolume(float val)
     {
-
+        Debug.Log("CHANGED MUSIC");
+        musicVolume = val * 100;
     }
 
 }
