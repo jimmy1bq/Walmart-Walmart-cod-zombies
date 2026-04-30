@@ -1,9 +1,14 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 
 //we are goign to use leanTween for the UI animations
 //theres fading in/out and moving
+//Should be Dont Destroy on Load along with the canvas
+//LeanTweens are coroutines so becareful because it will skip to the next line right away;
 public class UIManager : MonoBehaviour
 {
     GameObject PSCanvas;
@@ -31,8 +36,8 @@ public class UIManager : MonoBehaviour
     public void pauseScreen()
     {
         Time.timeScale = 0f;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
         fade(pasueScreen, 0.3f, 1f, () => PSCanvas.SetActive(true));
 
     }
@@ -40,11 +45,10 @@ public class UIManager : MonoBehaviour
     public void unPauseScreen()
     {
         Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
         fade(pasueScreen, 0.3f, 0f,() => PSCanvas.SetActive(false));
         backButton();
-
     }
     //-------------------------------------------------------------------------------------------------------------------------------------------
     //Method for changing volume for audioManager
@@ -67,6 +71,27 @@ public class UIManager : MonoBehaviour
     }
 
     //PAUSE SCREEN BUTTONS---------------------------------------------------------------------------------------------------------------------------------
+    public void reStart() 
+    {
+        LeanTween.value(pasueScreen,0f,1f, 0.3f).setIgnoreTimeScale(true).setOnUpdate((float val) =>
+        {
+            pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(23/255f, 23/255f, 23/255f, val);
+        }).setOnComplete(() =>
+        {
+            Time.timeScale = 1f;
+            StartCoroutine(waitForSceneToLoad());
+        });
+       
+    }
+    IEnumerator waitForSceneToLoad() 
+    {
+        AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        while (!operation.isDone)
+        {
+            yield return null;
+        }
+        onSceneChange();
+    }
     public void resumeButtonOnClick() 
     {
         unPauseScreen();
@@ -103,5 +128,9 @@ public class UIManager : MonoBehaviour
     void move(GameObject target, Vector3 to, float duration)
     {
         LeanTween.move(target, to, duration).setIgnoreTimeScale(true); ;
+    }
+    public void onSceneChange() 
+    {
+        pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(96 / 255f, 96 / 255f, 96 / 255f, 160/255f);
     }
 }

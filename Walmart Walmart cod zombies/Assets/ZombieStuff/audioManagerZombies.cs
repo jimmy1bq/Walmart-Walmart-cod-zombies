@@ -7,11 +7,11 @@ public class audioManagerZombies : MonoBehaviour
 {
     //audio clips
     //put all audio clip here please
+    //Should be Dont Destroy on Load
     public static audioManagerZombies instance;
     public List<AudioClip> zombieAttackClips;
     public List<AudioClip> zombieGroanClips;
     public List<AudioClip> backgroundMusic;
-    public List<AudioClip> gunSFX;
     public AudioClip PlayerAddBoard;
     public AudioClip zombieRemoveBoard;
     public AudioClip zombieFootStep;
@@ -125,6 +125,7 @@ public class audioManagerZombies : MonoBehaviour
             playerSoruce.Play();
         }
     }
+   
     //changes the value so later on UI manager can call
     //so like if the sfx vol gets changed then this should also change
     public void changeSfxVolume(float val) 

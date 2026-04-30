@@ -29,7 +29,7 @@ public class PointsUI : MonoBehaviour
     void Refresh(int points)
     {
         if (pointsText != null)
-            pointsText.text = $"{prefix}<b>{points}</b>";
+            pointsText.text = $"<b>{points}</b>";
     }
 
     void OnDestroy()

@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
         TickReloads();
         repairWindow();
         PauseGame();
-       
+        Debug.Log(Cursor.lockState);
     }
 
     //if the game isn't paused and we hit ESC pause it otherwise we unpause it

@@ -66,6 +66,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 59bd11e26bfd4f14cacbf07b63c4854d, type: 3}
   - {fileID: 8300000, guid: e25caab2724c36444a561de4344e520c, type: 3}
   - {fileID: 8300000, guid: 39d2058fdba569047877543511ec4867, type: 3}
+  emptyGunClip: {fileID: 8300000, guid: 6a36b89a030a7014e810bfc7cf43f2c8, type: 3}
   PlayerAddBoard: {fileID: 8300000, guid: e128f62673d0f8e4ca0c6e449ee7048c, type: 3}
   zombieRemoveBoard: {fileID: 8300000, guid: aa84472b7e6917a4e89746f2b7c00106, type: 3}
   zombieFootStep: {fileID: 8300000, guid: d235d3fe87e77804c9c0ca7e846a9bcc, type: 3}
