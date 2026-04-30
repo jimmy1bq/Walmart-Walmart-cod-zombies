@@ -27730,7 +27730,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   systemToInstantiate:
   - {fileID: 4347167107973444100, guid: ad0489f92be4ace4b925309f24e39437, type: 3}
-  - {fileID: 2107542573111973157, guid: 8bd2c10fa55210a4fa0bd99d920a7b3e, type: 3}
 --- !u!4 &1513634126
 Transform:
   m_ObjectHideFlags: 0
