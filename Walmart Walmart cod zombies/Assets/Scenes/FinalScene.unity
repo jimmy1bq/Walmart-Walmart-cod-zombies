@@ -386,6 +386,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2082282394}
     - target: {fileID: 1418882330238621105, guid: 899aea4e5b637eb48bbf3f03ed1782d3, type: 3}
+      propertyPath: unlocksRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1418882330238621105, guid: 899aea4e5b637eb48bbf3f03ed1782d3, type: 3}
       propertyPath: cantAffordText
       value: 
       objectReference: {fileID: 1935441845}
@@ -6196,6 +6200,10 @@ PrefabInstance:
       propertyPath: promptPanel
       value: 
       objectReference: {fileID: 2082282394}
+    - target: {fileID: 1418882330238621105, guid: 899aea4e5b637eb48bbf3f03ed1782d3, type: 3}
+      propertyPath: unlocksRoom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1418882330238621105, guid: 899aea4e5b637eb48bbf3f03ed1782d3, type: 3}
       propertyPath: cantAffordText
       value: 
@@ -16225,6 +16233,10 @@ PrefabInstance:
       propertyPath: promptPanel
       value: 
       objectReference: {fileID: 2082282394}
+    - target: {fileID: 1418882330238621105, guid: 899aea4e5b637eb48bbf3f03ed1782d3, type: 3}
+      propertyPath: unlocksRoom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1418882330238621105, guid: 899aea4e5b637eb48bbf3f03ed1782d3, type: 3}
       propertyPath: cantAffordText
       value: 
@@ -31984,6 +31996,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2082282394}
     - target: {fileID: 1418882330238621105, guid: 899aea4e5b637eb48bbf3f03ed1782d3, type: 3}
+      propertyPath: unlocksRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1418882330238621105, guid: 899aea4e5b637eb48bbf3f03ed1782d3, type: 3}
       propertyPath: cantAffordText
       value: 
       objectReference: {fileID: 1935441845}
@@ -33147,8 +33163,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cost: 750
-  unlocksRoom: 0
-  roomsToUnlock: 01000000
+  unlocksRoom: 1
+  roomsToUnlock: 0100000005000000
   interactKey: 101
   clearSound: {fileID: 8300000, guid: 5c95a097f80448242af376eada96e88c, type: 3}
   promptPanel: {fileID: 2082282394}
@@ -35947,8 +35963,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cost: 750
-  unlocksRoom: 0
-  roomsToUnlock: 01000000
+  unlocksRoom: 1
+  roomsToUnlock: 0100000003000000
   interactKey: 101
   clearSound: {fileID: 8300000, guid: 5c95a097f80448242af376eada96e88c, type: 3}
   promptPanel: {fileID: 2082282394}
