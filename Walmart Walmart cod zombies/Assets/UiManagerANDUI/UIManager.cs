@@ -72,6 +72,15 @@ public class UIManager : MonoBehaviour
     {
         Instance.StartCoroutine(waitForSceneToLoad(1));
     }
+    public void quitTitleScreen() 
+    {
+        Application.Quit(1);
+    }
+    public void credits() 
+    {
+        move(Instance.pasueScreen, new Vector3(Instance.pasueScreen.transform.position.x, Instance.pasueScreen.transform.position.y-619, Instance.pasueScreen.transform.position.z), 0.3f);
+    }
+    
     //PAUSE SCREEN BUTTONS---------------------------------------------------------------------------------------------------------------------------------
     public void reStart()
     {
@@ -85,6 +94,17 @@ public class UIManager : MonoBehaviour
         });
 
     }
+    public void quitPauseMenu() 
+    {
+        LeanTween.value(Instance.pasueScreen, 0f, 1f, 0.3f).setIgnoreTimeScale(true).setOnUpdate((float val) =>
+        {
+            Instance.pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(23 / 255f, 23 / 255f, 23 / 255f, val);
+        }).setIgnoreTimeScale(true).setOnComplete(() =>
+        {
+            Time.timeScale = 1f;
+            Instance.StartCoroutine(waitForSceneToLoad(0));
+        });
+    }
     IEnumerator waitForSceneToLoad(int sceneNumber)
     {
         AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneNumber);
@@ -92,7 +112,7 @@ public class UIManager : MonoBehaviour
         {
             yield return null;
         }
-        Instance.onSceneChange();
+        Instance.onSceneChange(sceneNumber);
     }
     public void resumeButtonOnClick()
     {
@@ -132,12 +152,15 @@ public class UIManager : MonoBehaviour
     {
         LeanTween.move(target, to, duration).setIgnoreTimeScale(true); ;
     }
-    public void onSceneChange()
+    public void onSceneChange(int scene)
     {
         Instance.PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
         Instance.PSCanvas.SetActive(false);
         Instance.pasueScreen = Instance.PSCanvas.transform.GetChild(0).gameObject;
         Instance.originalPosition = Instance.pasueScreen.transform.position;
-        Instance.pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(96 / 255f, 96 / 255f, 96 / 255f, 160 / 255f);
+        if (scene==1) 
+        {
+            Instance.pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(96 / 255f, 96 / 255f, 96 / 255f, 160 / 255f);
+        }
     }
 }
