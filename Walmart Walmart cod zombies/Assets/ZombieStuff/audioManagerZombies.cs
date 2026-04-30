@@ -7,11 +7,11 @@ public class audioManagerZombies : MonoBehaviour
 {
     //audio clips
     //put all audio clip here please
+    //Should be Dont Destroy on Load
     public static audioManagerZombies instance;
     public List<AudioClip> zombieAttackClips;
     public List<AudioClip> zombieGroanClips;
     public List<AudioClip> backgroundMusic;
-    public List<AudioClip> gunSFX;
     public AudioClip PlayerAddBoard;
     public AudioClip zombieRemoveBoard;
     public AudioClip zombieFootStep;
@@ -23,7 +23,7 @@ public class audioManagerZombies : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null) { instance = this; } else { Destroy(this); }
+        if (instance == null) { instance = this; DontDestroyOnLoad(gameObject); } else { Destroy(this); }
         playBackgroundMusic(GetComponent<AudioSource>(),gameObject.transform.position,0);
         TickSystem.tickEvent.AddListener(loopMusic);
     }
@@ -66,7 +66,6 @@ public class audioManagerZombies : MonoBehaviour
         //speed up the pitch
         zombSource.pitch = speed;
         zombSource.volume = sfxVolume;
-        Debug.Log(list.Count);
         zombSource.clip = list[Random.Range(0, list.Count - 1)];
         zombSource.Play();
     }
@@ -125,6 +124,7 @@ public class audioManagerZombies : MonoBehaviour
             playerSoruce.Play();
         }
     }
+   
     //changes the value so later on UI manager can call
     //so like if the sfx vol gets changed then this should also change
     public void changeSfxVolume(float val) 

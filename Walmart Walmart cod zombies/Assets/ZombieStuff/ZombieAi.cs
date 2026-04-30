@@ -115,7 +115,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") && attackCoroutine == null)
+        if (other.gameObject.CompareTag("Player") && attackCoroutine == null && !isDead)
         {
             animationer.Stop();
             attackCoroutine = StartCoroutine(attackPlayer(other.gameObject));
@@ -125,14 +125,14 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         IDamageAble damageAble = other.gameObject.GetComponent<IDamageAble>();
         if (damageAble != null)
         {
-            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && damageAble.returnHP() > 0 && !collided)
+            if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && damageAble.returnHP() > 0 && !collided && !isDead)
             {
                 collided = true;
                 animationer.Play("idle_1_loop 1");
                 agent.updateRotation = false;
                 attackCoroutine = StartCoroutine(attackboard(other.gameObject));
             }
-            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && damageAble.returnHP() <= 0 && !collided)
+            else if (targetIsBoard && (agent.remainingDistance < 1f) && other.gameObject.CompareTag("PotentialBoard") && damageAble.returnHP() <= 0 && !collided && !isDead)
             {
                 collided = true;
                 animationer.Play("idle_1_loop 1");
@@ -322,7 +322,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     IEnumerator zombieDeath(bool headShotKill) 
     {
 
-        Debug.Log(headShotKill);
+        
         if (headShotKill)
         {
             Destroy(head);

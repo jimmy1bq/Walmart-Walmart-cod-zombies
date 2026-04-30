@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 
-public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
+public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble,IInteractable
 {
     [SerializeField] entityStatSO stats;
     //first position is attacking position
@@ -18,6 +18,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     AudioSource woodenBoardSrc; 
     int index = 1;
     float health;
+    public bool zombieAttacking = false;    
     public bool dead = false;
 
     //get set
@@ -39,6 +40,8 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
         health = stats.hp;   
     }
 
+
+  
     //heals
     public float heal(float healing) 
     {
@@ -122,6 +125,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     //adds a zombie onto the Queue and if its greater than size we move this list onto the full queue
     public GameObject addZombieOntoQueue(GameObject zombie)
     {
+        zombieAttacking = true;
         if (zombieQueue.Count < 5)
         {
            
@@ -143,8 +147,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
     //moves the zombies up the Queue once the first zombie finish climbing the window
     public GameObject moveQueueUp()
     {
-
-        if (zombieQueue.Count-1 > 0)
+        if (zombieQueue.Count - 1 > 0)
         {
             //switch to not full
             WoodenBoardManager.instance.switchQueueToNotFull(this, gameObject.layer);
@@ -171,5 +174,14 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble
             zombieQueue[0].GetComponent<IQueue>()?.updateQueuePoistion(queuePosition[0]);
         if (wasFull && zombieQueue.Count < 5)
             WoodenBoardManager.instance.switchQueueToNotFull(this, gameObject.layer);
+        if (zombieQueue.Count <= 0) 
+        {
+                zombieAttacking = false;    
+        }
+    }
+
+    public bool zombieInteract()
+    {
+        return zombieAttacking;
     }
 }

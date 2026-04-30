@@ -140,15 +140,19 @@ public class buyGunHandler : MonoBehaviour
     void RefreshPrompt()
     {
         if (promptText == null || weaponData == null) return;
-
+        int ammoCost = weaponData.buyCost / 2;
         if (PlayerHasThisGun(out _))
         {
-            int ammoCost = weaponData.buyCost / 2;
+           
             promptText.text = $"[{buyKey}]  Buy Ammo  –  {ammoCost} pts";
+            
         }
         else
         {
-            promptText.text = $"[{buyKey}]  Buy {weaponData.weaponName}  –  {weaponData.buyCost} pts";
+            //Its [BUY - {weaponData.buyCost}], [Ammo - ammoCost]
+            //not $"[{buyKey}]  Buy {weaponData.weaponName}  –  {weaponData.buyCost} pts"
+            promptText.text = $"[BUY - {weaponData.buyCost}], [Ammo - {ammoCost}]";
+           
         }
     }
 
