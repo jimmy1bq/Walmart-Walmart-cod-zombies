@@ -19,6 +19,7 @@ public class audioManagerZombies : MonoBehaviour
     public float sfxVolume = 100;
     public float musicVolume = 100;
     public float masterVolume = 100;
+    public float mouseSensitivity = 100;
     int loop = 0;
 
     private void Awake()
@@ -142,7 +143,13 @@ public class audioManagerZombies : MonoBehaviour
         Debug.Log("CHANGED MUSIC");
         musicVolume = val * 100;
     }
+    public void changeMouseSensitivity(float val)
+    {
+        Debug.Log("CHANGED MOUSE SENSITIVITY");
+        mouseSensitivity = val * 100;
+    }
+
 
 }
-    
-    
+
+

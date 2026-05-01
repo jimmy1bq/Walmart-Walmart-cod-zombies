@@ -31,6 +31,7 @@ public class UIManager : MonoBehaviour
         Instance.PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
         Instance.pasueScreen = Instance.PSCanvas.transform.GetChild(0).gameObject;
         Instance.originalPosition = Instance.pasueScreen.transform.position;
+        updateSettingSliders();
     }
 
 
@@ -69,7 +70,7 @@ public class UIManager : MonoBehaviour
     //-------------------------------------------------------------------------------------------------------------------------------------------
     public void changeMouseSensitivity(UnityEngine.UI.Slider volumeSlider)
     {
-
+        audioManagerZombies.instance.changeMouseSensitivity(volumeSlider.value);
     }
     public void playTitleScreenButton()
     {
@@ -124,6 +125,7 @@ public class UIManager : MonoBehaviour
     {
         Instance.unPauseScreen();
     }
+    //screen width
     public void pauseMenuSettingButtonOnClick()
     {
             Instance.move(Instance.pasueScreen, new Vector3(
@@ -169,6 +171,7 @@ public class UIManager : MonoBehaviour
        sfxVol.Find("VolumeSilder").GetComponent<UnityEngine.UI.Slider>().value = audioManagerZombies.instance.sfxVolume/100f;
        masterVol.Find("VolumeSilder").GetComponent<UnityEngine.UI.Slider>().value = audioManagerZombies.instance.masterVolume/100f;
        musicVol.Find("VolumeSilder").GetComponent<UnityEngine.UI.Slider>().value = audioManagerZombies.instance.musicVolume/100f;
+       mouseSense.Find("VolumeSilder").GetComponent<UnityEngine.UI.Slider>().value = audioManagerZombies.instance.mouseSensitivity/100f;
     }
     //moves the UI element to a new position
     void move(GameObject target, Vector3 to, float duration)
