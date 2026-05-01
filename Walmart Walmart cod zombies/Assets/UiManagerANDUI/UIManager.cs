@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -7,6 +8,8 @@ using UnityEngine;
 //Should be Dont Destroy on Load along with the canvas
 //LeanTweens are coroutines so becareful because it will skip to the next line right away;
 //its instances.load so the inscene gets used not prefab
+//If you are wondering this doesn't work with some other ratio or work in the build
+//you will need dyanmic UI stuff for it
 public class UIManager : MonoBehaviour
 {
     GameObject PSCanvas;
@@ -78,7 +81,10 @@ public class UIManager : MonoBehaviour
     }
     public void credits() 
     {
-        move(Instance.pasueScreen, new Vector3(Instance.pasueScreen.transform.position.x, Instance.pasueScreen.transform.position.y-619, Instance.pasueScreen.transform.position.z), 0.3f);
+        Instance.move(Instance.pasueScreen, new Vector3(
+           Instance.originalPosition.x,
+           Instance.originalPosition.y - Screen.height,
+           Instance.originalPosition.z), 0.3f);
     }
     
     //PAUSE SCREEN BUTTONS---------------------------------------------------------------------------------------------------------------------------------
@@ -120,12 +126,18 @@ public class UIManager : MonoBehaviour
     }
     public void pauseMenuSettingButtonOnClick()
     {
-        Instance.move(Instance.pasueScreen, new Vector3(Instance.pasueScreen.transform.position.x + -1200, Instance.pasueScreen.transform.position.y, Instance.pasueScreen.transform.position.z), 0.3f);
+            Instance.move(Instance.pasueScreen, new Vector3(
+            Instance.originalPosition.x - Screen.width,
+            Instance.originalPosition.y,
+            Instance.originalPosition.z), 0.3f);
+        // Instance.move(Instance.pasueScreen, new Vector3(Instance.pasueScreen.transform.position.x + -2300, Instance.pasueScreen.transform.position.y, Instance.pasueScreen.transform.position.z), 0.3f);
     }
     public void controlMenuSettingButtonOnClick()
     {
-        
-        Instance.move(Instance.pasueScreen, new Vector3(Instance.pasueScreen.transform.position.x + 1200, Instance.pasueScreen.transform.position.y, Instance.pasueScreen.transform.position.z), 0.3f);
+           Instance.move(Instance.pasueScreen, new Vector3(
+           Instance.originalPosition.x + Screen.width,
+           Instance.originalPosition.y,
+           Instance.originalPosition.z), 0.3f);
     }
     public void backButton()
     {
@@ -147,6 +159,17 @@ public class UIManager : MonoBehaviour
         });
     }
 
+    void updateSettingSliders() 
+    {
+       Transform settingScreen = pasueScreen.transform.Find("SettingScreen");
+       Transform sfxVol = settingScreen.Find("SFXVolume");
+       Transform masterVol = settingScreen.Find("MasterVolume");
+       Transform musicVol = settingScreen.Find("Music");
+       Transform mouseSense = settingScreen.Find("MuseSensitivity");
+       sfxVol.Find("VolumeSilder").GetComponent<UnityEngine.UI.Slider>().value = audioManagerZombies.instance.sfxVolume/100f;
+       masterVol.Find("VolumeSilder").GetComponent<UnityEngine.UI.Slider>().value = audioManagerZombies.instance.masterVolume/100f;
+       musicVol.Find("VolumeSilder").GetComponent<UnityEngine.UI.Slider>().value = audioManagerZombies.instance.musicVolume/100f;
+    }
     //moves the UI element to a new position
     void move(GameObject target, Vector3 to, float duration)
     {
@@ -155,12 +178,13 @@ public class UIManager : MonoBehaviour
     public void onSceneChange(int scene)
     {
         Instance.PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
-        Instance.PSCanvas.SetActive(false);
         Instance.pasueScreen = Instance.PSCanvas.transform.GetChild(0).gameObject;
         Instance.originalPosition = Instance.pasueScreen.transform.position;
         if (scene==1) 
         {
+            Instance.PSCanvas.SetActive(false);
             Instance.pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(96 / 255f, 96 / 255f, 96 / 255f, 160 / 255f);
         }
+        updateSettingSliders();
     }
 }
