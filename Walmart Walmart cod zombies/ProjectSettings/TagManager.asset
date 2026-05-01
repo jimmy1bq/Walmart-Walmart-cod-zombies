@@ -9,6 +9,7 @@ TagManager:
   - G0
   - Head
   - PSCanvas
+  - LoadingScreen
   layers:
   - Default
   - TransparentFX

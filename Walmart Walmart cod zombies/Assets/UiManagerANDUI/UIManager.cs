@@ -1,5 +1,6 @@
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 
@@ -112,12 +113,34 @@ public class UIManager : MonoBehaviour
             Instance.StartCoroutine(waitForSceneToLoad(0));
         });
     }
+
     IEnumerator waitForSceneToLoad(int sceneNumber)
     {
+        GameObject loadingScreen = null;
+        UnityEngine.UI.Slider loadingSlider = null;
+
+        if (sceneNumber == 1) 
+        {
+            AsyncOperation aP = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(2);
+            while (!aP.isDone) 
+            {
+                yield return null;
+            }
+            loadingScreen = GameObject.FindGameObjectWithTag("LoadingScreen");
+            loadingSlider = loadingScreen.transform.Find("LoadingBar").GetComponent<UnityEngine.UI.Slider>();
+        }
+                
         AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneNumber);
         while (!operation.isDone)
         {
-            yield return null;
+            float progress = Mathf.Clamp01(operation.progress / 0.9f);
+            Debug.Log(progress);
+            if (loadingSlider!=null) 
+            {
+                //note in the original game the loading screen is a fake loading screen that just waits for a certain amount of time but this is an actual loading screen that shows the progress of the scene loading
+                loadingSlider.value = progress;
+            }
+           yield return null;
         }
         Instance.onSceneChange(sceneNumber);
     }

@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
         TickReloads();
         repairWindow();
         PauseGame();
-       
+        mouseSensitivity = audioManagerZombies.instance.mouseSensitivity;
     }
 
     //if the game isn't paused and we hit ESC pause it otherwise we unpause it

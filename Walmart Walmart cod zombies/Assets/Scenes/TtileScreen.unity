@@ -7531,7 +7531,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 85469371746869595, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 253.74786
+      value: 253.74796
       objectReference: {fileID: 0}
     - target: {fileID: 1062477396343601286, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7552,6 +7552,10 @@ PrefabInstance:
     - target: {fileID: 4386564180053732219, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_Name
       value: TitleUiCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4386564180053732219, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4847792660196068308, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchorMax.x
@@ -7700,6 +7704,38 @@ PrefabInstance:
     - target: {fileID: 5809807527013402040, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 543522968373085612, guid: 8e587976390fe38448b8f9560958bc5b, type: 3}
+    - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: changeMouseSensitivity
+      objectReference: {fileID: 0}
+    - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UIManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 664456597}
+    - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.UI.Slider, UnityEngine.UI
       objectReference: {fileID: 0}
     - target: {fileID: 7558820744999194275, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -8573,6 +8609,17 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!114 &664456597 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+  m_PrefabInstance: {fileID: 587123368}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &701927011
 Mesh:
   m_ObjectHideFlags: 0
@@ -16774,6 +16821,10 @@ PrefabInstance:
     - target: {fileID: 2199680550072385960, guid: 8bd2c10fa55210a4fa0bd99d920a7b3e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8288736976945250250, guid: 8bd2c10fa55210a4fa0bd99d920a7b3e, type: 3}
+      propertyPath: mouseSensitivity
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

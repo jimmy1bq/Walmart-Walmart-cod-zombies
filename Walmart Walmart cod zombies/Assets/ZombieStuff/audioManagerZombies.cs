@@ -19,7 +19,7 @@ public class audioManagerZombies : MonoBehaviour
     public float sfxVolume = 100;
     public float musicVolume = 100;
     public float masterVolume = 100;
-    public float mouseSensitivity = 100;
+    public float mouseSensitivity = 1f;
     int loop = 0;
 
     private void Awake()
