@@ -37,12 +37,15 @@ public class PlayerController : MonoBehaviour, IDamageAble
     Camera playerCam;
     AudioSource footStep;
     AudioSource heartBeat;
-
+    AudioSource heavyBreathing;
     int _hitsRemaining;
     float _regenTimer;
     bool _isDead;
+    bool _cantSprint = false;
     public bool _pasued = false;
     public TextMeshProUGUI windowRepairStatus;
+    float totalStamina = 5f;
+    float stamina = 0f;
 
     public AudioClip playerFootStep;
     public AudioClip playerSprintBreath;
@@ -55,6 +58,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
         AudioSource[] arrayOfSources = GetComponentsInChildren<AudioSource>();
         footStep = arrayOfSources[0];
         heartBeat = arrayOfSources[1];
+        heavyBreathing = arrayOfSources[2];
         _hitsRemaining = maxHits;
         windowRepairStatus.gameObject.SetActive(false);
     }
@@ -201,19 +205,42 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-
+        //so in game everytime you sprint and unsprint you have to wait until it resets
         _isSprinting = Input.GetKey(KeyCode.LeftShift) && (h != 0f || v != 0f);
-
+        
         float speed = moveSpeed;
-        if (_isSprinting)
+        //if we are shifting and not on cool and we have stamina
+        Debug.Log("isSprinting: " + _isSprinting + " _cantSprint" + !_cantSprint + "  stamina<5: "+ (stamina < 5f));
+        if (_isSprinting && !_cantSprint && stamina < 5f)
+        {
             speed *= sprintMultiplier;
+            stamina += Time.deltaTime;
+            stamina = Mathf.Clamp(stamina, 0, totalStamina);
+            Debug.Log("stamina right now: "+ stamina);
+            if (stamina / totalStamina >= 0.8f && !heavyBreathing.isPlaying)
+            {
+                heavyBreathing.clip = playerSprintBreath;
+                heavyBreathing.Play();
+            }
+        }
+        //if we stop we have to wait for stamina to finish regening or down to 0
+        else {_cantSprint = true; stamina-= Time.deltaTime; stamina = Mathf.Clamp(stamina, 0, totalStamina); if (stamina == 0) { stamina = 0f; _cantSprint = false; }}
 
         Vector3 move = transform.right * h + transform.forward * v;
         _controller.Move(move * speed * Time.deltaTime);
 
+        
+        if (/*(Input.GetKey(KeyCode.W) || Input.GetKeyDown(KeyCode.W))*/ (v!=0f||h!=0f) && !footStep.isPlaying) 
+        {
+            //the audio is lengthen by audacity since you can't effecitley make this audio long enough in unity
+            footStep.pitch = 0.5f;
+            footStep.volume = audioManagerZombies.instance.sfxVolume;
+            footStep.PlayOneShot(playerFootStep);
+        }
         if (Input.GetButtonDown("Jump") && grounded)
             _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
+       
         _velocity.y += gravity * Time.deltaTime;
         _controller.Move(_velocity * Time.deltaTime);
     }
