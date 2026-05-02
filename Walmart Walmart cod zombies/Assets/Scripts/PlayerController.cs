@@ -224,7 +224,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
             }
         }
         //if we stop we have to wait for stamina to finish regening or down to 0
-        else {_cantSprint = true; stamina-= Time.deltaTime; stamina = Mathf.Clamp(stamina, 0, totalStamina); if (stamina == 0) { stamina = 0f; _cantSprint = false; }}
+        else { _isSprinting = false; _cantSprint = true; stamina-= Time.deltaTime; stamina = Mathf.Clamp(stamina, 0, totalStamina); if (stamina == 0) { stamina = 0f; _cantSprint = false; }}
 
         Vector3 move = transform.right * h + transform.forward * v;
         _controller.Move(move * speed * Time.deltaTime);
