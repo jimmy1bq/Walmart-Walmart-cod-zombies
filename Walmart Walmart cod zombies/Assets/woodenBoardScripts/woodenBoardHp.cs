@@ -124,8 +124,7 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble,IInteractable
 
     //adds a zombie onto the Queue and if its greater than size we move this list onto the full queue
     public GameObject addZombieOntoQueue(GameObject zombie)
-    {
-        zombieAttacking = true;
+    {     
         if (zombieQueue.Count < 5)
         {
            
@@ -174,10 +173,10 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble,IInteractable
             zombieQueue[0].GetComponent<IQueue>()?.updateQueuePoistion(queuePosition[0]);
         if (wasFull && zombieQueue.Count < 5)
             WoodenBoardManager.instance.switchQueueToNotFull(this, gameObject.layer);
-        if (zombieQueue.Count <= 0) 
-        {
-                zombieAttacking = false;    
-        }
+    }
+    public void checkDeath(GameObject zombie) 
+    {
+        if (zombieQueue.IndexOf(zombie) == 0) { zombieAttacking = false; }
     }
 
     public bool zombieInteract()

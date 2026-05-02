@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -40,12 +41,14 @@ public class PlayerController : MonoBehaviour, IDamageAble
     float _regenTimer;
     bool _isDead;
     public bool _pasued = false;
+    public TextMeshProUGUI windowRepairStatus;
  
 
     private void Awake()
     {
         footStep = GetComponent<AudioSource>();
         _hitsRemaining = maxHits;
+        windowRepairStatus.gameObject.SetActive(false);
     }
     bool _isSprinting;
     Quaternion _weaponIdleRotation;
@@ -132,23 +135,39 @@ public class PlayerController : MonoBehaviour, IDamageAble
     void repairWindow()
     {
         _repairCooldown -= Time.deltaTime;
-        if (!Input.GetKey(KeyCode.E) || _repairCooldown > 0f) return;
-
+       
         Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        Debug.DrawRay(ray.origin, ray.direction * 2.5f, Color.green, 0.1f);
-        if (!Physics.Raycast(ray, out hit, 2.5f)) return;
-
-       
-    
+        Debug.DrawRay(ray.origin,ray.direction,Color.red,1f);
+        if (!Physics.Raycast(ray, out hit, 2.5f)) { windowRepairStatus.gameObject.SetActive(false); return; }
+        Debug.Log(hit.collider.gameObject);
         if (hit.collider.gameObject.CompareTag("PotentialBoard"))
         {
-           IInteractable interact = hit.collider.transform.parent.Find("woodenBoard").GetComponent<IInteractable>();
-            if (interact != null && !interact.zombieInteract()) 
+            IInteractable interact = hit.collider.transform.parent.Find("woodenBoard").GetComponent<IInteractable>();
+            updateBoardStatus(hit.collider.gameObject);
+            if ((Input.GetKey(KeyCode.E) || Input.GetKeyDown(KeyCode.E)) && _repairCooldown <= 0f && !interact.zombieInteract()) 
             {
                 hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
                 _repairCooldown = 1.25f;
             }
+        }
+    }
+    void updateBoardStatus(GameObject interactable) 
+    {
+        IInteractable interact = interactable.transform.parent.Find("woodenBoard").GetComponent<IInteractable>();
+        IDamageAble damageable = interactable.transform.parent.Find("woodenBoard").GetComponent<IDamageAble>();
+        windowRepairStatus.gameObject.SetActive(true);
+        if (interact.zombieInteract())
+        {
+            windowRepairStatus.text = "Zombie at window, can't Build";
+        }
+        else if (damageable.returnHP() >= 120f)
+        {
+            windowRepairStatus.text = "Fully Boarded";
+        }
+        else if (damageable.returnHP() < 120f) 
+        {
+            windowRepairStatus.text = "Add Board";
         }
     }
     void HandleMouseLook()

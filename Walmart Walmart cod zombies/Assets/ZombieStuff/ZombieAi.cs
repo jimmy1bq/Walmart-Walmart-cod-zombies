@@ -183,6 +183,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     IEnumerator attackboard(GameObject boards)
     {
         link = boards.transform.parent.GetComponent<NavMeshLink>();
+        targetWindow = boards.GetComponent<woodenBoardHp>();
+        targetWindow.zombieAttacking = true;
         isWalking = false;
         agent.isStopped = true;
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, boards.transform.parent.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
@@ -304,7 +306,8 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         }
         if (health <= 0)
         {
-            isDead = true;
+            targetWindow.checkDeath(gameObject);
+            isDead = true;          
             StopAllCoroutines();
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
