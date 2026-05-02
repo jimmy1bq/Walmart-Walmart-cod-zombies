@@ -307,6 +307,10 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         if (health <= 0)
         {
             targetWindow.checkDeath(gameObject);
+            foreach (Collider col in gameObject.GetComponentsInChildren<Collider>())
+            {
+                col.enabled = false;
+            }
             isDead = true;          
             StopAllCoroutines();
             agent.isStopped = true;
