@@ -72,7 +72,7 @@ public class WoodenBoardManager : MonoBehaviour
             notFull.Remove(objeck);
             full.Add(objeck);
         }
-        Debug.Log("SHOULD SWITCH QUEUE" + full.Count);
+       
     }
     //q2 to q1 vice versa to the method above
     public void switchQueueToNotFull(woodenBoardHp objeck,int maskLayer)
@@ -84,8 +84,10 @@ public class WoodenBoardManager : MonoBehaviour
             full.Remove(objeck);
             notFull.Add(objeck);
         }
-        Debug.Log("SHOULD SWITCH QUEUE" + full.Count);
-
+    }
+    void Update()
+    {
+        Debug.Log(backNotFullqueued.Count);
     }
     //returns a randomBoardOn the Mapadd
     public woodenBoardHp randomQueue(ZombieSpawnPosition position)
@@ -107,8 +109,7 @@ public class WoodenBoardManager : MonoBehaviour
     {
         foreach (GameObject boards in G0Board) 
         {
-            listToAddTo(boards,boards.layer);
-           
+            listToAddTo(boards,boards.layer);          
         }  
     }
   

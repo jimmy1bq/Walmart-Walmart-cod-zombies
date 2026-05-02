@@ -132,22 +132,22 @@ public class audioManagerZombies : MonoBehaviour
     //so like if the sfx vol gets changed then this should also change
     public void changeSfxVolume(float val) 
     {
-        Debug.Log("CHANGED SFX");
+        
        sfxVolume = val * 100;
     }
     public void changeMasterVolume(float val)
     {
-        Debug.Log("CHANGED MASTER");
+        
         masterVolume = val * 100;
     }
     public void changeMusicVolume(float val)
     {
-        Debug.Log("CHANGED MUSIC");
+        
         musicVolume = val * 100;
     }
     public void changeMouseSensitivity(float val)
     {
-        Debug.Log("CHANGED MOUSE SENSITIVITY");
+      
         mouseSensitivity = val * 100;
     }
 

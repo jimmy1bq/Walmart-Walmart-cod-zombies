@@ -47,7 +47,6 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     void Start()
     {
         head = transform.GetChild(0).gameObject.transform.Find("Head").gameObject;
-        
         AudioSource[] arrayOfSrcs = GetComponents<AudioSource>();
         zombieSrc = arrayOfSrcs[0];
         zombieFootStepSrc = arrayOfSrcs[1];

@@ -27768,6 +27768,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: woodenBoard
       objectReference: {fileID: 0}
+    - target: {fileID: 2578514323497725131, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2585047177668035920, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
       propertyPath: m_Mesh
       value: 
