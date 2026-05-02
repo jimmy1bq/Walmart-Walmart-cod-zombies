@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(AudioSource))]
 public class Weapon : MonoBehaviour
@@ -119,6 +120,11 @@ public class Weapon : MonoBehaviour
 
         bool doubleTap = PowerupManager.Instance != null && PowerupManager.Instance.IsDoubleTap;
         int shots = doubleTap ? 2 : 1;
+        if (_audio != null && shootSound != null)
+        {
+            _audio.PlayOneShot(shootSound);
+        }
+
 
         for (int s = 0; s < shots; s++)
         for (int i = 0; i < weaponData.pelletCount; i++)
@@ -172,8 +178,7 @@ public class Weapon : MonoBehaviour
             Destroy(flash, 0.05f);
         }
 
-        if (_audio != null && shootSound != null)
-            _audio.PlayOneShot(shootSound);
+      
 
     }
 

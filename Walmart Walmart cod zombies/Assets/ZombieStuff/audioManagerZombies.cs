@@ -8,10 +8,12 @@ public class audioManagerZombies : MonoBehaviour
     //audio clips
     //put all audio clip here please
     //Should be Dont Destroy on Load
+    //missing gun and heatbeat do later
     public static audioManagerZombies instance;
     public List<AudioClip> zombieAttackClips;
     public List<AudioClip> zombieGroanClips;
     public List<AudioClip> backgroundMusic;
+    public List<AudioClip> gunFireSounds;
     public AudioClip PlayerAddBoard;
     public AudioClip zombieRemoveBoard;
     public AudioClip zombieFootStep;
