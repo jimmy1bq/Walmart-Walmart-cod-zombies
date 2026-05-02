@@ -63,14 +63,22 @@ public class interactables : MonoBehaviour
         SetPromptVisible(false);
 
         if (unlocksRoom && WoodenBoardManager.instance != null)
+        {
             foreach (RoomId room in roomsToUnlock)
-                WoodenBoardManager.instance.UnlockRoom(room);
+            { WoodenBoardManager.instance.UnlockRoom(room); }
+            Debug.Log("playing");
+            GameObject particle = gameObject.transform.GetChild(0).gameObject;
+            particle.transform.parent = null;
+            particle.GetComponent<ParticleSystem>().Play();
+        }
+        
 
         StartCoroutine(PlaySoundThenDestroy());
     }
 
     IEnumerator PlaySoundThenDestroy()
     {
+
         if (clearSound != null)
         {
             // Spawn a temporary AudioSource so the sound survives the destroy
