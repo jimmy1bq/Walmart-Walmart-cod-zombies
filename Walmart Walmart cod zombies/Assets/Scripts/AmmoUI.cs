@@ -78,10 +78,14 @@ public class AmmoUI : MonoBehaviour
         {
            // reloadSlider.value = Mathf.Clamp01(w._reloadStartTime / w._reloadEndTime);
             reloadSlider.gameObject.SetActive(w.IsReloading);
-            Debug.Log("currentTIme: " + w._reloadStartTime);
-            Debug.Log("end time: " + w._reloadEndTime);
-            reloadSlider.value = Mathf.Clamp01(Time.time  / w._reloadEndTime);
-            Debug.Log("reloadSliverValue: "+reloadSlider.value);
+            //for some stupid reason this only works with Time.time and not TIme.deltatime
+            //so like if I do _startTime(start at 0) and add delta time onto it and divide it with the _reloadEndTime it doesn't work
+            //so after a hour I gave up and decided to just treat  w._reloadStartTime(or the starting Time.time) as my 0 
+            float elapsed = Time.time - w._reloadStartTime;
+            float duration = w._reloadEndTime - w._reloadStartTime;
+            reloadSlider.value = Mathf.Clamp01(elapsed / duration);
+           
+          
         }
     }
 }

@@ -84,6 +84,7 @@ public class Weapon : MonoBehaviour
         _isReloading  = true;
         // _reloadEndTime = Time.time + weaponData.reloadTime;
         _reloadEndTime = Time.time + weaponData.reloadTime;
+        _reloadStartTime = Time.time;
         if (_audio != null && reloadSound != null)
             _audio.PlayOneShot(reloadSound);
     }
