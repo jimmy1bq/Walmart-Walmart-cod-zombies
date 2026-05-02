@@ -11012,6 +11012,7 @@ MonoBehaviour:
   head: {fileID: 2248600029416369907}
   stats: {fileID: 11400000, guid: 64f67465b783a974eb2dd15e396cf8fc, type: 2}
   range: 1.3
+  headShotted: {fileID: 8300000, guid: a0ab76cb891d6c048a5a5919aff65c34, type: 3}
 --- !u!82 &6970760004253862890
 AudioSource:
   m_ObjectHideFlags: 0

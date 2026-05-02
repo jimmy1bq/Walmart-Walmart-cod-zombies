@@ -36,17 +36,25 @@ public class PlayerController : MonoBehaviour, IDamageAble
     int _currentWeaponIndex;
     Camera playerCam;
     AudioSource footStep;
+    AudioSource heartBeat;
 
     int _hitsRemaining;
     float _regenTimer;
     bool _isDead;
     public bool _pasued = false;
     public TextMeshProUGUI windowRepairStatus;
- 
+
+    public AudioClip playerFootStep;
+    public AudioClip playerSprintBreath;
+    public AudioClip playerHitBreath;
+
+
 
     private void Awake()
     {
-        footStep = GetComponent<AudioSource>();
+        AudioSource[] arrayOfSources = GetComponentsInChildren<AudioSource>();
+        footStep = arrayOfSources[0];
+        heartBeat = arrayOfSources[1];
         _hitsRemaining = maxHits;
         windowRepairStatus.gameObject.SetActive(false);
     }
@@ -355,6 +363,11 @@ public class PlayerController : MonoBehaviour, IDamageAble
     public float takeDamage(float damage, int damageType)
     {
         if (_isDead) return 0f;
+        if (!heartBeat.isPlaying)
+        {
+            heartBeat.clip = playerHitBreath;
+            heartBeat.Play();
+        }
         _hitsRemaining--;
         _regenTimer = 0f;
         if (_hitsRemaining <= 0)

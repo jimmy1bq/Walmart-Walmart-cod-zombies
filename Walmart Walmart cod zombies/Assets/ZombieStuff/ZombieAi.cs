@@ -31,6 +31,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     bool collided = false;
     bool isDead = false;
     ZombieSpawnPosition spawnPosition;
+    public AudioClip headShotted;
 
     int groanChance = 0;
     int groanTheresHold = 100;
@@ -334,6 +335,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
         {
             Destroy(head);
             GameObject gibParticle = transform.GetChild(0).transform.Find("gib").transform.gameObject;
+            zombieSrc.PlayOneShot(headShotted);
             gibParticle.SetActive(true);
         }
         if (isClmbingANDOutside)
