@@ -52,6 +52,7 @@ public class UIManager : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
         Instance.fade(Instance.pasueScreen, 0.3f, 0f, () => PSCanvas.SetActive(false));
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>()._pasued = false;
         Instance.backButton();
     }
     //-------------------------------------------------------------------------------------------------------------------------------------------

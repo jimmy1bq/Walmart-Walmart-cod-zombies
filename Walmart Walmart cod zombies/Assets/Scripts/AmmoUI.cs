@@ -1,5 +1,6 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Attach to a UI Canvas GameObject.
@@ -19,6 +20,7 @@ public class AmmoUI : MonoBehaviour
     public TextMeshProUGUI ammoText;
     public TextMeshProUGUI weaponNameText;
     public TextMeshProUGUI reloadText;
+    public Slider reloadSlider;
 
     void Start()
     {
@@ -28,6 +30,7 @@ public class AmmoUI : MonoBehaviour
 
         if (reloadText != null)
             reloadText.gameObject.SetActive(false);
+        if (reloadSlider != null) reloadSlider.gameObject.SetActive(false);
     }
 
     void Update()
@@ -55,9 +58,10 @@ public class AmmoUI : MonoBehaviour
 
         if (w == null)
         {
-            if (ammoText != null)       ammoText.text       = "-- / --";
+            if (ammoText != null) ammoText.text = "-- / --";
             if (weaponNameText != null) weaponNameText.text = "";
-            if (reloadText != null)     reloadText.gameObject.SetActive(false);
+            if (reloadText != null) reloadText.gameObject.SetActive(false);
+
             return;
         }
 
@@ -69,5 +73,15 @@ public class AmmoUI : MonoBehaviour
 
         if (reloadText != null)
             reloadText.gameObject.SetActive(w.IsReloading);
+
+        if (reloadSlider != null)
+        {
+           // reloadSlider.value = Mathf.Clamp01(w._reloadStartTime / w._reloadEndTime);
+            reloadSlider.gameObject.SetActive(w.IsReloading);
+            Debug.Log("currentTIme: " + w._reloadStartTime);
+            Debug.Log("end time: " + w._reloadEndTime);
+            reloadSlider.value = Mathf.Clamp01(Time.time  / w._reloadEndTime);
+            Debug.Log("reloadSliverValue: "+reloadSlider.value);
+        }
     }
 }

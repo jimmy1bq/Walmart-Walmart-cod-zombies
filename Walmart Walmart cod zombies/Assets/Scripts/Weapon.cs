@@ -23,7 +23,8 @@ public class Weapon : MonoBehaviour
     int _reserveAmmo;
     float _nextFireTime;
     bool _isReloading;
-    float _reloadEndTime;
+    public float _reloadEndTime;
+    public float _reloadStartTime;
     float _currentSpread;
     AudioSource _audio;
 
@@ -66,12 +67,13 @@ public class Weapon : MonoBehaviour
     public void TickReload()
     {
         if (!_isReloading || weaponData == null) return;
-        if (Time.time < _reloadEndTime) return;
+        if (Time.time < _reloadEndTime) {  return; }
 
         int needed    = weaponData.clipSize - _currentAmmo;
         int take      = Mathf.Min(needed, _reserveAmmo);
         _currentAmmo += take;
         _reserveAmmo -= take;
+        _reloadStartTime = 0f;
         _isReloading  = false;
     }
 
@@ -80,6 +82,7 @@ public class Weapon : MonoBehaviour
         if (_isReloading || _reserveAmmo <= 0 || weaponData == null) return;
         if (_currentAmmo == weaponData.clipSize) return;
         _isReloading  = true;
+        // _reloadEndTime = Time.time + weaponData.reloadTime;
         _reloadEndTime = Time.time + weaponData.reloadTime;
         if (_audio != null && reloadSound != null)
             _audio.PlayOneShot(reloadSound);

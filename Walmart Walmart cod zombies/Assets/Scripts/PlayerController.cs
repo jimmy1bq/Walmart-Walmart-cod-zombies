@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     int _hitsRemaining;
     float _regenTimer;
     bool _isDead;
-    bool _pasued = false;
+    public bool _pasued = false;
  
 
     private void Awake()
@@ -147,12 +147,13 @@ public class PlayerController : MonoBehaviour, IDamageAble
             if (interact != null && !interact.zombieInteract()) 
             {
                 hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
-                _repairCooldown = 0.75f;
+                _repairCooldown = 1.25f;
             }
         }
     }
     void HandleMouseLook()
     {
+        if (_pasued) return;
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
@@ -315,7 +316,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
     void HandleShooting()
     {
-        if (_isSprinting) return;
+        if (_isSprinting || _pasued) return;
 
         Weapon current = CurrentWeapon;
         if (current == null || current.weaponData == null) return;
