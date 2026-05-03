@@ -134,12 +134,12 @@ public class Weapon : MonoBehaviour
         if (_audio != null && shootSound != null)
         {
             _audio.volume = audioManagerZombies.instance.sfxVolume;
-            _audio.PlayOneShot(shootSound);
-            if (animator != null && gunfire != null)
-            {
-                Debug.Log(gunfire.name);
-                animator.Play(gunfire.name);
-            }
+            _audio.PlayOneShot(shootSound);          
+        }    
+        if (animator != null && gunfire != null)
+        {
+            Debug.Log(gameObject.name + " " + gunfire.name);
+            animator.Play(gunfire.name);
         }
 
 

@@ -68,9 +68,9 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble,IInteractable
             audioManagerZombies.instance.playWoodenBoard(woodenBoardSrc, transform.TransformPoint(gameObject.transform.position), 1, 1);
             animateComp.Play("BoardAnimation" + index);
             index++;
-
+            Debug.Log("zombie kilkled board #:" + index);
             //this is just a safety set
-            if (health <= 0) { health = 0; dead = true; index = 6; }
+            if (health <= 0) { health = 0; dead = true; index = 7; /*7th because repair board is i-1 not i so 6th would never get repaired*/}
 
         }
         return health;    
@@ -82,9 +82,10 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble,IInteractable
         if (health < stats.hp)
         {
             health += healHp;
-            dead = false;          
-            playRepairAnim(index);
+            dead = false;       
             index = Mathf.Clamp(index - 1, 1, 6);
+            Debug.Log("REPAIRING BOARD #" + index);
+            playRepairAnim(index);          
             PointsManager.Instance?.AddPoints(5);
             if (health >= stats.hp) { health = stats.hp; index = 1; }
         }
