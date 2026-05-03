@@ -16,8 +16,8 @@ RenderSettings:
   serializedVersion: 10
   m_Fog: 1
   m_FogColor: {r: 0.603922, g: 0.686275, b: 0.733333, a: 1}
-  m_FogMode: 1
-  m_FogDensity: 0.01
+  m_FogMode: 3
+  m_FogDensity: 0.018
   m_LinearFogStart: 1
   m_LinearFogEnd: 50
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -24376,9 +24376,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fogColor: {r: 0.603922, g: 0.686275, b: 0.733333, a: 1}
+  fogMode: 3
+  fogDensity: 0.018
   fogStartDistance: 1
-  fogEndDistance: 50
-  fogMode: 1
+  fogEndDistance: 75
 --- !u!114 &992766883 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5089799188693764535, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
