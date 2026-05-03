@@ -69,4 +69,16 @@ public class RoundManager : MonoBehaviour
     {
         ZombiesAlive = Mathf.Max(0, ZombiesAlive - 1);
     }
+
+    // Called when the scene restarts so the persisted RoundManager begins fresh.
+    // UIManager.onSceneChange invokes this one frame after scene load, giving all
+    // Start() subscriptions (spawners, RoundUI) time to register first.
+    public void Restart()
+    {
+        StopAllCoroutines();
+        CurrentRound       = 0;
+        ZombiesAlive       = 0;
+        ZombiesLeftToSpawn = 0;
+        StartCoroutine(RoundLoop(1));
+    }
 }

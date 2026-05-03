@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return; // onSceneChange handles reference updates for the persistent instance
         }
         Instance.PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
         Instance.pasueScreen = Instance.PSCanvas.transform.GetChild(0).gameObject;
@@ -76,6 +77,8 @@ public class UIManager : MonoBehaviour
     }
     public void playTitleScreenButton()
     {
+        PointsManager.Instance?.Reset();
+        PowerupManager.Instance?.Reset();
         Instance.StartCoroutine(waitForSceneToLoad(1));
     }
     public void quitTitleScreen() 
@@ -93,15 +96,10 @@ public class UIManager : MonoBehaviour
     //PAUSE SCREEN BUTTONS---------------------------------------------------------------------------------------------------------------------------------
     public void reStart()
     {
-        LeanTween.value(Instance.pasueScreen, 0f, 1f, 0.3f).setIgnoreTimeScale(true).setOnUpdate((float val) =>
-        {
-            Instance.pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(23 / 255f, 23 / 255f, 23 / 255f, val);
-        }).setIgnoreTimeScale(true).setOnComplete(() =>
-        {
-            Time.timeScale = 1f;
-            Instance.StartCoroutine(waitForSceneToLoad(1));
-        });
-
+        Time.timeScale = 1f;
+        PointsManager.Instance?.Reset();
+        PowerupManager.Instance?.Reset();
+        Instance.StartCoroutine(waitForSceneToLoad(1));
     }
     public void quitPauseMenu() 
     {
@@ -120,23 +118,26 @@ public class UIManager : MonoBehaviour
         GameObject loadingScreen = null;
         UnityEngine.UI.Slider loadingSlider = null;
 
-        if (sceneNumber == 1) 
+        string targetScene = sceneNumber == 1 ? "FinalScene" : "TtileScreen";
+
+        if (sceneNumber == 1)
         {
-            AsyncOperation aP = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(2);
-            while (!aP.isDone) 
+            AsyncOperation aP = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("LoadingScreen");
+            while (!aP.isDone)
             {
                 yield return null;
             }
             loadingScreen = GameObject.FindGameObjectWithTag("LoadingScreen");
-            loadingSlider = loadingScreen.transform.Find("LoadingBar").GetComponent<UnityEngine.UI.Slider>();
+            if (loadingScreen != null)
+                loadingSlider = loadingScreen.transform.Find("LoadingBar")?.GetComponent<UnityEngine.UI.Slider>();
         }
-                
-        AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneNumber);
+
+        AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(targetScene);
         while (!operation.isDone)
         {
             float progress = Mathf.Clamp01(operation.progress / 0.9f);
-           
-            if (loadingSlider!=null) 
+
+            if (loadingSlider!=null)
             {
                 //note in the original game the loading screen is a fake loading screen that just waits for a certain amount of time but this is an actual loading screen that shows the progress of the scene loading
                 loadingSlider.value = progress;
@@ -207,11 +208,22 @@ public class UIManager : MonoBehaviour
         Instance.PSCanvas = GameObject.FindGameObjectWithTag("PSCanvas");
         Instance.pasueScreen = Instance.PSCanvas.transform.GetChild(0).gameObject;
         Instance.originalPosition = Instance.pasueScreen.transform.position;
-        if (scene==1) 
+        if (scene==1)
         {
             Instance.PSCanvas.SetActive(false);
             Instance.pasueScreen.GetComponent<UnityEngine.UI.Image>().color = new Color(96 / 255f, 96 / 255f, 96 / 255f, 160 / 255f);
+            // PointsManager and RoundManager share one DontDestroyOnLoad object, so
+            // RoundManager also persists. Its loop already fired onRoundStart before
+            // new spawners/RoundUI had a chance to subscribe. Wait one frame for all
+            // Start() calls to finish, then restart the loop from round 1.
+            Instance.StartCoroutine(RestartRoundManagerNextFrame());
         }
         updateSettingSliders();
+    }
+
+    IEnumerator RestartRoundManagerNextFrame()
+    {
+        yield return null;
+        RoundManager.Instance?.Restart();
     }
 }

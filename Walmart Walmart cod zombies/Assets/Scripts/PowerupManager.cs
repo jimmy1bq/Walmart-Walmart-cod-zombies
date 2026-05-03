@@ -23,6 +23,12 @@ public class PowerupManager : MonoBehaviour
         if (IsDoubleTap    && Time.time >= _doubleTapEnd)    IsDoubleTap    = false;
     }
 
+    public void Reset()
+    {
+        IsDoublePoints = false;
+        IsDoubleTap = false;
+    }
+
     public void ActivateDoublePoints(float duration = 30f)
     {
         IsDoublePoints    = true;
