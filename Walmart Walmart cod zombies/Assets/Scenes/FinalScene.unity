@@ -14,12 +14,12 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Fog: 1
+  m_FogColor: {r: 0.603922, g: 0.686275, b: 0.733333, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
-  m_LinearFogStart: 0
-  m_LinearFogEnd: 300
+  m_FogDensity: 0.018
+  m_LinearFogStart: 1
+  m_LinearFogEnd: 50
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -24363,6 +24363,23 @@ MonoBehaviour:
   doubleTapPrefab: {fileID: 100, guid: e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7, type: 3}
   maxAmmoPrefab: {fileID: 100, guid: f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8, type: 3}
   dropChance: 0.2
+--- !u!114 &992145048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992145043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f913ceda437d5c742b410d5e3495bbe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fogColor: {r: 0.603922, g: 0.686275, b: 0.733333, a: 1}
+  fogMode: 3
+  fogDensity: 0.018
+  fogStartDistance: 1
+  fogEndDistance: 75
 --- !u!114 &992766883 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5089799188693764535, guid: f19d8df16e4ff2a47bebd76b6b7efc20, type: 3}
@@ -47252,6 +47269,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4192724083263564398, guid: 63288a9c6d4aeaf4d9389d673e32b729, type: 3}
       insertIndex: -1
       addedObject: {fileID: 992145047}
+    - targetCorrespondingSourceObject: {fileID: 4192724083263564398, guid: 63288a9c6d4aeaf4d9389d673e32b729, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 992145048}
   m_SourcePrefab: {fileID: 100100000, guid: 63288a9c6d4aeaf4d9389d673e32b729, type: 3}
 --- !u!1001 &4347206321206195546
 PrefabInstance:
