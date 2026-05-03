@@ -32,6 +32,13 @@ public class PointsManager : MonoBehaviour
         onPointsChanged?.Invoke(CurrentPoints);
     }
 
+    public void Reset()
+    {
+        CurrentPoints = 0;
+        TotalPoints = 0;
+        onPointsChanged?.Invoke(CurrentPoints);
+    }
+
     /// <summary>Returns true and deducts points if the player can afford it.</summary>
     public bool TrySpend(int cost)
     {

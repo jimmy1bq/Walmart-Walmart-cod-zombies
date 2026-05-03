@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
     [Header("Health")]
     public int maxHits = 5;
-    public float regenDelay = 15f;
+    public float regenDelay = 5f;
     [SerializeField] GameObject deathPanel;
 
     CharacterController _controller;
@@ -125,7 +125,10 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         _regenTimer += Time.deltaTime;
         if (_regenTimer >= regenDelay && _hitsRemaining < maxHits)
-            _hitsRemaining = maxHits;
+        {
+            _hitsRemaining++;
+            _regenTimer = 0f;
+        }
 
         HandleMouseLook();
         HandleMovement();
