@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     }
     bool _isSprinting;
     Quaternion _weaponIdleRotation;
-    Quaternion _currentSprintTilt = Quaternion.identity;
+    Quaternion _currentSprintTilt = Quaternion.Euler(0, 180, 0);
     float _repairCooldown = 0f;
 
     void Start()
@@ -291,13 +291,13 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         // Sync weapon holder to camera's vertical look each frame (WeaponHolder is a
         // sibling of Camera, not a child, so it doesn't inherit the look rotation).
-        Quaternion lookRot = _weaponIdleRotation * Quaternion.Euler(_verticalRotation, 0f, 0f);
+      //  Quaternion lookRot = _weaponIdleRotation * Quaternion.Euler(_verticalRotation, 0f, 0f);
 
         // Sprint tilt layered on top, lerped for a smooth transition
-        Quaternion sprintTarget = _isSprinting ? Quaternion.Euler(sprintTiltEuler) : Quaternion.identity;
+        Quaternion sprintTarget = _isSprinting ? Quaternion.Euler(sprintTiltEuler) : Quaternion.Euler(0, 180, 0);
         _currentSprintTilt = Quaternion.Lerp(_currentSprintTilt, sprintTarget, sprintTiltSpeed * Time.deltaTime);
 
-        weaponHolder.localRotation = lookRot * _currentSprintTilt;
+        CurrentWeapon.transform.localRotation = /*lookRot **/ _currentSprintTilt;
     }
 
     void HandleWeaponSwitch()
