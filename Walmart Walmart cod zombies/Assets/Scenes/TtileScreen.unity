@@ -7356,7 +7356,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 85469371746869595, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 253.74796
+      value: 253.74803
       objectReference: {fileID: 0}
     - target: {fileID: 1062477396343601286, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchorMax.y
@@ -16948,6 +16948,10 @@ PrefabInstance:
       propertyPath: mouseSensitivity
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8288736976945250250, guid: 8bd2c10fa55210a4fa0bd99d920a7b3e, type: 3}
+      propertyPath: audioSrcForDestroyedObjects
+      value: 
+      objectReference: {fileID: 8343288085623180243, guid: 60cc9fc156d5d67478310853d969c875, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

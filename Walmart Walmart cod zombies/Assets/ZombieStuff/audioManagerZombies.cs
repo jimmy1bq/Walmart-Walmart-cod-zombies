@@ -18,6 +18,7 @@ public class audioManagerZombies : MonoBehaviour
     public AudioClip zombieRemoveBoard;
     public AudioClip zombieFootStep;
     public AudioClip playerFootSteps;
+    public GameObject audioSrcForDestroyedObjects;
     public float sfxVolume = 100;
     public float musicVolume = 100;
     public float masterVolume = 100;
@@ -127,6 +128,15 @@ public class audioManagerZombies : MonoBehaviour
             playerSoruce.Play();
         }
     }
+    public void afterDestroyAudio(Vector3 position,AudioClip audio) 
+    {
+       GameObject src = Instantiate(audioSrcForDestroyedObjects, position, Quaternion.identity);
+       AudioSource audioSource = src.GetComponent<AudioSource>();
+       audioSource.clip = audio;
+       audioSource.volume = sfxVolume;
+       audioSource.Play();
+       Destroy(src, audio.length);
+    }
    
     //changes the value so later on UI manager can call
     //so like if the sfx vol gets changed then this should also change
@@ -136,14 +146,14 @@ public class audioManagerZombies : MonoBehaviour
        sfxVolume = val * 100;
     }
     public void changeMasterVolume(float val)
-    {
-        
+    {       
         masterVolume = val * 100;
     }
     public void changeMusicVolume(float val)
     {
         
         musicVolume = val * 100;
+        GetComponent<AudioSource>().volume = musicVolume;
     }
     public void changeMouseSensitivity(float val)
     {

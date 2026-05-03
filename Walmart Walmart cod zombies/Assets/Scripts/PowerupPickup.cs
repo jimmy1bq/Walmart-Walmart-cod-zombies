@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public enum PowerupType { DoublePoints, DoubleTap, MaxAmmo }
@@ -5,6 +6,9 @@ public enum PowerupType { DoublePoints, DoubleTap, MaxAmmo }
 public class PowerupPickup : MonoBehaviour
 {
     public PowerupType type;
+    public AudioSource powerUpSrc;
+    public AudioClip auraNoise;
+    public AudioClip pickUpNoise;
     public float duration = 30f;
     public float lifetime = 30f;
 
@@ -18,6 +22,13 @@ public class PowerupPickup : MonoBehaviour
     float _spawnY;
     float _destroyTime;
 
+    private void Awake()
+    {
+        powerUpSrc = GetComponent<AudioSource>();
+        powerUpSrc.clip = auraNoise;
+        powerUpSrc.volume = audioManagerZombies.instance.sfxVolume; 
+        powerUpSrc.Play();
+    }
     void Start()
     {
         _spawnY      = transform.position.y;
@@ -44,13 +55,16 @@ public class PowerupPickup : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         PowerupManager pm = PowerupManager.Instance ?? PowerupManager.GetOrCreate();
+       
         switch (type)
         {
             case PowerupType.DoublePoints: pm.ActivateDoublePoints(duration); break;
             case PowerupType.DoubleTap:    pm.ActivateDoubleTap(duration);    break;
             case PowerupType.MaxAmmo:      pm.ActivateMaxAmmo();              break;
-        }
-
+        }   
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().powerUpsCollected++;
+        audioManagerZombies.instance.afterDestroyAudio(transform.position, pickUpNoise);
         Destroy(gameObject);
-    }
+    }  
+    
 }
