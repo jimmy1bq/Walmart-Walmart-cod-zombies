@@ -1,11 +1,23 @@
-using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour, IDamageAble
 {
+    [Header("Stats")]
+    //grab from rounds manager(currentround-1)
+    public int roundsSurvived = 0;
+    //grab from points manager(totalPoints)
+    public int totalPoints = 0;
+    //increments by zombies when they die
+    public int zombieKills = 0;
+    public int headShotKills = 0;
+    public int powerUpsCollected = 0;
+    public int highestRound = 0;
+    //Delatime
+    public double timePlayed = 0;
+
     [Header("Movement")]
     public float moveSpeed = 6f;
     public float sprintMultiplier = 1.6f;
@@ -35,9 +47,11 @@ public class PlayerController : MonoBehaviour, IDamageAble
     float _verticalRotation;
     int _currentWeaponIndex;
     Camera playerCam;
+
     AudioSource footStep;
     AudioSource heartBeat;
     AudioSource heavyBreathing;
+
     int _hitsRemaining;
     float _regenTimer;
     bool _isDead;
@@ -55,12 +69,14 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
     private void Awake()
     {
+        highestRound = highestRoundData.instance.LoadData().playerData.highestRound;
         AudioSource[] arrayOfSources = GetComponentsInChildren<AudioSource>();
         footStep = arrayOfSources[0];
         heartBeat = arrayOfSources[1];
         heavyBreathing = arrayOfSources[2];
         _hitsRemaining = maxHits;
         windowRepairStatus.gameObject.SetActive(false);
+        deathPanel.SetActive(false);
     }
     bool _isSprinting;
     Quaternion _weaponIdleRotation;
@@ -120,17 +136,18 @@ public class PlayerController : MonoBehaviour, IDamageAble
         repairWindow();
         PauseGame();
         mouseSensitivity = audioManagerZombies.instance.mouseSensitivity;
+        timePlayed += Time.deltaTime;
     }
 
     //if the game isn't paused and we hit ESC pause it otherwise we unpause it
-    void PauseGame() 
+    void PauseGame()
     {
         if (!_pasued && Input.GetKeyDown(KeyCode.Escape))
         {
             _pasued = true;
             UIManager.Instance.pauseScreen();
         }
-        else if (_pasued && Input.GetKeyDown(KeyCode.Escape)) 
+        else if (_pasued && Input.GetKeyDown(KeyCode.Escape))
         {
             UIManager.Instance.unPauseScreen();
             _pasued = false;
@@ -147,24 +164,24 @@ public class PlayerController : MonoBehaviour, IDamageAble
     void repairWindow()
     {
         _repairCooldown -= Time.deltaTime;
-       
+
         Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        Debug.DrawRay(ray.origin,ray.direction,Color.red,1f);
+        Debug.DrawRay(ray.origin, ray.direction, Color.red, 1f);
         if (!Physics.Raycast(ray, out hit, 2.5f)) { windowRepairStatus.gameObject.SetActive(false); return; }
         Debug.Log(hit.collider.gameObject);
         if (hit.collider.gameObject.CompareTag("PotentialBoard"))
         {
             IInteractable interact = hit.collider.transform.parent.Find("woodenBoard").GetComponent<IInteractable>();
             updateBoardStatus(hit.collider.gameObject);
-            if ((Input.GetKey(KeyCode.E) || Input.GetKeyDown(KeyCode.E)) && _repairCooldown <= 0f && !interact.zombieInteract()) 
+            if ((Input.GetKey(KeyCode.E) || Input.GetKeyDown(KeyCode.E)) && _repairCooldown <= 0f && !interact.zombieInteract())
             {
                 hit.collider.transform.parent.Find("woodenBoard").GetComponent<IHealAble>().action(20);
                 _repairCooldown = 1.25f;
             }
         }
     }
-    void updateBoardStatus(GameObject interactable) 
+    void updateBoardStatus(GameObject interactable)
     {
         IInteractable interact = interactable.transform.parent.Find("woodenBoard").GetComponent<IInteractable>();
         IDamageAble damageable = interactable.transform.parent.Find("woodenBoard").GetComponent<IDamageAble>();
@@ -177,7 +194,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
         {
             windowRepairStatus.text = "Fully Boarded";
         }
-        else if (damageable.returnHP() < 120f) 
+        else if (damageable.returnHP() < 120f)
         {
             windowRepairStatus.text = "Add Board";
         }
@@ -207,16 +224,16 @@ public class PlayerController : MonoBehaviour, IDamageAble
         float v = Input.GetAxis("Vertical");
         //so in game everytime you sprint and unsprint you have to wait until it resets
         _isSprinting = Input.GetKey(KeyCode.LeftShift) && (h != 0f || v != 0f);
-        
+
         float speed = moveSpeed;
         //if we are shifting and not on cool and we have stamina
-        Debug.Log("isSprinting: " + _isSprinting + " _cantSprint" + !_cantSprint + "  stamina<5: "+ (stamina < 5f));
+        Debug.Log("isSprinting: " + _isSprinting + " _cantSprint" + !_cantSprint + "  stamina<5: " + (stamina < 5f));
         if (_isSprinting && !_cantSprint && stamina < 5f)
         {
             speed *= sprintMultiplier;
             stamina += Time.deltaTime;
             stamina = Mathf.Clamp(stamina, 0, totalStamina);
-            Debug.Log("stamina right now: "+ stamina);
+            Debug.Log("stamina right now: " + stamina);
             if (stamina / totalStamina >= 0.8f && !heavyBreathing.isPlaying)
             {
                 heavyBreathing.clip = playerSprintBreath;
@@ -224,13 +241,13 @@ public class PlayerController : MonoBehaviour, IDamageAble
             }
         }
         //if we stop we have to wait for stamina to finish regening or down to 0
-        else { _isSprinting = false; _cantSprint = true; stamina-= Time.deltaTime; stamina = Mathf.Clamp(stamina, 0, totalStamina); if (stamina == 0) { stamina = 0f; _cantSprint = false; }}
+        else { _isSprinting = false; _cantSprint = true; stamina -= Time.deltaTime; stamina = Mathf.Clamp(stamina, 0, totalStamina); if (stamina == 0) { stamina = 0f; _cantSprint = false; } }
 
         Vector3 move = transform.right * h + transform.forward * v;
         _controller.Move(move * speed * Time.deltaTime);
 
-        
-        if (/*(Input.GetKey(KeyCode.W) || Input.GetKeyDown(KeyCode.W))*/ (v!=0f||h!=0f) && !footStep.isPlaying) 
+
+        if (/*(Input.GetKey(KeyCode.W) || Input.GetKeyDown(KeyCode.W))*/ (v != 0f || h != 0f) && !footStep.isPlaying)
         {
             //the audio is lengthen by audacity since you can't effecitley make this audio long enough in unity
             footStep.pitch = 0.5f;
@@ -240,7 +257,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
         if (Input.GetButtonDown("Jump") && grounded)
             _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
-       
+
         _velocity.y += gravity * Time.deltaTime;
         _controller.Move(_velocity * Time.deltaTime);
     }
@@ -408,7 +425,37 @@ public class PlayerController : MonoBehaviour, IDamageAble
     {
         _isDead = true;
         if (deathPanel != null) deathPanel.SetActive(true);
+        updateDeathPanel();
+        Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+    void updateDeathPanel()
+    {
+
+        Transform deathPanelTransform = deathPanel.transform;
+        deathPanelTransform.Find("RoundsSurvivedText").GetComponent<TextMeshProUGUI>().text = "Rounds Survived " + roundsSurvived;
+        deathPanelTransform.Find("PointtotalTXT").GetComponent<TextMeshProUGUI>().text = "Points Total " + PointsManager.Instance.TotalPoints;
+        deathPanelTransform.Find("ZOMBIEKILLEDTXT").GetComponent<TextMeshProUGUI>().text = "Zombies Killed " + zombieKills;
+        deathPanelTransform.Find("HeadShotKillTXT").GetComponent<TextMeshProUGUI>().text = "HeadShot Kills " + headShotKills;
+        deathPanelTransform.Find("PowerUpcollectedTXT").GetComponent<TextMeshProUGUI>().text = "powerup collected " + powerUpsCollected;
+        int hours = (int)Math.Floor(timePlayed / 3600);
+        //leftover for mintue conversion
+        double leftOverMintues = timePlayed - hours * 3600;
+        int mintues = (int)Math.Floor(leftOverMintues / 60);
+        //leftOver seconds
+        int leftOverSeconds = (int)(leftOverMintues - mintues * 60);
+        deathPanelTransform.Find("TimeSurvivedTXT").GetComponent<TextMeshProUGUI>().text = "Time " + hours + ":" + mintues + ":" + leftOverSeconds;
+        if (roundsSurvived > highestRound)
+        {
+
+
+
+        }
+        else { deathPanelTransform.Find("HighscoreText").gameObject.SetActive(false); }
+        //deathPanelTransform.Find("HighscoreText").GetComponent<TextMeshProUGUI>().text = "Points Total " + PointsManager.Instance.TotalPoints;
+
+
+
     }
 }

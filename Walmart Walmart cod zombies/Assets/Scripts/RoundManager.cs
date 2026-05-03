@@ -50,6 +50,7 @@ public class RoundManager : MonoBehaviour
             yield return new WaitUntil(() => ZombiesLeftToSpawn <= 0 && ZombiesAlive <= 0);
 
             onRoundEnd?.Invoke();
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().roundsSurvived++;
             round++;
         }
     }

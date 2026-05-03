@@ -329,13 +329,15 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     IEnumerator zombieDeath(bool headShotKill) 
     {
 
-        
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().zombieKills++;
         if (headShotKill)
         {
             Destroy(head);
             GameObject gibParticle = transform.GetChild(0).transform.Find("gib").transform.gameObject;
             zombieSrc.PlayOneShot(headShotted);
             gibParticle.SetActive(true);
+            //adds kill count for the player     
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().headShotKills++;
         }
         if (isClmbingANDOutside)
             animationer.Play("window_death_out 1");

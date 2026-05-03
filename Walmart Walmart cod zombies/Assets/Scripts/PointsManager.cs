@@ -13,7 +13,7 @@ public class PointsManager : MonoBehaviour
     public int killPoints = 50;         // points awarded per zombie kill
 
     public int CurrentPoints { get; private set; }
-
+    public int TotalPoints { get; private set; }
     public UnityEvent<int> onPointsChanged; // fires with new total whenever points change
 
     void Awake()
@@ -28,6 +28,7 @@ public class PointsManager : MonoBehaviour
         if (PowerupManager.Instance != null && PowerupManager.Instance.IsDoublePoints)
             amount *= 2;
         CurrentPoints += amount;
+        TotalPoints += amount;
         onPointsChanged?.Invoke(CurrentPoints);
     }
 

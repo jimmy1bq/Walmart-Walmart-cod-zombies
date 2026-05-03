@@ -135,7 +135,7 @@ public class UIManager : MonoBehaviour
         while (!operation.isDone)
         {
             float progress = Mathf.Clamp01(operation.progress / 0.9f);
-            Debug.Log(progress);
+           
             if (loadingSlider!=null) 
             {
                 //note in the original game the loading screen is a fake loading screen that just waits for a certain amount of time but this is an actual loading screen that shows the progress of the scene loading
