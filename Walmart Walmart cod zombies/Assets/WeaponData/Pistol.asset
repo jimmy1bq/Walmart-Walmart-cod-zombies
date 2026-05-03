@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponName: Pistol
   icon: {fileID: -2046296161, guid: 8c636830548bf744cb75c5cc41c60985, type: 3}
   buyCost: 300
-  damage: 20
+  damage: 10
   pelletCount: 1
   fireRate: 0.13333334
   isAutomatic: 0

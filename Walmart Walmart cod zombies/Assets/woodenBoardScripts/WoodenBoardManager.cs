@@ -87,7 +87,7 @@ public class WoodenBoardManager : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log(backNotFullqueued.Count);
+        
     }
     //returns a randomBoardOn the Mapadd
     public woodenBoardHp randomQueue(ZombieSpawnPosition position)
