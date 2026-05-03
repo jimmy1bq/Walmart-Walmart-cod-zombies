@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     AudioSource heartBeat;
     AudioSource heavyBreathing;
 
-    
+    int _totalHitsRemaining;
     int _hitsRemaining;
     float _regenTimer;
     bool _isDead;
@@ -81,7 +81,6 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
     private void Awake()
     {
-      
         deathPanel.SetActive(false);
         highestRound = highestRoundData.instance.LoadData().playerData.highestRound;
         AudioSource[] arrayOfSources = GetComponentsInChildren<AudioSource>();
@@ -90,10 +89,13 @@ public class PlayerController : MonoBehaviour, IDamageAble
         heavyBreathing = arrayOfSources[2];
         _hitsRemaining = maxHits;
         windowRepairStatus.gameObject.SetActive(false);
+
+        var bseGO = new GameObject("BloodScreenEffect");
+        bseGO.AddComponent<BloodScreenEffect>();
     }
     bool _isSprinting;
     Quaternion _weaponIdleRotation;
-    Quaternion _currentSprintTilt = Quaternion.Euler(0, 180, 0);
+    Quaternion _currentSprintTilt = Quaternion.identity;
     float _repairCooldown = 0f;
 
     void Start()
@@ -139,8 +141,9 @@ public class PlayerController : MonoBehaviour, IDamageAble
         if (_regenTimer >= regenDelay && _hitsRemaining < maxHits)
         {
             _hitsRemaining++;
-            _regenTimer = 0f;        
-            if (_hitsRemaining == 0) 
+            _regenTimer = 0f;
+            BloodScreenEffect.Instance?.OnRegen(_hitsRemaining, maxHits);
+            if (_hitsRemaining == 0)
             {
                 heartBeat.Stop();
             }
@@ -187,9 +190,9 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-       
+
         if (!Physics.Raycast(ray, out hit, 2.5f)) { windowRepairStatus.gameObject.SetActive(false); return; }
-        
+
         if (hit.collider.gameObject.CompareTag("PotentialBoard"))
         {
             IInteractable interact = hit.collider.transform.parent.Find("woodenBoard").GetComponent<IInteractable>();
@@ -247,7 +250,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         float speed = moveSpeed;
         //if we are shifting and not on cool and we have stamina
-       
+
         if (_isSprinting && !_cantSprint && stamina < 5f)
         {
             speed *= sprintMultiplier;
@@ -288,15 +291,13 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         // Sync weapon holder to camera's vertical look each frame (WeaponHolder is a
         // sibling of Camera, not a child, so it doesn't inherit the look rotation).
-        //make the weapon handler 
-        //Quaternion lookRot = _weaponIdleRotation * Quaternion.Euler(_verticalRotation, 0f, 0f);
+        Quaternion lookRot = _weaponIdleRotation * Quaternion.Euler(_verticalRotation, 0f, 0f);
 
         // Sprint tilt layered on top, lerped for a smooth transition
-
-        Quaternion sprintTarget = _isSprinting ? Quaternion.Euler(sprintTiltEuler) : Quaternion.Euler(0, 180, 0);
+        Quaternion sprintTarget = _isSprinting ? Quaternion.Euler(sprintTiltEuler) : Quaternion.identity;
         _currentSprintTilt = Quaternion.Lerp(_currentSprintTilt, sprintTarget, sprintTiltSpeed * Time.deltaTime);
-      
-        CurrentWeapon.transform.localRotation = /*lookRot **/ _currentSprintTilt;
+
+        weaponHolder.localRotation = lookRot * _currentSprintTilt;
     }
 
     void HandleWeaponSwitch()
@@ -401,12 +402,12 @@ public class PlayerController : MonoBehaviour, IDamageAble
     // Searches direct children of WeaponHolder for a Weapon whose data matches.
     Weapon FindWeaponInHolder(WeaponData data)
     {
-        Debug.Log("WEAPON NAME: "+data.name);
+        Debug.Log("WEAPON NAME: " + data.name);
         if (weaponHolder == null) return null;
         foreach (Transform child in weaponHolder)
         {
             Weapon w = child.GetComponent<Weapon>();
-           
+
             if (w != null && w.weaponData == data)
                 return w;
         }
@@ -437,12 +438,13 @@ public class PlayerController : MonoBehaviour, IDamageAble
         if (_isDead) return 0f;
         if (!heartBeat.isPlaying)
         {
-            heartBeat.clip = playerHitBreath;      
+            heartBeat.clip = playerHitBreath;
             heartBeat.Play();
         }
         _hitsRemaining--;
-        heartBeat.pitch = 1+(maxHits-_hitsRemaining)/2f;
+        heartBeat.pitch = 1 + (maxHits - _hitsRemaining) / 2f;
         _regenTimer = 0f;
+        BloodScreenEffect.Instance?.OnHit(_hitsRemaining, maxHits);
         if (_hitsRemaining <= 0)
             Die();
         return _hitsRemaining;
@@ -453,6 +455,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     void Die()
     {
         _isDead = true;
+        BloodScreenEffect.Instance?.ResetEffect();
         if (deathPanel != null) deathPanel.SetActive(true);
         updateDeathPanel();
         Time.timeScale = 0f;
@@ -477,17 +480,17 @@ public class PlayerController : MonoBehaviour, IDamageAble
         deathPanelTransform.Find("TimeSurvivedTXT").GetComponent<TextMeshProUGUI>().text = "Time " + hours + ":" + mintues + ":" + leftOverSeconds;
         if (roundsSurvived > highestRound)
         {
-            newHighScore(deathPanelTransform.Find("HighscoreText").gameObject);          
+            newHighScore(deathPanelTransform.Find("HighscoreText").gameObject);
         }
         else { deathPanelTransform.Find("HighscoreText").gameObject.SetActive(false); }
         //deathPanelTransform.Find("HighscoreText").GetComponent<TextMeshProUGUI>().text = "Points Total " + PointsManager.Instance.TotalPoints;
     }
-    void newHighScore(GameObject deathpanel) 
+    void newHighScore(GameObject deathpanel)
     {
         pingPongColorTween(deathpanel.GetComponent<TextMeshProUGUI>());
         pingPongRotTween(deathpanel.GetComponent<TextMeshProUGUI>());
     }
-    void pingPongColorTween(TextMeshProUGUI deathpanelText) 
+    void pingPongColorTween(TextMeshProUGUI deathpanelText)
     {
         LeanTween.value(deathpanelText.gameObject, Color.red, Color.white, 1f).setOnUpdate((Color col) => {
             deathpanelText.color = col;
@@ -497,31 +500,31 @@ public class PlayerController : MonoBehaviour, IDamageAble
     void pingPongRotTween(TextMeshProUGUI deathpanelText)
     {
         LeanTween.value(deathpanelText.gameObject, 10f, -10f, 1f).setOnUpdate((float angle) => {
-           deathpanelText.rectTransform.localRotation = Quaternion.Euler(0, 0, angle);
-       })
+            deathpanelText.rectTransform.localRotation = Quaternion.Euler(0, 0, angle);
+        })
        .setLoopPingPong(999);
     }
 
     //add powerUp onto the UI
-    public void addPowerupUI(int powerupType) 
+    public void addPowerupUI(int powerupType)
     {
-        switch (powerupType) 
+        switch (powerupType)
         {
-            case 0: if (!doublePointsIconHere) {GameObject image = Instantiate(doublePointsIcon, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; doublePointsIconHere = true; StartCoroutine(flash(image, 15f,0));} break;
-            case 1: if (!maxAMMOIconHere) { GameObject image = Instantiate(maxAMMO, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; maxAMMOIconHere = true; StartCoroutine(flash(image, 15f,1));} break;
-            case 2: if (!doubleShotIconHere) { GameObject image = Instantiate(doubleShot, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; doubleShotIconHere = true; StartCoroutine(flash(image, 15f,2));} break;
-        } 
+            case 0: if (!doublePointsIconHere) { GameObject image = Instantiate(doublePointsIcon, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; doublePointsIconHere = true; StartCoroutine(flash(image, 15f, 0)); } break;
+            case 1: if (!maxAMMOIconHere) { GameObject image = Instantiate(maxAMMO, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; maxAMMOIconHere = true; StartCoroutine(flash(image, 15f, 1)); } break;
+            case 2: if (!doubleShotIconHere) { GameObject image = Instantiate(doubleShot, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; doubleShotIconHere = true; StartCoroutine(flash(image, 15f, 2)); } break;
+        }
     }
-    IEnumerator flash(GameObject flashObject,float duration,int which) 
+    IEnumerator flash(GameObject flashObject, float duration, int which)
     {
         float timeLeft = duration;
-        while (true) 
+        while (true)
         {
             timeLeft -= Time.deltaTime;
-            if (timeLeft <= 3f) 
+            if (timeLeft <= 3f)
             {
-                blink(flashObject,timeLeft);
-                StartCoroutine(setDestruction(flashObject,timeLeft,which));
+                blink(flashObject, timeLeft);
+                StartCoroutine(setDestruction(flashObject, timeLeft, which));
                 break;
             }
             yield return null;
@@ -529,7 +532,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     }
 
     //flash when theres like 5 seconds left
-    void blink(GameObject blinker,float timeLeft) 
+    void blink(GameObject blinker, float timeLeft)
     {
         LeanTween.value(blinker, 1f, 0f, 0.5f).setOnUpdate((float alpha) =>
         {
@@ -538,14 +541,14 @@ public class PlayerController : MonoBehaviour, IDamageAble
             blinker.GetComponent<UnityEngine.UI.Image>().color = c;
         }).setLoopPingPong(999);
     }
-    IEnumerator setDestruction(GameObject objectToDestroy,float duration,int which) 
+    IEnumerator setDestruction(GameObject objectToDestroy, float duration, int which)
     {
-       
+
         yield return new WaitForSeconds(duration);
-        switch (which) 
+        switch (which)
         {
-            case 0: doublePointsIconHere = false;  break;
-            case 1: maxAMMOIconHere = false;  break;
+            case 0: doublePointsIconHere = false; break;
+            case 1: maxAMMOIconHere = false; break;
             case 2: doubleShotIconHere = false; break;
 
         }
