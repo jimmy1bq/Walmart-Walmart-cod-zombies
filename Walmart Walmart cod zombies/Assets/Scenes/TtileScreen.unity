@@ -7356,7 +7356,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 85469371746869595, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 253.74803
+      value: 253.74791
       objectReference: {fileID: 0}
     - target: {fileID: 1062477396343601286, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7529,6 +7529,14 @@ PrefabInstance:
     - target: {fileID: 5809807527013402040, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6908034934575952857, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_Size
+      value: 0.43192318
+      objectReference: {fileID: 0}
+    - target: {fileID: 6908034934575952857, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
+      propertyPath: m_Value
+      value: 0.00000024053466
       objectReference: {fileID: 0}
     - target: {fileID: 7535545148172068677, guid: 23df6fb4d7dc6ac459a5959da28637d8, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size

@@ -41,8 +41,18 @@ public class PlayerController : MonoBehaviour, IDamageAble
     [Header("Health")]
     public int maxHits = 5;
     public float regenDelay = 5f;
-    [SerializeField] GameObject deathPanel;
 
+    [Header("PowerUpsUI")]
+    public GameObject powerUpUILayOut;
+    public UnityEngine.UI.Image doublePointsIcon;
+    public UnityEngine.UI.Image maxAMMO;
+    public UnityEngine.UI.Image doubleShot;
+
+    public bool doublePointsIconHere = false;
+    public bool maxAMMOIconHere = false;
+    public bool doubleShotIconHere = false;
+
+    [SerializeField] GameObject deathPanel;
     CharacterController _controller;
     Vector3 _velocity;
     float _verticalRotation;
@@ -467,13 +477,63 @@ public class PlayerController : MonoBehaviour, IDamageAble
         LeanTween.value(deathpanelText.gameObject, Color.red, Color.white, 1f).setOnUpdate((Color col) => {
             deathpanelText.color = col;
         })
-        .setLoopPingPong(3);
+        .setLoopPingPong(999);
     }
     void pingPongRotTween(TextMeshProUGUI deathpanelText)
     {
         LeanTween.value(deathpanelText.gameObject, 10f, -10f, 1f).setOnUpdate((float angle) => {
            deathpanelText.rectTransform.localRotation = Quaternion.Euler(0, 0, angle);
        })
-       .setLoopPingPong(3);
+       .setLoopPingPong(999);
+    }
+
+    //add powerUp onto the UI
+    public void addPowerupUI(int powerupType) 
+    {
+        switch (powerupType) 
+        {
+            case 0: if (!doublePointsIconHere) {GameObject image = Instantiate(doublePointsIcon, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; doublePointsIconHere = true; StartCoroutine(flash(image, 15f,0));} break;
+            case 1: if (!maxAMMOIconHere) { GameObject image = Instantiate(maxAMMO, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; maxAMMOIconHere = true; StartCoroutine(flash(image, 15f,1));} break;
+            case 2: if (!doubleShotIconHere) { GameObject image = Instantiate(doubleShot, powerUpUILayOut.transform.GetChild(0).GetChild(0)).gameObject; doubleShotIconHere = true; StartCoroutine(flash(image, 15f,2));} break;
+        } 
+    }
+    IEnumerator flash(GameObject flashObject,float duration,int which) 
+    {
+        float timeLeft = duration;
+        while (true) 
+        {
+            timeLeft -= Time.deltaTime;
+            if (timeLeft <= 3f) 
+            {
+                blink(flashObject,timeLeft);
+                StartCoroutine(setDestruction(flashObject,timeLeft,which));
+                break;
+            }
+            yield return null;
+        }
+    }
+
+    //flash when theres like 5 seconds left
+    void blink(GameObject blinker,float timeLeft) 
+    {
+        LeanTween.value(blinker, 1f, 0f, 0.5f).setOnUpdate((float alpha) =>
+        {
+            Color c = blinker.GetComponent<UnityEngine.UI.Image>().color;
+            c.a = alpha;
+            blinker.GetComponent<UnityEngine.UI.Image>().color = c;
+        }).setLoopPingPong(999);
+    }
+    IEnumerator setDestruction(GameObject objectToDestroy,float duration,int which) 
+    {
+        Debug.Log("OBJECT TO KILLLL:" + objectToDestroy.gameObject.name);
+        yield return new WaitForSeconds(duration);
+        switch (which) 
+        {
+            case 0: doublePointsIconHere = false;  break;
+            case 1: maxAMMOIconHere = false;  break;
+            case 2: doubleShotIconHere = false; break;
+
+        }
+        Destroy(objectToDestroy);
     }
 }
