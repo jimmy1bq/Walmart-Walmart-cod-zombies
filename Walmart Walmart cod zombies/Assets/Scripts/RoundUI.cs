@@ -14,10 +14,10 @@ public class RoundUI : MonoBehaviour
     public Vector2 centerPosition = Vector2.zero;
 
     [Tooltip("Scale of the text while it sits in the corner.")]
-    public float homeScale = 1f;
+    public float homeScale = 6f;
 
     [Tooltip("Scale the text grows to when it reaches the centre.")]
-    public float centerScale = 3f;
+    public float centerScale = 6f;
 
     [Tooltip("Seconds to travel from corner to centre (and back).")]
     public float travelDuration = 0.5f;
@@ -34,6 +34,9 @@ public class RoundUI : MonoBehaviour
         _rt = roundText.GetComponent<RectTransform>();
         // Wherever the designer placed the text becomes the permanent home
         _homePosition = _rt.anchoredPosition;
+        homeScale = 3f;
+        centerScale = 4f;
+        centerPosition = new Vector2(197, -118);
     }
 
     void Start()
@@ -56,11 +59,13 @@ public class RoundUI : MonoBehaviour
         roundText.text = round.ToString();
 
         if (_animRoutine != null) StopCoroutine(_animRoutine);
-        _animRoutine = StartCoroutine(Animate());
+         _animRoutine = StartCoroutine(Animate());
     }
 
     IEnumerator Animate()
     {
+        Vector3 orignalPos = gameObject.transform.position;
+        Vector3 originalScale = gameObject.transform.localScale;
         // Slide to centre and grow
         yield return StartCoroutine(Tween(_homePosition, centerPosition, homeScale, centerScale, travelDuration));
 
@@ -85,4 +90,5 @@ public class RoundUI : MonoBehaviour
         _rt.anchoredPosition = toPos;
         _rt.localScale       = Vector3.one * toScale;
     }
+    
 }
