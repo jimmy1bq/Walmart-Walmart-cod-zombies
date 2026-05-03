@@ -181,9 +181,9 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        Debug.DrawRay(ray.origin, ray.direction, Color.red, 1f);
+       
         if (!Physics.Raycast(ray, out hit, 2.5f)) { windowRepairStatus.gameObject.SetActive(false); return; }
-        Debug.Log(hit.collider.gameObject);
+        
         if (hit.collider.gameObject.CompareTag("PotentialBoard"))
         {
             IInteractable interact = hit.collider.transform.parent.Find("woodenBoard").GetComponent<IInteractable>();
@@ -241,7 +241,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         float speed = moveSpeed;
         //if we are shifting and not on cool and we have stamina
-        Debug.Log("isSprinting: " + _isSprinting + " _cantSprint" + !_cantSprint + "  stamina<5: " + (stamina < 5f));
+       
         if (_isSprinting && !_cantSprint && stamina < 5f)
         {
             speed *= sprintMultiplier;
@@ -368,7 +368,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     /// </summary>
     public void GiveWeapon(int slotIndex, WeaponData data)
     {
-        if (slotIndex < 0 || slotIndex >= weaponSlots.Length) return;
+        if (slotIndex < 0 || slotIndex >= weaponSlots.Length) { Debug.Log("not here"); return; }
 
         Weapon incoming = FindWeaponInHolder(data);
         if (incoming == null)
@@ -376,11 +376,15 @@ public class PlayerController : MonoBehaviour, IDamageAble
             Debug.LogWarning($"PlayerController: No weapon with data '{data.weaponName}' found in WeaponHolder.");
             return;
         }
-
+        Debug.Log("down here");
         // Hide whatever was in this slot before
         if (weaponSlots[slotIndex] != null)
+        {
+            Debug.Log("down here pt2");
             weaponSlots[slotIndex].gameObject.SetActive(false);
+        }
 
+        Debug.Log("equpping");
         weaponSlots[slotIndex] = incoming;
         incoming.Initialize();
         EquipWeapon(slotIndex);
@@ -389,10 +393,12 @@ public class PlayerController : MonoBehaviour, IDamageAble
     // Searches direct children of WeaponHolder for a Weapon whose data matches.
     Weapon FindWeaponInHolder(WeaponData data)
     {
+        Debug.Log("WEAPON NAME: "+data.name);
         if (weaponHolder == null) return null;
         foreach (Transform child in weaponHolder)
         {
             Weapon w = child.GetComponent<Weapon>();
+           
             if (w != null && w.weaponData == data)
                 return w;
         }
@@ -525,7 +531,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     }
     IEnumerator setDestruction(GameObject objectToDestroy,float duration,int which) 
     {
-        Debug.Log("OBJECT TO KILLLL:" + objectToDestroy.gameObject.name);
+       
         yield return new WaitForSeconds(duration);
         switch (which) 
         {

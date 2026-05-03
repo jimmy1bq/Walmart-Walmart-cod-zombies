@@ -38,7 +38,10 @@ public class Weapon : MonoBehaviour
     void Awake()
     {
         animator = GetComponent<Animation>();
-        animator.GetClip("weaponrecoilAnim").wrapMode = WrapMode.Once;
+        if (animator != null) 
+        {          
+            animator.GetClip("weaponrecoilAnim").wrapMode = WrapMode.Once;
+        }     
         _audio = GetComponent<AudioSource>();
         Initialize();
     }
@@ -125,8 +128,11 @@ public class Weapon : MonoBehaviour
         int shots = doubleTap ? 2 : 1;
         if (_audio != null && shootSound != null)
         {
-            _audio.PlayOneShot(shootSound);    
-            animator.Play("weaponrecoilAnim");
+            _audio.PlayOneShot(shootSound);
+            if (animator != null) 
+            {
+                animator.Play("weaponrecoilAnim");
+            }
         }
 
 

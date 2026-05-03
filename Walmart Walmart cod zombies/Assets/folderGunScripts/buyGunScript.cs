@@ -116,7 +116,7 @@ public class buyGunHandler : MonoBehaviour
             Debug.LogWarning("buyGunHandler: No valid weapon slot found. Make sure the Player has Weapon components assigned in both weaponSlots.");
             return;
         }
-
+        Debug.Log(target, data);
         _playerInRange.GiveWeapon(target, data);
     }
 

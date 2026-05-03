@@ -9,7 +9,7 @@ public class PowerupPickup : MonoBehaviour
     public AudioSource powerUpSrc;
     public AudioClip auraNoise;
     public AudioClip pickUpNoise;
-    public float duration = 30f;
+    public float duration = 15f;
     public float lifetime = 30f;
 
     static readonly Color[] TypeColors =
