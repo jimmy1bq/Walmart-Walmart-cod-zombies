@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using System.Collections.Generic;
 
 [RequireComponent(typeof(AudioSource))]
 public class Weapon : MonoBehaviour
@@ -20,6 +19,8 @@ public class Weapon : MonoBehaviour
     public float tracerWidth = 0.015f;
     public float tracerDuration = 0.06f;
 
+    public AnimationState gunfire;
+
     int _currentAmmo;
     int _reserveAmmo;
     float _nextFireTime;
@@ -30,18 +31,22 @@ public class Weapon : MonoBehaviour
     AudioSource _audio;
     Animation animator;
 
-    public int CurrentAmmo     => _currentAmmo;
-    public int ReserveAmmo     => _reserveAmmo;
-    public bool IsReloading    => _isReloading;
+    public int CurrentAmmo => _currentAmmo;
+    public int ReserveAmmo => _reserveAmmo;
+    public bool IsReloading => _isReloading;
     public float CurrentSpread => _currentSpread;
 
     void Awake()
     {
         animator = GetComponent<Animation>();
-        if (animator != null) 
-        {          
-            animator.GetClip("weaponrecoilAnim").wrapMode = WrapMode.Once;
-        }     
+        if (animator != null)
+        {
+            foreach (AnimationState state in animator)
+            {
+               state.clip.wrapMode = WrapMode.Once;
+               gunfire = state;
+            }
+        }
         _audio = GetComponent<AudioSource>();
         Initialize();
     }
@@ -49,15 +54,15 @@ public class Weapon : MonoBehaviour
     public void Initialize()
     {
         if (weaponData == null) return;
-        _currentAmmo   = weaponData.clipSize;
-        _reserveAmmo   = weaponData.maxAmmo - weaponData.clipSize;
+        _currentAmmo = weaponData.clipSize;
+        _reserveAmmo = weaponData.maxAmmo - weaponData.clipSize;
         _currentSpread = weaponData.spread;
-        _isReloading   = false;
+        _isReloading = false;
     }
 
     void OnEnable()
     {
-        _isReloading   = false;
+        _isReloading = false;
         _currentSpread = weaponData != null ? weaponData.spread : 0f;
     }
 
@@ -66,7 +71,7 @@ public class Weapon : MonoBehaviour
         if (weaponData != null && _currentSpread > weaponData.spread)
         {
             _currentSpread -= weaponData.spreadRecoveryRate * Time.deltaTime;
-            _currentSpread  = Mathf.Max(_currentSpread, weaponData.spread);
+            _currentSpread = Mathf.Max(_currentSpread, weaponData.spread);
         }
     }
 
@@ -74,21 +79,21 @@ public class Weapon : MonoBehaviour
     public void TickReload()
     {
         if (!_isReloading || weaponData == null) return;
-        if (Time.time < _reloadEndTime) {  return; }
+        if (Time.time < _reloadEndTime) { return; }
 
-        int needed    = weaponData.clipSize - _currentAmmo;
-        int take      = Mathf.Min(needed, _reserveAmmo);
+        int needed = weaponData.clipSize - _currentAmmo;
+        int take = Mathf.Min(needed, _reserveAmmo);
         _currentAmmo += take;
         _reserveAmmo -= take;
         _reloadStartTime = 0f;
-        _isReloading  = false;
+        _isReloading = false;
     }
 
     void BeginReload()
     {
         if (_isReloading || _reserveAmmo <= 0 || weaponData == null) return;
         if (_currentAmmo == weaponData.clipSize) return;
-        _isReloading  = true;
+        _isReloading = true;
         // _reloadEndTime = Time.time + weaponData.reloadTime;
         _reloadEndTime = Time.time + weaponData.reloadTime;
         _reloadStartTime = Time.time;
@@ -113,9 +118,9 @@ public class Weapon : MonoBehaviour
     public void RefillAmmo()
     {
         if (weaponData == null) return;
-        _currentAmmo  = weaponData.clipSize;
-        _reserveAmmo  = weaponData.maxAmmo - weaponData.clipSize;
-        _isReloading  = false;
+        _currentAmmo = weaponData.clipSize;
+        _reserveAmmo = weaponData.maxAmmo - weaponData.clipSize;
+        _isReloading = false;
     }
 
     //check tag for headshot; if its the head then zombie takeDamage should be (weaponData.damage,1)
@@ -128,48 +133,50 @@ public class Weapon : MonoBehaviour
         int shots = doubleTap ? 2 : 1;
         if (_audio != null && shootSound != null)
         {
+            _audio.volume = audioManagerZombies.instance.sfxVolume;
             _audio.PlayOneShot(shootSound);
-            if (animator != null) 
+            if (animator != null && gunfire != null)
             {
-                animator.Play("weaponrecoilAnim");
+                Debug.Log(gunfire.name);
+                animator.Play(gunfire.name);
             }
         }
 
 
         for (int s = 0; s < shots; s++)
-        for (int i = 0; i < weaponData.pelletCount; i++)
-        {
-            Vector3 direction = ApplySpread(aimOrigin.forward);
-            Ray ray = new Ray(aimOrigin.position, direction);
-            Vector3 tracerEnd = ray.origin + ray.direction * weaponData.range;
-
-            RaycastHit[] hits = Physics.RaycastAll(ray, weaponData.range);
-
-            Debug.DrawRay(ray.origin, ray.direction * weaponData.range, Color.red, 1f);
-
-            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
-            foreach (RaycastHit hit in hits)
+            for (int i = 0; i < weaponData.pelletCount; i++)
             {
-              
-                IDamageAble damageable = hit.collider.GetComponentInParent<IDamageAble>();
+                Vector3 direction = ApplySpread(aimOrigin.forward);
+                Ray ray = new Ray(aimOrigin.position, direction);
+                Vector3 tracerEnd = ray.origin + ray.direction * weaponData.range;
 
-                // Skip non-damageable mesh/box colliders — walls, window frames, stairs, etc.
-                if (damageable == null && (hit.collider is MeshCollider || hit.collider is BoxCollider)) continue;
+                RaycastHit[] hits = Physics.RaycastAll(ray, weaponData.range);
 
-                // Skip window boards — they're damaged only by zombies, not bullets
-                if (hit.collider.CompareTag("PotentialBoard")) continue;
+                Debug.DrawRay(ray.origin, ray.direction * weaponData.range, Color.red, 1f);
 
-                if (damageable != null)
+                System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+                foreach (RaycastHit hit in hits)
                 {
-                    int damageType = hit.collider.CompareTag("Head") ? 1 : 0;
-                    damageable.takeDamage(weaponData.damage, damageType);
-                }
-                tracerEnd = hit.point;
-                break;
-            }
 
-            StartCoroutine(SpawnTracer(ray.origin, tracerEnd));
-        }
+                    IDamageAble damageable = hit.collider.GetComponentInParent<IDamageAble>();
+
+                    // Skip non-damageable mesh/box colliders — walls, window frames, stairs, etc.
+                    if (damageable == null && (hit.collider is MeshCollider || hit.collider is BoxCollider)) continue;
+
+                    // Skip window boards — they're damaged only by zombies, not bullets
+                    if (hit.collider.CompareTag("PotentialBoard")) continue;
+
+                    if (damageable != null)
+                    {
+                        int damageType = hit.collider.CompareTag("Head") ? 1 : 0;
+                        damageable.takeDamage(weaponData.damage, damageType);
+                    }
+                    tracerEnd = hit.point;
+                    break;
+                }
+
+                StartCoroutine(SpawnTracer(ray.origin, tracerEnd));
+            }
 
         _currentSpread += weaponData.spreadGainPerShot;
 
@@ -188,7 +195,7 @@ public class Weapon : MonoBehaviour
             Destroy(flash, 0.05f);
         }
 
-      
+
 
     }
 
@@ -199,9 +206,9 @@ public class Weapon : MonoBehaviour
 
         lr.material = new Material(Shader.Find("Sprites/Default"));
         lr.startColor = tracerColor;
-        lr.endColor   = new Color(tracerColor.r, tracerColor.g, tracerColor.b, 0f);
+        lr.endColor = new Color(tracerColor.r, tracerColor.g, tracerColor.b, 0f);
         lr.startWidth = tracerWidth;
-        lr.endWidth   = tracerWidth * 0.1f;
+        lr.endWidth = tracerWidth * 0.1f;
         lr.positionCount = 2;
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
@@ -214,9 +221,9 @@ public class Weapon : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / tracerDuration;
             Color fadeStart = new Color(tracerColor.r, tracerColor.g, tracerColor.b, 1f - t);
-            Color fadeEnd   = new Color(tracerColor.r, tracerColor.g, tracerColor.b, 0f);
+            Color fadeEnd = new Color(tracerColor.r, tracerColor.g, tracerColor.b, 0f);
             lr.startColor = fadeStart;
-            lr.endColor   = fadeEnd;
+            lr.endColor = fadeEnd;
             yield return null;
         }
 

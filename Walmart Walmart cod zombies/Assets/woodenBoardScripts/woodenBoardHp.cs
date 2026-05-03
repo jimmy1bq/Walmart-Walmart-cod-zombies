@@ -82,10 +82,10 @@ public class woodenBoardHp : MonoBehaviour, IDamageAble, IHealAble,IInteractable
         if (health < stats.hp)
         {
             health += healHp;
-            dead = false;
-            index = Mathf.Clamp(index - 1, 1, 5);
+            dead = false;          
             playRepairAnim(index);
-            PointsManager.Instance?.AddPoints(10);
+            index = Mathf.Clamp(index - 1, 1, 6);
+            PointsManager.Instance?.AddPoints(5);
             if (health >= stats.hp) { health = stats.hp; index = 1; }
         }
         return health;

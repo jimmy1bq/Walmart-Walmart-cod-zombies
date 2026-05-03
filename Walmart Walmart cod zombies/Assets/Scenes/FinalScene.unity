@@ -40830,7 +40830,7 @@ Animation:
   serializedVersion: 4
   m_Animation: {fileID: 0}
   m_Animations:
-  - {fileID: 7400000, guid: 2cdc7a91c42751c42af5ed8ce03cb75b, type: 2}
+  - {fileID: 7400000, guid: b80bb9b915b5e494f955c92f4c410f42, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
