@@ -142,7 +142,7 @@ public class Weapon : MonoBehaviour
             animator.Play(gunfire.name);
         }
 
-
+       
         for (int s = 0; s < shots; s++)
             for (int i = 0; i < weaponData.pelletCount; i++)
             {
@@ -174,10 +174,10 @@ public class Weapon : MonoBehaviour
                     tracerEnd = hit.point;
                     break;
                 }
-
+               
                 StartCoroutine(SpawnTracer(ray.origin, tracerEnd));
             }
-
+        
         _currentSpread += weaponData.spreadGainPerShot;
 
         if (muzzleFlashSprites != null && muzzleFlashSprites.Length > 0 && muzzlePoint != null)

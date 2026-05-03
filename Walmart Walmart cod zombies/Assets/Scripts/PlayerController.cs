@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     AudioSource heartBeat;
     AudioSource heavyBreathing;
 
-    int _totalHitsRemaining;
+    
     int _hitsRemaining;
     float _regenTimer;
     bool _isDead;
@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
     private void Awake()
     {
+      
         deathPanel.SetActive(false);
         highestRound = highestRoundData.instance.LoadData().playerData.highestRound;
         AudioSource[] arrayOfSources = GetComponentsInChildren<AudioSource>();
@@ -92,7 +93,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     }
     bool _isSprinting;
     Quaternion _weaponIdleRotation;
-    Quaternion _currentSprintTilt = Quaternion.identity;
+    Quaternion _currentSprintTilt = Quaternion.Euler(0, 180, 0);
     float _repairCooldown = 0f;
 
     void Start()
@@ -287,13 +288,15 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
         // Sync weapon holder to camera's vertical look each frame (WeaponHolder is a
         // sibling of Camera, not a child, so it doesn't inherit the look rotation).
+        //make the weapon handler 
         //Quaternion lookRot = _weaponIdleRotation * Quaternion.Euler(_verticalRotation, 0f, 0f);
 
         // Sprint tilt layered on top, lerped for a smooth transition
-        Quaternion sprintTarget = _isSprinting ? Quaternion.Euler(sprintTiltEuler) : Quaternion.identity;
-        _currentSprintTilt = Quaternion.Lerp(_currentSprintTilt, sprintTarget, sprintTiltSpeed * Time.deltaTime);
 
-        weaponHolder.localRotation = /*lookRot **/ _currentSprintTilt;
+        Quaternion sprintTarget = _isSprinting ? Quaternion.Euler(sprintTiltEuler) : Quaternion.Euler(0, 180, 0);
+        _currentSprintTilt = Quaternion.Lerp(_currentSprintTilt, sprintTarget, sprintTiltSpeed * Time.deltaTime);
+      
+        CurrentWeapon.transform.localRotation = /*lookRot **/ _currentSprintTilt;
     }
 
     void HandleWeaponSwitch()
