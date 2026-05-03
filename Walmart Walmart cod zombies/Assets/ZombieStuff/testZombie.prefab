@@ -10902,7 +10902,7 @@ GameObject:
   - component: {fileID: 6970760004253862890}
   - component: {fileID: 6120651175924736289}
   m_Layer: 3
-  m_Name: zombie
+  m_Name: testZombie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10982,7 +10982,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3978243872537546586}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.3
   m_Speed: 3.5
@@ -10993,7 +10993,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.8
+  m_Height: 1.5
   m_BaseOffset: -0.3
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -11012,7 +11012,7 @@ MonoBehaviour:
   head: {fileID: 2248600029416369907}
   stats: {fileID: 11400000, guid: 64f67465b783a974eb2dd15e396cf8fc, type: 2}
   range: 1.3
-  agent: {fileID: 0}
+  agent: {fileID: 5563085001032065441}
   headShotted: {fileID: 8300000, guid: a0ab76cb891d6c048a5a5919aff65c34, type: 3}
 --- !u!82 &6970760004253862890
 AudioSource:
@@ -11812,6 +11812,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3063075268985949233}
   - component: {fileID: 6949911446061861770}
+  - component: {fileID: 5563085001032065441}
   m_Layer: 0
   m_Name: chest
   m_TagString: Untagged
@@ -11860,6 +11861,28 @@ CapsuleCollider:
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: -0.4, z: 0}
+--- !u!195 &5563085001032065441
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6181370050073279818}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.2
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0.4
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.4
+  m_BaseOffset: 1.1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &6216923007879778850
 GameObject:
   m_ObjectHideFlags: 0

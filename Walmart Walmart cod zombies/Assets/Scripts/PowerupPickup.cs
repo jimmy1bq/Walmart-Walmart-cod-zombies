@@ -10,7 +10,7 @@ public class PowerupPickup : MonoBehaviour
     public AudioClip auraNoise;
     public AudioClip pickUpNoise;
     public float duration = 15f;
-    public float lifetime = 30f;
+    public float lifetime = 15f;
 
     static readonly Color[] TypeColors =
     {
@@ -58,8 +58,8 @@ public class PowerupPickup : MonoBehaviour
        
         switch (type)
         {
-            case PowerupType.DoublePoints: pm.ActivateDoublePoints(duration); break;
-            case PowerupType.DoubleTap:    pm.ActivateDoubleTap(duration);    break;
+            case PowerupType.DoublePoints: pm.ActivateDoublePoints(15f); break;
+            case PowerupType.DoubleTap:    pm.ActivateDoubleTap(15f);    break;
             case PowerupType.MaxAmmo:      pm.ActivateMaxAmmo();              break;
         }   
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().powerUpsCollected++;    

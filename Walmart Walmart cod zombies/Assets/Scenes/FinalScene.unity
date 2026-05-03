@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.45854044
@@ -650,6 +654,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: 20.211979
@@ -2320,6 +2328,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14.100504
@@ -7203,6 +7215,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.4275153
@@ -9269,6 +9285,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: -34.04173
@@ -16561,6 +16581,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: 20.971395
@@ -22857,6 +22881,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: -21.037994
@@ -23259,6 +23287,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: 19.511042
@@ -30848,6 +30880,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: -18.944725
@@ -33003,6 +33039,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: -28.25505
@@ -42390,6 +42430,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.5771885
@@ -43231,6 +43275,10 @@ PrefabInstance:
       propertyPath: roomId
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.6342854
@@ -47961,6 +48009,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 568687573453757705, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
+      propertyPath: zombies
+      value: 
+      objectReference: {fileID: 3978243872537546586, guid: c74e181f1e87bbd4fbdf19e95d19b719, type: 3}
     - target: {fileID: 4956420258360389994, guid: c911c4b052e64cd4caf565068ed17c26, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.963401

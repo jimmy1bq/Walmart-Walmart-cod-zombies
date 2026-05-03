@@ -14,7 +14,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     [SerializeField] entityStatSO stats;
     [SerializeField] float range = 1.5f;
     float health;
-    NavMeshAgent agent;
+    public NavMeshAgent agent;
     NavMeshLink link;
     //---------------------------targets
     GameObject queuePosition = null;
@@ -36,6 +36,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     int groanChance = 0;
     int groanTheresHold = 100;
     float timer = 0;
+    GameObject root;
 
     Coroutine attackCoroutine;
 
@@ -45,7 +46,7 @@ public class ZombieAi : MonoBehaviour, IDamageAble, IQueue
     //i can't find the graon interval so Im going to assume every 3 second it has an 100% chance to groan if it hasn't already
 
     void Start()
-    {
+    {     
         head = transform.GetChild(0).gameObject.transform.Find("Head").gameObject;
         AudioSource[] arrayOfSrcs = GetComponents<AudioSource>();
         zombieSrc = arrayOfSrcs[0];
