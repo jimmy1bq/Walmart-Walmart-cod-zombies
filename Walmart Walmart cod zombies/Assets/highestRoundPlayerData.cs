@@ -12,7 +12,7 @@ public class highestRoundData : MonoBehaviour
     [System.Serializable]
     public class AllData
     {
-        public PlayerData playerData;
+        public PlayerData playerData = new PlayerData();
     }
 
     private string filePath = Application.dataPath + "/JSONData.json";

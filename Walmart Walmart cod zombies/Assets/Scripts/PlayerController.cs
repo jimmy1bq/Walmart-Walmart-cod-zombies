@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -69,6 +70,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
 
     private void Awake()
     {
+        deathPanel.SetActive(false);
         highestRound = highestRoundData.instance.LoadData().playerData.highestRound;
         AudioSource[] arrayOfSources = GetComponentsInChildren<AudioSource>();
         footStep = arrayOfSources[0];
@@ -76,7 +78,6 @@ public class PlayerController : MonoBehaviour, IDamageAble
         heavyBreathing = arrayOfSources[2];
         _hitsRemaining = maxHits;
         windowRepairStatus.gameObject.SetActive(false);
-        deathPanel.SetActive(false);
     }
     bool _isSprinting;
     Quaternion _weaponIdleRotation;
@@ -448,14 +449,28 @@ public class PlayerController : MonoBehaviour, IDamageAble
         deathPanelTransform.Find("TimeSurvivedTXT").GetComponent<TextMeshProUGUI>().text = "Time " + hours + ":" + mintues + ":" + leftOverSeconds;
         if (roundsSurvived > highestRound)
         {
-
-
-
+            newHighScore(deathPanelTransform.Find("HighscoreText").gameObject);          
         }
         else { deathPanelTransform.Find("HighscoreText").gameObject.SetActive(false); }
         //deathPanelTransform.Find("HighscoreText").GetComponent<TextMeshProUGUI>().text = "Points Total " + PointsManager.Instance.TotalPoints;
-
-
-
+    }
+    void newHighScore(GameObject deathpanel) 
+    {
+        pingPongColorTween(deathpanel.GetComponent<TextMeshProUGUI>());
+        pingPongRotTween(deathpanel.GetComponent<TextMeshProUGUI>());
+    }
+    void pingPongColorTween(TextMeshProUGUI deathpanelText) 
+    {
+        LeanTween.value(deathpanelText.gameObject, Color.red, Color.white, 1f).setOnUpdate((Color col) => {
+            deathpanelText.color = col;
+        })
+        .setLoopPingPong(3);
+    }
+    void pingPongRotTween(TextMeshProUGUI deathpanelText)
+    {
+        LeanTween.value(deathpanelText.gameObject, 10f, -10f, 1f).setOnUpdate((float angle) => {
+           deathpanelText.rectTransform.localRotation = Quaternion.Euler(0, 0, angle);
+       })
+       .setLoopPingPong(3);
     }
 }
