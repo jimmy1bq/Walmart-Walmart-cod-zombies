@@ -28,6 +28,7 @@ public class Weapon : MonoBehaviour
     public float _reloadStartTime;
     float _currentSpread;
     AudioSource _audio;
+    Animation animator;
 
     public int CurrentAmmo     => _currentAmmo;
     public int ReserveAmmo     => _reserveAmmo;
@@ -36,6 +37,8 @@ public class Weapon : MonoBehaviour
 
     void Awake()
     {
+        animator = GetComponent<Animation>();
+        animator.GetClip("weaponrecoilAnim").wrapMode = WrapMode.Once;
         _audio = GetComponent<AudioSource>();
         Initialize();
     }
@@ -122,7 +125,8 @@ public class Weapon : MonoBehaviour
         int shots = doubleTap ? 2 : 1;
         if (_audio != null && shootSound != null)
         {
-            _audio.PlayOneShot(shootSound);
+            _audio.PlayOneShot(shootSound);    
+            animator.Play("weaponrecoilAnim");
         }
 
 

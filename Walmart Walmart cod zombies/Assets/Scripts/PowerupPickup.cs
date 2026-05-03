@@ -62,7 +62,7 @@ public class PowerupPickup : MonoBehaviour
             case PowerupType.DoubleTap:    pm.ActivateDoubleTap(duration);    break;
             case PowerupType.MaxAmmo:      pm.ActivateMaxAmmo();              break;
         }   
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().powerUpsCollected++;
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().powerUpsCollected++;    
         audioManagerZombies.instance.afterDestroyAudio(transform.position, pickUpNoise);
         Destroy(gameObject);
     }  
