@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour, IDamageAble
     AudioSource heartBeat;
     AudioSource heavyBreathing;
 
+    int _totalHitsRemaining;
     int _hitsRemaining;
     float _regenTimer;
     bool _isDead;
@@ -137,7 +138,11 @@ public class PlayerController : MonoBehaviour, IDamageAble
         if (_regenTimer >= regenDelay && _hitsRemaining < maxHits)
         {
             _hitsRemaining++;
-            _regenTimer = 0f;
+            _regenTimer = 0f;        
+            if (_hitsRemaining == 0) 
+            {
+                heartBeat.Stop();
+            }
         }
 
         HandleMouseLook();
@@ -429,10 +434,11 @@ public class PlayerController : MonoBehaviour, IDamageAble
         if (_isDead) return 0f;
         if (!heartBeat.isPlaying)
         {
-            heartBeat.clip = playerHitBreath;
+            heartBeat.clip = playerHitBreath;      
             heartBeat.Play();
         }
         _hitsRemaining--;
+        heartBeat.pitch = 1+(maxHits-_hitsRemaining)/2f;
         _regenTimer = 0f;
         if (_hitsRemaining <= 0)
             Die();
