@@ -158,7 +158,8 @@ public class buyGunHandler : MonoBehaviour
 
     void SetPromptVisible(bool visible)
     {
-        if (promptPanel != null) promptPanel.SetActive(visible);
+        Debug.Log("NULLITY:" + promptPanel);
+        if (promptPanel != null) { promptPanel.SetActive(visible); }
         RefreshPrompt();
     }
 
@@ -174,7 +175,7 @@ public class buyGunHandler : MonoBehaviour
     {
         PlayerController pc = other.GetComponent<PlayerController>();
         if (pc != null)
-        {
+        {          
             _playerInRange = pc;
             SetPromptVisible(true);
         }
